@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MOVIE_TYPE")
+@IdClass(MovieType.class)
 public class MovieType {
     @Id
     @ManyToOne

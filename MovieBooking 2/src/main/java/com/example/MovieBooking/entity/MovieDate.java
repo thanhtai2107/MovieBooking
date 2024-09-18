@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MOVIE_DATE")
+@IdClass(MovieDate.class)
 public class MovieDate implements Serializable {
     private static final long serialVersionUID = 1L;
 
