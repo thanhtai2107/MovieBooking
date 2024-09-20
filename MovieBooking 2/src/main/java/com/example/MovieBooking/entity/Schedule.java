@@ -25,4 +25,7 @@ public class Schedule {
 
     @OneToMany(mappedBy = "schedule")
     private List<MovieSchedule> movieScheduleList;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<BookingSeat> bookingSeatList;
 }
