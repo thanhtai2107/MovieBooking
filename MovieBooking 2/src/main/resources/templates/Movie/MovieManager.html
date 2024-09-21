@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .content {
+            padding: 20px;
+            background-color: #e9ecef;
+        }
+        .white-background {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .bordered-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-dialog {
+            max-width: 800px;
+        }
+        .movie-thumbnail {
+            max-width: 200px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+        .list-group-item {
+            text-align: start;
+        }
+        .list-group-item a {
+            text-decoration: none;
+            color: black;
+        }
+        .list-group-item a:hover {
+            color: #007bff;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<!-- Header -->
+<div class="row d-flex align-items-center" style="background-color: #205081; height: 60px">
+    <div class="col-2">
+        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png" alt="" style="height: 40px" />
+    </div>
+    <div class="col-10">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-4 align-items-center ms-5">
+            </div>
+            <div class="d-flex gap-4">
+                <a href="#" class="text-white text-decoration-none">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Welcome, tientv5</span>
+                </a>
+                <div class="text-white" style="cursor: pointer">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-2 sidebar" style="background-color: white;">
+            <div class="card-holder h-100 text-center" style="background-color: white;">
+                <div class="card-header" style="background-color: white;">
+                    <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
+                         style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
+                    <h5 class="card-title">User name</h5>
+                </div>
+                <div class="card-selection align-items-center">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><a href="">Register Account</a></li>
+                        <li class="list-group-item"><a href="">Account management</a></li>
+                        <li class="list-group-item"><a href="">Booking Ticket</a></li>
+                        <li class="list-group-item"><a href="">Ticket Selling Management</a></li>
+                        <li class="list-group-item"><a href="">Ticket Booking Management</a></li>
+                        <li class="list-group-item"><a href="">Employee Management</a></li>
+                        <li class="list-group-item"><a href="">Cinema Room Management</a></li>
+                        <li class="list-group-item"><a href="">Movie Management</a></li>
+                        <li class="list-group-item"><a href="">Promotion Management</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-10 content">
+            <div class="container-fluid white-background">
+                <h1 class="mb-4">Movie list</h1>
+                <div class="row mb-3">
+                    <div class="col">
+                        <button class="btn btn-primary" id="addNewMovie"><i style="margin-right: 5px ;" class="fa-solid fa-circle-plus"></i>Add new</button>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search movies...">
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <thead style="text-align: center;">
+                    <tr>
+                        <th>#</th>
+                        <th>Movie (ENG)</th>
+                        <th>Movie (VN)</th>
+                        <th>Release Date</th>
+                        <th>Movie Production Company</th>
+                        <th>Duration</th>
+                        <th>Version</th>
+                        <th>Detail</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody style="text-align: center;" id="movieList">
+                    <!-- Movie list will be dynamically populated here -->
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Movie Modal -->
+<div class="modal fade" id="movieModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="movieModalLabel">Movie detail : </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="movieThumbnail" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="Movie Thumbnail" class="movie-thumbnail">
+                </div>
+                <form id="movieForm">
+                    <div class="mb-3">
+                        <label for="movieNameENG" class="form-label required-field">Movie name (ENG):</label>
+                        <input type="text" class="form-control" id="movieNameENG" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="movieNameVN" class="form-label required-field">Movie name (VN):</label>
+                        <input type="text" class="form-control" id="movieNameVN" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fromDate" class="form-label required-field">From date:</label>
+                        <input type="date" class="form-control" id="fromDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="toDate" class="form-label required-field">To date:</label>
+                        <input type="date" class="form-control" id="toDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="actor" class="form-label required-field">Actor:</label>
+                        <input type="text" class="form-control" id="actor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productionCompany" class="form-label required-field">Movie Production Company:</label>
+                        <input type="text" class="form-control" id="productionCompany" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="director" class="form-label required-field">Director:</label>
+                        <input type="text" class="form-control" id="director" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label required-field">Duration:</label>
+                        <input type="number" class="form-control" id="duration" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="version" class="form-label required-field">Version:</label>
+                        <input type="text" class="form-control" id="version" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required-field">Type:</label>
+                        <div id="movieTypes">
+                            <!-- Checkboxes will be dynamically populated -->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cinemaRoom" class="form-label required-field">Cinema room:</label>
+                        <select class="form-select" id="cinemaRoom" required>
+                            <!-- Options will be dynamically populated -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required-field">Schedule:</label>
+                        <div id="movieSchedules">
+                            <!-- Checkboxes will be dynamically populated -->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label required-field">Content:</label>
+                        <textarea class="form-control" id="content" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imageUrl" class="form-label">Image URL:</label>
+                        <input type="url" class="form-control" id="imageUrl" placeholder="Enter image URL">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveMovie">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this record?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        function renderMovies(movies) {
+            let movieListHtml = '';
+            movies.forEach((movie, index) => {
+                movieListHtml += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${movie.nameEnglish}</td>
+                    <td>${movie.nameVN}</td>
+                    <td>${formatDate(movie.fromDate)}</td>
+                    <td>${movie.productionCompany}</td>
+                    <td>${movie.duration}</td>
+                    <td>${movie.version}</td>
+                    <td>
+                        <button style="color: #866EFC;" class="btn btn-sm editMovie" data-id="${movie.movieId}">
+                            <i class="bi bi-info-circle text-primary"></i> Detail
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm deleteMovie" data-id="${movie.movieId}">
+                            <i class="bi bi-trash text-danger"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            });
+            $('#movieList').html(movieListHtml);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB');
+        }
+
+        function loadMovies() {
+            $.ajax({
+                url: '/api/movies',
+                method: 'GET',
+                success: function(response) {
+                    renderMovies(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading movies:', error);
+                }
+            });
+        }
+
+        function searchMovies(query) {
+            $.ajax({
+                url: `/api/movies/search?query=${query}`,
+                method: 'GET',
+                success: function(response) {
+                    renderMovies(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error searching movies:', error);
+                }
+            });
+        }
+
+        loadMovies();
+
+        $('#searchInput').on('input', function() {
+            const query = $(this).val();
+            if (query.length > 2) {
+                searchMovies(query);
+            } else if (query.length === 0) {
+                loadMovies();
+            }
+        });
+
+        let currentMovieId = null;
+
+        $('#addNewMovie').click(function() {
+            $('#movieModalLabel').text('Add New Movie');
+            $('#movieTitleHeader').text('');
+            $('#movieTitleVN').text('');
+            $('#movieForm')[0].reset();
+            $('#movieThumbnail').attr('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png');
+            $('#movieThumbnail').attr('alt', 'No image');
+            currentMovieId = null;
+            $('#movieModal').modal('show');
+        });
+
+        $(document).on('click', '.editMovie', function() {
+            const movieId = $(this).data('id');
+            $.ajax({
+                url: `/api/movies/${movieId}`,
+                method: 'GET',
+                success: function(movie) {
+                    $('#movieModalLabel').html(`Movie detail : <span id="movieTitleVN">${movie.nameVN}</span>`);
+                    $('#movieNameENG').val(movie.nameEnglish);
+                    $('#movieNameVN').val(movie.nameVN);
+                    $('#fromDate').val(movie.fromDate);
+                    $('#toDate').val(movie.toDate);
+                    $('#actor').val(movie.actor);
+                    $('#productionCompany').val(movie.productionCompany);
+                    $('#director').val(movie.director);
+                    $('#duration').val(movie.duration);
+                    $('#version').val(movie.version);
+                    $('#content').val(movie.content);
+                    $('#imageUrl').val(movie.largeImage);
+                    if (movie.largeImage) {
+                        $('#movieThumbnail').attr('src', movie.largeImage);
+                        $('#movieThumbnail').attr('alt', movie.nameEnglish);
+                    } else {
+                        $('#movieThumbnail').attr('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png');
+                        $('#movieThumbnail').attr('alt', 'No Image Available');
+                    }
+
+                    // Populate cinema room dropdown
+                    $('#cinemaRoom').val(movie.cinemaRoom.cinemaRoomId);
+
+                    // Check movie types
+                    $('input[type=checkbox][id^=type]').prop('checked', false);
+                    movie.movieTypeList.forEach(movieType => {
+                        $(`input[type=checkbox][id^=type][value="${movieType.type.typeName}"]`).prop('checked', true);
+                    });
+
+                    // Check movie schedules
+                    $('input[type=checkbox][id^=schedule]').prop('checked', false);
+                    movie.movieScheduleList.forEach(movieSchedule => {
+                        $(`input[type=checkbox][id^=schedule][value="${movieSchedule.schedule.scheduleTime}"]`).prop('checked', true);
+                    });
+
+                    currentMovieId = movieId;
+                    $('#movieModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading movie details:', error);
+                }
+            });
+        });
+
+        $('#imageUrl').on('input', function() {
+            const imageUrl = $(this).val();
+            if (imageUrl) {
+                $('#movieThumbnail').attr('src', imageUrl);
+            } else {
+                $('#movieThumbnail').attr('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png');
+            }
+        });
+
+        $('#saveMovie').click(function() {
+            if (!validateForm()) {
+                return;
+            }
+
+            const movieData = {
+                nameEnglish: $('#movieNameENG').val(),
+                nameVN: $('#movieNameVN').val(),
+                fromDate: $('#fromDate').val(),
+                toDate: $('#toDate').val(),
+                actor: $('#actor').val(),
+                productionCompany: $('#productionCompany').val(),
+                director: $('#director').val(),
+                duration: parseInt($('#duration').val()),
+                version: $('#version').val(),
+                largeImage: $('#imageUrl').val(),
+                content: $('#content').val(),
+                cinemaRoom: {
+                    cinemaRoomId: $('#cinemaRoom').val()
+                },
+                movieTypeList: $('input[type=checkbox][id^=type]:checked').map(function() {
+                    return { type: { typeName: $(this).val() } };
+                }).get(),
+                movieScheduleList: $('input[type=checkbox][id^=schedule]:checked').map(function() {
+                    return { schedule: { scheduleTime: $(this).val() } };
+                }).get()
+            };
+
+            const url = currentMovieId ? `/api/movies/${currentMovieId}` : '/api/movies';
+            const method = currentMovieId ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: 'application/json',
+                data: JSON.stringify(movieData),
+                success: function(response) {
+                    $('#movieModal').modal('hide');
+                    loadMovies();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving movie:', error);
+                }
+            });
+        });
+
+        $(document).on('click', '.deleteMovie', function() {
+            const movieId = $(this).data('id');
+            $('#deleteModal').data('movieId', movieId).modal('show');
+        });
+
+        $('#confirmDelete').click(function() {
+            const movieId = $('#deleteModal').data('movieId');
+            $.ajax({
+                url: `/api/movies/${movieId}`,
+                method: 'DELETE',
+                success: function() {
+                    $('#deleteModal').modal('hide');
+                    loadMovies();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting movie:', error);
+                }
+            });
+        });
+
+        function validateForm() {
+            let isValid = true;
+            $('.form-control, .form-select').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            $('#movieForm .form-control:not(#imageUrl), #movieForm .form-select, #movieForm textarea').each(function() {
+                if ($(this).val().trim() === '') {
+                    $(this).addClass('is-invalid');
+                    $(this).after('<div class="invalid-feedback">This field is required.</div>');
+                    isValid = false;
+                }
+            });
+
+            const fromDate = new Date($('#fromDate').val());
+            const toDate = new Date($('#toDate').val());
+            if (fromDate > toDate) {
+                $('#toDate').addClass('is-invalid');
+                $('#toDate').after('<div class="invalid-feedback">To Date must be greater than From Date.</div>');
+                isValid = false;
+            }
+
+            if ($('input[type=checkbox][id^=type]:checked').length === 0) {
+                $('#typeAction').closest('.mb-3').append('<div class="invalid-feedback d-block">Please select at least one type.</div>');
+                isValid = false;
+            }
+
+            if ($('input[type=checkbox][id^=schedule]:checked').length === 0) {
+                $('#schedule0800').closest('.mb-3').append('<div class="invalid-feedback d-block">Please select at least one schedule.</div>');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        function loadCinemaRooms() {
+            $.ajax({
+                url: '/api/movies/cinema-rooms',
+                method: 'GET',
+                success: function(cinemaRooms) {
+                    let options = '<option value="">Select a cinema room</option>';
+                    cinemaRooms.forEach(room => {
+                        options += `<option value="${room.cinemaRoomId}">${room.cinemaName}</option>`;
+                    });
+                    $('#cinemaRoom').html(options);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading cinema rooms:', error);
+                }
+            });
+        }
+
+        function loadTypes() {
+            $.ajax({
+                url: '/api/movies/types',
+                method: 'GET',
+                success: function(types) {
+                    let checkboxes = '';
+                    types.forEach(type => {
+                        checkboxes += `
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="type${type.typeId}" value="${type.typeName}">
+                            <label class="form-check-label" for="type${type.typeId}">${type.typeName}</label>
+                        </div>
+                    `;
+                    });
+                    $('#movieTypes').html(checkboxes);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading types:', error);
+                }
+            });
+        }
+
+        function loadSchedules() {
+            $.ajax({
+                url: '/api/movies/schedules',
+                method: 'GET',
+                success: function(schedules) {
+                    let checkboxes = '';
+                    schedules.forEach(schedule => {
+                        checkboxes += `
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="schedule${schedule.scheduleId}" value="${schedule.scheduleTime}">
+                            <label class="form-check-label" for="schedule${schedule.scheduleId}">${schedule.scheduleTime}</label>
+                        </div>
+                    `;
+                    });
+                    $('#movieSchedules').html(checkboxes);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading schedules:', error);
+                }
+            });
+        }
+
+        loadCinemaRooms();
+        loadTypes();
+        loadSchedules();
+    });
+</script>
+</body>
+</html>
