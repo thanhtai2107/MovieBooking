@@ -33,6 +33,10 @@ public class Booking {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
+    @ManyToOne
+    @JoinColumn(name = "show_date_id")
+    private ShowDate showDate;
+
     @Column(name = "add_score")
     private Integer addScore;
 
