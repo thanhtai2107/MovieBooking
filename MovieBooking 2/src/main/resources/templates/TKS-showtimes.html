@@ -142,7 +142,15 @@
                     <a href="#" class="fs-1 text-decoration-none" style="color: blue; margin-top: -15px" th:text="${movie.nameEnglish}"></a>
                     <span th:text="${movie.nameVN}" style="margin: -10px 0 20px 0"></span>
                     <div class="row gap-2 ps-2">
-                      <button th:each="showtime : ${movie.movieScheduleList}" class="btn btn-light btn-time rounded-4" th:text="${showtime.schedule.scheduleTime}"></button>
+                      <a 
+                              name="submit"
+                              type="submit"
+                              th:if="${showtime.schedule.scheduleTime > #dates.format(#dates.createNow(), 'HH:mm')}"
+                              th:each="showtime : ${movie.movieScheduleList}"
+                              th:href="@{/select-seat(movieId=${movie.movieId}, scheduleId=${showtime.schedule.scheduleId})}"
+                              class="btn btn-light btn-time rounded-4" 
+                              th:text="${showtime.schedule.scheduleTime}">
+                      </a>
                     </div>
                   </div>
               </div>
@@ -187,7 +195,7 @@
          const anchor = `
                <a
                 type="button"
-                href="/movies?date=${formatDateValue(newDate)}"
+                href="/showtimes?date=${formatDateValue(newDate)}"
                 class="btn-dayofweek rounded-circle text-black text-center d-flex flex-column align-items-center justify-content-center text-decoration-none text-dark"
                 value = "${formatDateValue(newDate)}"
                 name="date"
