@@ -29,4 +29,10 @@ public class ShowDate {
 
     @OneToMany(mappedBy = "showDate")
     private List<MovieDate> movieDateList;
+
+    @OneToMany(mappedBy = "showDate")
+    private List<BookingSeat> bookingSeatList;
+
+    @OneToMany(mappedBy = "showDate")
+    private List<Booking> bookingList;
 }

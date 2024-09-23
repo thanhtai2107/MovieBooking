@@ -35,11 +35,6 @@ public class BookingController {
     public String bookedTicket(){
         return "BookedTicketManagement";
     }
-    
-//    @GetMapping("/booking-selling")
-//    public String bookingSelling(){
-//        return "TKS-showtimes"; 
-//    }
 
     @GetMapping("/movies")
     public String getMoviesByDay(
