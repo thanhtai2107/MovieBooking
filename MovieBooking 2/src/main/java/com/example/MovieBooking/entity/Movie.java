@@ -70,4 +70,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Booking> bookingList;
+
+    @OneToMany(mappedBy = "movie")
+    private List<BookingSeat> bookingSeatList;
 }
