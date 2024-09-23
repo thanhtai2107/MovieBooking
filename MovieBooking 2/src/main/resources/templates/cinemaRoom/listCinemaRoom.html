@@ -67,53 +67,13 @@
 <!-- Main Container -->
 <div class="container-fluid">
     <!-- Header of admin -->
-    <div class="row d-flex align-items-center" style="background-color: #205081; height: 60px">
-        <div class="col-2">
-            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png" alt=""
-                 style="height: 40px" />
-        </div>
-        <div class="col-10">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-4 align-items-center ms-5">
-                </div>
-                <div class="d-flex gap-4">
-                    <a href="#" class="text-white text-decoration-none">
-                        <i class="fa-solid fa-user"></i>
-                        <span>Welcome, tientv5</span>
-                    </a>
-                    <div class="text-white" style="cursor: pointer">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span>Logout</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:insert="~{component/AdminHeader}"></div>
+
     <div class="row">
         <!-- Sidebar of Admin -->
         <div class="col-2 sidebar" style="background-color: white;">
             <!-- Sidebar content here -->
-            <div class="card-holder h-100 text-center" style="background-color: white;">
-                <div class="card-header" style="background-color: white;">
-                    <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
-                         style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
-                    <h5 class="card-title">User name</h5>
-                </div>
-                <div class="card-selection align-items-center">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><a href="">Register Account</a></li>
-                        <li class="list-group-item"><a href="">Account management</a></li>
-                        <li class="list-group-item"><a href="">Booking Ticket</a></li>
-                        <li class="list-group-item"><a href="">Ticket Selling Management</a></li>
-                        <li class="list-group-item"><a href="">Ticket Booking Management</a></li>
-                        <li class="list-group-item"><a href="">Employee Management</a></li>
-                        <li class="list-group-item"><a href="">Cinema Room Management</a></li>
-                        <li class="list-group-item"><a href="">Movie Management</a></li>
-                        <li class="list-group-item"><a href="">Promotion Management</a></li>
-                    </ul>
-
-                </div>
-            </div>
+            <div th:insert="~{component/AdminSidebar}"></div>
         </div>
 
         <!-- Main Content -->
@@ -124,14 +84,14 @@
                 <div class="mb-3">
                     <!-- Button -->
                     <div class="d-flex justify-content-start mb-2">
-                        <a class="btn btn-primary" th:href="@{/cinemaRoom/addCinemaRoom}" ><i class="fa-solid fa-circle-plus"></i> Add new</a>
+                        <a class="btn btn-primary" th:href="@{/cinemaRoom/formAddCinemaRoom}" ><i class="fa-solid fa-circle-plus"></i> Add new</a>
                     </div>
 
                     <!-- Form -->
                     <div class="d-flex justify-content-end">
-                        <form class="d-flex align-items-center">
+                        <form class="d-flex align-items-center" action="/cinemaRoom/listCinemaRoom" method="get">
                             <label for="searchInput" class="me-2">Search:</label>
-                            <input type="text" id="searchInput" class="form-control w-75">
+                            <input type="text" id="searchInput" class="form-control w-75" th:value="${search}" name="valueSearch">
                         </form>
                     </div>
                 </div>
@@ -147,24 +107,53 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="cinemaRoom : ${listCinemaRoom}">
-                            <td>*</td>
+                        <tr th:if="${listCinemaRoom.isEmpty()}">
+                            <td colspan="5" class="text-center">No Cinema Room found</td>
+                        </tr>
+                        <tr th:each="cinemaRoom, iterStat : ${listCinemaRoom}" th:unless="${listCinemaRoom.isEmpty()}">
+                            <td th:text="${iterStat.index + (currentPage * size) + 1}"></td>
                             <td th:text="${cinemaRoom.cinemaRoomId}"></td>
                             <td th:text="${cinemaRoom.cinemaName}"></td>
                             <td th:text="${cinemaRoom.seatQuantity}"></td>
-                            <td><a href="#" class="text-decoration-none"><i class="fa-solid fa-circle-info"></i> Seat detail</a></td>
+                            <td>
+                                <a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none">
+                                    <i class="fa-solid fa-circle-info"></i> Seat detail
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
                 <!-- Pagination -->
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation example" th:if="${!listCinemaRoom.isEmpty()}">
                     <ul class="pagination justify-content-end">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size},page=${currentPage - 1})}" tabindex="-1">Previous</a>
                         </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
+
+                        <!-- Start Ellipsis if needed -->
+                        <li class="page-item" th:if="${currentPage >= 2}">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${0})}" th:text="1"></a>
+
+                        </li>
+                        <li class="page-item disabled" th:if="${currentPage > 2}"><span class="page-link">...</span></li>
+
+                        <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
+                        <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
+                            th:if="${i >= 0 && i < totalPages}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
+                        </li>
+
+                        <!-- End Ellipsis if needed -->
+                        <li class="page-item disabled" th:if="${currentPage < totalPages - 2}"><span class="page-link">...</span></li>
+                        <li class="page-item" th:if="${currentPage < totalPages - 2}">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${totalPages - 1})}" th:text="${totalPages}"></a>
+                        </li>
+
+
+                        <!-- Next Button -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${currentPage + 1})}">Next</a>
                         </li>
                     </ul>
                 </nav>
