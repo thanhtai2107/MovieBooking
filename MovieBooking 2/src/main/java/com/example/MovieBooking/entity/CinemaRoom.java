@@ -26,6 +26,9 @@ public class CinemaRoom {
     @Column(name = "seat_quantity")
     private Integer seatQuantity;
 
+    @Column(name = "screen")
+    private String screen;
+
     @OneToMany(mappedBy = "cinemaRoom")
     private List<Movie> movieList;
 
