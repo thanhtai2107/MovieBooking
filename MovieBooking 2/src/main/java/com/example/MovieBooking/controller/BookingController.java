@@ -1,11 +1,11 @@
 package com.example.MovieBooking.controller;
 
+
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.entity.Bank;
 import com.example.MovieBooking.entity.Booking;
 import com.example.MovieBooking.entity.Member;
 import com.example.MovieBooking.entity.dto.BookingDTO;
-import com.example.MovieBooking.service.impl.AccountServiceImpl;
 import com.example.MovieBooking.service.impl.BankServiceImpl;
 import com.example.MovieBooking.service.impl.BookingServiceImpl;
 import com.example.MovieBooking.service.impl.MemberServiceImpl;
@@ -27,25 +27,60 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import com.example.MovieBooking.entity.Movie;
+import com.example.MovieBooking.entity.MovieSchedule;
+import com.example.MovieBooking.entity.Schedule;
+import com.example.MovieBooking.repository.MovieRepository;
+import com.example.MovieBooking.repository.ScheduleRepository;
+import com.example.MovieBooking.service.IMovieService;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
+
+
 @Controller
 public class BookingController {
+    @Autowired
+    private IMovieService movieService;
+    
+    @Autowired
+    private MovieRepository movieRepository;
+    
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
-    private final BookingServiceImpl bookingService;
-    private final MemberServiceImpl memberServiceImpl;
-    private final BankServiceImpl bankServiceImpl;
+    @Autowired
+    BookingServiceImpl bookingService;
+
+    @Autowired
+    private MemberServiceImpl memberServiceImpl;
+
+    @Autowired
+    private BankServiceImpl bankServiceImpl;
+
     private final int pageSize = 2;
     private final float percentagePoints = 0.1F;
     private static final String CARD_NUMBER_REGEX = "^[0-9]{16,19}$";
 
-    public BookingController(BookingServiceImpl bookingService,
-                             MemberServiceImpl memberServiceImpl, BankServiceImpl bankServiceImpl) {
-        this.bookingService = bookingService;
-        this.memberServiceImpl = memberServiceImpl;
-        this.bankServiceImpl = bankServiceImpl;
-    }
+    //find booked ticket - need to update find follow user ID
 
     @GetMapping("/booked-ticket")
-    public String bookedTicket(){
+    public String bookedTicket(@RequestParam(value = "page", defaultValue = "0")int page
+                               ,@RequestParam(value = "size",defaultValue = "10")int size
+                               ,@RequestParam(value = "searchInput", defaultValue = "", required = false)String searchInput
+                                ,Model model){
+//        List<Integer> entry = new ArrayList<>(10);
+        String search = "";
+        if(searchInput != null){
+            search = searchInput;
+        }
+        Page<Booking> listBooking = bookingService.getBookingsPagination(search, page, size);
+        System.out.println(listBooking.toList().size());
+        model.addAttribute("listBooking", listBooking);
+        model.addAttribute("totalPages", listBooking.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("search", search);
         return "BookedTicketManagement";
     }
 
@@ -209,7 +244,7 @@ public class BookingController {
                         System.out.println("score :" +score );
                         System.out.println("useScore :" +useScore );
                         booking.setStatus(1);
-                        memberServiceImpl.updaMember(member);
+                        memberServiceImpl.updateMember(member);
                         bookingService.updateBooking(booking);
                         return "redirect:/member/convert-to-ticket/" +bookingId;
                     }
@@ -244,7 +279,7 @@ public class BookingController {
                                 System.out.println("score :" +score );
                                 System.out.println("useScore :" +useScore );
                                 booking.setStatus(1);
-                                memberServiceImpl.updaMember(member);
+                                memberServiceImpl.updateMember(member);
                                 bookingService.updateBooking(booking);
                             return "redirect:/member/convert-to-ticket/" +bookingId;
                         }
@@ -275,7 +310,7 @@ public class BookingController {
     }
 
     @GetMapping("/member/convert-to-ticket/{id}")
-    public String getConvertToTicketPageByMember(Model model, @PathVariable long id, @AuthenticationPrincipal Account account){
+    public String getConvertToTicketPageByMember(Model model, @PathVariable long id, @AuthenticationPrincipal Account account) {
 
         Optional<Booking> bookingOptional = bookingService.getBookingById(id);
         if (!bookingOptional.isPresent()) {
@@ -298,6 +333,55 @@ public class BookingController {
 
 
         }
+    }
+//    @GetMapping("/booking-selling")
+//    public String bookingSelling(){
+//        return "TKS-showtimes"; 
+//    }
+
+    @GetMapping("/movies")
+    public String getMoviesByDay(
+            @RequestParam(value = "date", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Model model) {
+
+        // Nếu không có ngày được chọn, sử dụng ngày hiện tại
+        if (date == null) {
+            date = LocalDate.now();
+        }
+
+        // Lấy danh sách phim theo ngày
+        List<Movie> movieList = movieService.getMoviesByDate(date);
+        
+        for (Movie movie : movieList) {
+            String schedules = "schedules" + movie.getMovieId();
+        // Lay schedule theo phim theo ngay
+            List<Schedule> movieScheduleList = scheduleRepository.findScheduleTimesAndMoviesByDate(date, movie.getMovieId());
+            List<MovieSchedule> movieScheduleList1 = new ArrayList<>();
+            for (Schedule schedule : movieScheduleList) {
+                MovieSchedule movieSchedule = new MovieSchedule();
+                movieSchedule.setSchedule(schedule);
+                movieScheduleList1.add(movieSchedule);
+            }
+            movie.setMovieScheduleList(movieScheduleList1);
+        }
+        
+
+        
+        // lay danh sach lich chieu phim
+//        List<Schedule> scheduleList = scheduleService.getAllSchedulesByMovieID()
+
+        // Truyền dữ liệu vào model để gửi tới view
+        model.addAttribute("selectedDate", date);     // Ngày đã chọn
+        model.addAttribute("movieList", movieList);   // Danh sách phim theo ngày
+//        model.addAttribute("movieScheduleList", movieScheduleList); // Danh sach lich chieu theo phim theo ngay
+
+        // Debug thông tin ngày và danh sách phim (nếu cần)
+        System.out.println("Selected date: " + date);
+        System.out.println("Movie list: " + movieList);
+
+        // Trả về view để hiển thị
+        return "TKS-showtimes";  // Hiển thị trang TKS-showtimes
     }
 
 

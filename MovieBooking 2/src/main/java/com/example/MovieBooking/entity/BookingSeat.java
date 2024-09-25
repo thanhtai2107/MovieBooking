@@ -29,9 +29,11 @@ public class BookingSeat {
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
     @ManyToOne
     @JoinColumn(name = "show_date_id")
     private ShowDate showDate;
+
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;

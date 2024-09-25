@@ -91,5 +91,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             nativeQuery = true)
     Page<Booking> findBookingByIdCAndPhoneNumWithAdmin(String identityCard,  String phoneNumber, Pageable page);
 
-
+    @Query("from Booking b  where b.account.fullname like %?1% or b.movie.nameVN like %?1% or b.movie.nameEnglish like %?1%")
+    Page<Booking> find(String searchInput, Pageable pageable);
 }

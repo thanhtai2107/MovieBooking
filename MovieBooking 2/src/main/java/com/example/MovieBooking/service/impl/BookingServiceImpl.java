@@ -14,15 +14,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 @Service
 public class BookingServiceImpl implements IBookingService {
-
-    private final BookingRepository bookingRepository;
-
-    public BookingServiceImpl(BookingRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
-    }
+    @Autowired
+    BookingRepository bookingRepository;
 
     public Page<Booking> getBookingByUserName(Pageable page,String userName) {
         Page<Booking> bookingPage =bookingRepository.findBookingByUserName(userName ,page);
@@ -127,4 +125,16 @@ public class BookingServiceImpl implements IBookingService {
     public Booking updateBooking(Booking booking){
         return bookingRepository.save(booking);
     }
+
+    public List<Booking> findAll() {
+        return bookingRepository.findAll();
+    }
+
+    @Override
+    public Page<Booking> getBookingsPagination(String searchInput, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookingRepository.find(searchInput,pageable);
+    }
+
 }
+
