@@ -142,15 +142,14 @@
                     <a href="#" class="fs-1 text-decoration-none" style="color: blue; margin-top: -15px" th:text="${movie.nameEnglish}"></a>
                     <span th:text="${movie.nameVN}" style="margin: -10px 0 20px 0"></span>
                     <div class="row gap-2 ps-2">
-                      <a 
-                              name="submit"
-                              type="submit"
-                              th:if="${showtime.schedule.scheduleTime > #dates.format(#dates.createNow(), 'HH:mm')}"
+                      <a
                               th:each="showtime : ${movie.movieScheduleList}"
+                              th:if="${showtime.schedule.scheduleTime > #dates.format(#dates.createNow(), 'HH:mm')}"
                               th:href="@{/select-seat(movieId=${movie.movieId}, scheduleId=${showtime.schedule.scheduleId})}"
-                              class="btn btn-light btn-time rounded-4" 
+                              class="btn btn-light btn-time rounded-4"
                               th:text="${showtime.schedule.scheduleTime}">
                       </a>
+
                     </div>
                   </div>
               </div>

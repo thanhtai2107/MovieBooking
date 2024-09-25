@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface IMovieService {
     public List<Movie> getMoviesByDate(LocalDate date);
+    public Movie getMovieById(Long movieId);
 }
