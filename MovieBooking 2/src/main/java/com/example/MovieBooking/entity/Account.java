@@ -78,4 +78,9 @@ public class Account implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getRoleName()));
     }
+
+    @Override
+    public boolean isEnabled() {
+        return this.status == 1;
+    }
 }
