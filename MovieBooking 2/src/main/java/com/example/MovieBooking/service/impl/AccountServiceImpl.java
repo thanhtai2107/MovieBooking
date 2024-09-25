@@ -1,5 +1,6 @@
 package com.example.MovieBooking.service.impl;
 
+import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.entity.Member;
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import java.util.Optional;
 
 @Service
@@ -99,5 +102,9 @@ public class AccountServiceImpl implements IAccountService {
             account1.setImage(uploadImage.uploadImage(imageUrl));
         }
         accountRepository.save(account1);
+    }
+
+    public Optional<Account> getAccountByUserName(String userName){
+        return accountRepository.findByUsername(userName);
     }
 }
