@@ -41,4 +41,9 @@ public class AccountController{
         accountService.register(account);
         return "redirect:/login";
     }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
 }
