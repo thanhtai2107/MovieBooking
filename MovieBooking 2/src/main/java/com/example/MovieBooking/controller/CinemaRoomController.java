@@ -3,6 +3,7 @@ package com.example.MovieBooking.controller;
 import com.example.MovieBooking.entity.CinemaRoom;
 import com.example.MovieBooking.entity.Seat;
 import com.example.MovieBooking.entity.SeatType;
+import com.example.MovieBooking.service.ISeatService;
 import com.example.MovieBooking.service.impl.CinemaRoomServiceImpl;
 import com.example.MovieBooking.service.impl.SeatServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class CinemaRoomController {
 
     @Autowired
     private SeatServiceImpl seatService;
-
 
     @GetMapping("/listCinemaRoom")
     public String listCinemaRoom(@RequestParam(value = "valueSearch", defaultValue = "", required = false) String valueSearch,

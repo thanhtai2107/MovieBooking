@@ -231,7 +231,7 @@
     function isValidDate(year, month, day) {
       var d = new Date(year, month - 1, day);
       const split = d.toLocaleDateString().split("/");
-      if (split[2] == year && split[1] == month && split[0] == day) {
+      if (split[2] == year && split[1] == month  && split[0] == parseInt(day)) {
         return true;
       }
       return false;
@@ -355,7 +355,7 @@
 
     // Function dob
     function checkDob() {
-      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)$/;
       let dob = $("#dob").val();
       console.log(dob);
       let splitDate = dob.split("/");
