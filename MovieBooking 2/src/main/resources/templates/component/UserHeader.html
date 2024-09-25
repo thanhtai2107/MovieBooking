@@ -1,0 +1,78 @@
+<div
+        class="row d-flex align-items-center"
+        style="background-color: #205081; height: 60px;"
+        xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="col-2">
+        <a th:href="@{/}">
+            <img
+                    src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png"
+                    alt=""
+                    style="height: 40px"
+            />
+        </a>
+    </div>
+    <div class="col-10">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-4 align-items-center ms-5">
+                <div class="text-white" style="cursor: pointer;">Showtimes</div>
+                <div class="dropdown">
+                    <a
+                            class="dropdown-toggle text-decoration-none text-white"
+                            href="#"
+                            role="button"
+                            id="dropdownMenuLink"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Movies
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </li>
+                    </ul>
+                </div>
+                <div
+                        class="bg-white d-flex align-items-center p-2 rounded-1 fs-6"
+                        style="height: 35px;width: 250px;"
+
+                >
+                   <form th:action="@{/search-in-header}" method="get" class="d-flex align-items-center">
+                       <input type="text" name="searchHeaderInput" th:value="${searchHeaderInput}" class="border-0 w-100" style="outline: none" placeholder="Search"/>
+                       <button type="submit" class="btn ">
+                           <i class="fa-solid fa-magnifying-glass"></i>
+                       </button>
+                   </form>
+                </div>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <div class="d-flex gap-4">
+                    <a th:href="@{/edit}" class="text-white text-decoration-none">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                    </a>
+                    <div class="text-white" style="cursor: pointer;">
+                        <a th:href="@{/logout}" class="text-white text-decoration-none">
+                            <i class="fa-solid fa-power-off"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <div class="d-flex gap-4">
+                    <a th:href="@{/login}" class="text-white text-decoration-none">
+                        <span>Login</span>
+                    </a>
+                    <div class="text-white" style="cursor: pointer;" >
+                        <a th:href="@{/register}" class="text-white text-decoration-none">
+                            <span>Register</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous"
+  />
+  <script
+          src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+          integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+          crossorigin="anonymous"
+  ></script>
+  <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+          integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+          crossorigin="anonymous"
+  ></script>
+  <script
+          src="https://kit.fontawesome.com/2fdd50f686.js"
+          crossorigin="anonymous"
+  ></script>
+  <script
+          src="https://code.jquery.com/jquery-3.7.1.js"
+          integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+          crossorigin="anonymous"
+  ></script>
+  <style>
+    input[type="radio"]:checked {
+      accent-color: gray;
+    }
+    small {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Header -->
+  <div th:insert="~{component/UserHeader}"></div>
+
+  <!-- Content -->
+  <div class="row">
+    <div
+            class="d-flex justify-content-center align-items-center py-5"
+            style="min-height: 90vh; background-color: #eff0f3"
+    >
+      <div style="width: 35%">
+        <form
+                action=""
+                class="p-5 bg-white rounded-3"
+                style="
+                box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
+                  rgba(1, 1, 1, 0.08) 0px 0px 0px 1px;
+              "
+                th:action="@{/register}"
+                th:object="${account}"
+                method="post"
+                id="form-register"
+        >
+          <h4 class="text-center fw-bold mb-5">REGISTER ACCOUNT</h4>
+          <div class="mb-3">
+            <input
+                    type="text"
+                    name="account"
+                    id="account"
+                    class="form-control"
+                    placeholder="Account"
+                    aria-describedby="helpId"
+                    th:field="*{username}"
+            />
+            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+            <small id="account-err"></small>
+          </div>
+          <div class="mb-3">
+            <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Password"
+                    aria-describedby="helpId"
+                    th:field="*{password}"
+            />
+            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class=""></small>
+            <small id="password-err" class=""></small>
+
+          </div>
+          <div class="mb-3">
+            <input
+                    type="password"
+                    name="confirm-password"
+                    id="confirm-password"
+                    class="form-control"
+                    placeholder="Confirm password"
+                    aria-describedby="helpId"
+                    th:field="*{confirmPassword}"
+            />
+            <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class=""></small>
+            <small id="confirm-password-err" class=""></small>
+          </div>
+          <div class="mb-3">
+            <input
+                    type="text"
+                    name="fullname"
+                    id="fullname"
+                    class="form-control"
+                    placeholder="Fullname"
+                    aria-describedby="helpId"
+                    th:field="*{fullname}"
+            />
+            <small th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class=""></small>
+            <small id="fullname-err" class=""></small>
+
+          </div>
+          <div class="mb-3">
+            <input
+                    type="text"
+                    name="dob"
+                    id="dob"
+                    class="form-control"
+                    placeholder="Date of birth"
+                    aria-describedby="helpId"
+                    th:field="*{dateOfBirth}"
+            />
+            <small th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class=""></small>
+            <small id="dob-err" class=""></small>
+          </div>
+          <div class="mb-3">
+            <input
+                    type="radio"
+                    id="male"
+                    name="gender"
+                    class="text-dark"
+                    th:checked="${account.gender.equals('Nam')}"
+                    th:field="*{gender}"
+                    value="Nam"
+            />
+            <label for="male">Nam</label>
+            <input type="radio" id="female" name="gender" value="Nữ" th:field="*{gender}"/>
+            <label for="female">Nữ</label>
+          </div>
+
+          <div class="mb-3">
+            <input
+                    type="number"
+                    name="identity"
+                    id="identity"
+                    class="form-control"
+                    placeholder="Identity card"
+                    aria-describedby="helpId"
+                    th:field="*{identityCard}"
+            />
+            <small th:if="${#fields.hasErrors('identityCard')}" th:errors="*{identityCard}" class=""></small>
+            <small id="identity-err" class=""></small>
+          </div>
+          <div class="mb-3">
+            <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="Email"
+                    aria-describedby="helpId"
+                    th:field="*{email}"
+            />
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" ></small>
+            <small id="email-err" class=""></small>
+          </div>
+          <div class="mb-3">
+            <input
+                    type="text"
+                    name="address"
+                    id="address"
+                    class="form-control"
+                    placeholder="Address"
+                    aria-describedby="helpId"
+                    th:field="*{address}"
+            />
+            <small th:if="${#fields.hasErrors('address')}" th:errors="*{address}" ></small>
+            <small id="address-err" class=""></small>
+          </div>
+          <div class="mb-5">
+            <input
+                    type="number"
+                    name="phone"
+                    id="phone"
+                    class="form-control"
+                    placeholder="Phone number"
+                    aria-describedby="helpId"
+                    th:field="*{phoneNumber}"
+            />
+            <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></small>
+            <small id="phone-err" class=""></small>
+          </div>
+
+          <button type="submit"
+                  class="btn text-white w-100"
+                  style="background-color: #347ab7"
+          >
+            Register
+          </button>
+        </form>
+
+        <div class="mt-3 d-flex justify-content-center">
+          <span>Have an account yet?</span>
+          <a href="#" class="text-dark ms-2">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    let accountErr = false;
+    let passwordErr = false;
+    let confirmPasswordErr = false;
+    let fullnameErr = false;
+    let dobErr = false;
+    let genderErr = false;
+    let identityErr = false;
+    let emailErr = false;
+    let addressErr = false;
+    let phoneErr = false;
+
+    function isValidDate(year, month, day) {
+      var d = new Date(year, month - 1, day);
+      const split = d.toLocaleDateString().split("/");
+      if (split[2] == year && split[1] == month && split[0] == day) {
+        return true;
+      }
+      return false;
+    }
+
+    // Check account
+    $("#account").on("blur", function () {
+      checkAccount();
+    });
+
+    // Check password
+    $("#password").on("blur", function () {
+      checkPassword();
+    });
+
+    // Check confirm password
+    $("#confirm-password").on("blur", function () {
+      checkConfirmPassword();
+    });
+
+    // Check full name
+    $("#fullname").on("blur", function () {
+      checkFullname();
+    });
+
+    // Check date of birth
+    $("#dob").on("blur", function () {
+      checkDob();
+    });
+
+    // Check identity
+    $("#identity").on("blur", function () {
+      checkIdentity();
+    });
+
+    // Check email
+    $("#email").on("blur", function () {
+      checkEmail();
+    });
+
+    // Check address
+    $("#address").on("blur", function () {
+      checkAddress();
+    });
+
+    // Check phone
+    $("#phone").on("blur", function () {
+      checkPhone();
+    });
+
+    // Function check first name
+    function checkAccount() {
+      const regex = /^[a-zA-Z0-9]{3,}$/;
+      let account = $("#account").val();
+      if (account.trim() == "") {
+        $("#account-err").show();
+        $("#account-err").text("Account is required");
+        accountErr = false;
+      } else if (!regex.test(account)) {
+        $("#account-err").show();
+        $("#account-err").text("Account format is incorrect");
+        accountErr = false;
+      } else {
+        $("#account-err").hide();
+        accountErr = true;
+      }
+    }
+
+    // Function check password
+    function checkPassword() {
+      const regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$/;
+      let password = $("#password").val();
+      if (password.length == "") {
+        $("#password-err").show();
+        $("#password-err").text("Password is required");
+        passwordErr = false;
+      } else if (!regex.test(password)) {
+        $("#password-err").show();
+        $("#password-err").text(
+                "Password format is incorrect ('Example?123')"
+        );
+        passwordErr = false;
+      } else {
+        $("#password-err").hide();
+        passwordErr = true;
+      }
+    }
+
+    // Function check confirm password
+    function checkConfirmPassword() {
+      let confirmPassword = $("#confirm-password").val();
+      let password = $("#password").val();
+      if (confirmPassword.length == "") {
+        $("#confirm-password-err").show();
+        $("#confirm-password-err").text("Confirm password is required");
+        confirmPasswordErr = false;
+      } else if (confirmPassword != password) {
+        $("#confirm-password-err").show();
+        $("#confirm-password-err").text(
+                "Confirm password does not match password"
+        );
+        confirmPasswordErr = false;
+      } else {
+        $("#confirm-password-err").hide();
+        confirmPasswordErr = true;
+      }
+    }
+
+    // Function check full name
+    function checkFullname() {
+      let fullname = $("#fullname").val();
+      if (fullname.trim() == "") {
+        $("#fullname-err").show();
+        $("#fullname-err").text("Full name is required");
+        fullnameErr = false;
+      } else {
+        $("#fullname-err").hide();
+        fullnameErr = true;
+      }
+    }
+
+    // Function dob
+    function checkDob() {
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;
+      let dob = $("#dob").val();
+      console.log(dob);
+      let splitDate = dob.split("/");
+      if (dob.length == "") {
+        $("#dob-err").show();
+        $("#dob-err").text("Date of birth is required");
+        dobErr = false;
+      } else if (!regex.test(dob)) {
+        $("#dob-err").show();
+        $("#dob-err").text("Date of birth format is incorrect dd/MM/yyyy");
+        dobErr = false;
+      } else if (new Date(splitDate[1] + "-" + splitDate[0] + "-" + splitDate[2]) >= new Date()
+      ) {
+        $("#dob-err").show();
+        $("#dob-err").text("Date of birth must be less than current date");
+      } else if (!isValidDate(splitDate[2], parseInt(splitDate[1]), splitDate[0])
+      ) {
+        $("#dob-err").show();
+        $("#dob-err").text("Date of birth is incorrect");
+      } else {
+        $("#dob-err").hide();
+        dobErr = true;
+      }
+    }
+
+    // Function check gender
+    function checkGender() {
+      let gender = $("input[name=gender]").is(":checked");
+      if (!gender) {
+        $("#gender-err").show();
+        $("#gender-err").text("Gender is required");
+      } else {
+        $("#gender-err").hide();
+        genderErr = true;
+      }
+    }
+
+    // Function check identity
+    function checkIdentity() {
+      const regex = /^\d{12}$/;
+      let identity = $("#identity").val();
+      if (identity.trim() == "") {
+        $("#identity-err").show();
+        $("#identity-err").text("Identity card is required");
+        identityErr = false;
+      } else if (!regex.test(identity)) {
+        $("#identity-err").show();
+        $("#identity-err").text(
+                "Identity card format is incorrect (12 digits)"
+        );
+        identityErr = false;
+      } else {
+        $("#identity-err").hide();
+        identityErr = true;
+      }
+    }
+
+    // Function check email
+    function checkEmail() {
+      const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      let email = $("#email").val();
+      if (email.trim() == "") {
+        $("#email-err").show();
+        $("#email-err").text("Email is required");
+        emailErr = false;
+      } else if (!regex.test(email)) {
+        $("#email-err").show();
+        $("#email-err").text("Email format is incorrect");
+        emailErr = false;
+      } else {
+        $("#email-err").hide();
+        emailErr = true;
+      }
+    }
+
+    // Function check address
+    function checkAddress() {
+      let address = $("#address").val();
+      if (address.trim() == "") {
+        $("#address-err").show();
+        $("#address-err").text("Address is required");
+        addressErr = false;
+      } else {
+        $("#address-err").hide();
+        addressErr = true;
+      }
+    }
+
+    // Function check phone
+    function checkPhone() {
+      let regex = /^(0|84)[0-9]{9}$/;
+      let phone = $("#phone").val();
+      if (phone.trim() === "") {
+        $("#phone-err").show();
+        $("#phone-err").text("Phone number is required");
+        phoneErr = false;
+      } else if (!regex.test(phone)) {
+        $("#phone-err").show();
+        $("#phone-err").text("Phone number format is incorrect");
+        phoneErr = false;
+      } else {
+        $("#phone-err").hide();
+        phoneErr = true;
+      }
+    }
+
+    $("#form-register").on("submit", function (e) {
+      checkAccount();
+      checkPassword();
+      checkConfirmPassword();
+      checkFullname();
+      checkAddress();
+      checkGender();
+      checkDob();
+      checkEmail();
+      checkPhone();
+      checkIdentity();
+      if (!accountErr || !passwordErr || !confirmPasswordErr || !fullnameErr
+              || !addressErr || !genderErr || !dobErr || !emailErr || !phoneErr || !identityErr) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+</body>
+</html>
