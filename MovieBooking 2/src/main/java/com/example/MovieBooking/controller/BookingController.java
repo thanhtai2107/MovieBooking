@@ -31,10 +31,10 @@ import java.util.List;
 public class BookingController {
     @Autowired
     private IMovieService movieService;
-
+    
     @Autowired
     private MovieRepository movieRepository;
-
+    
     @Autowired
     private ScheduleRepository scheduleRepository;
 
@@ -62,13 +62,13 @@ public class BookingController {
         model.addAttribute("search", search);
         return "BookedTicketManagement";
     }
-
+    
 //    @GetMapping("/booking-selling")
 //    public String bookingSelling(){
 //        return "TKS-showtimes"; 
 //    }
 
-    @GetMapping("/showtimes")
+    @GetMapping("/movies")
     public String getMoviesByDay(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -81,10 +81,10 @@ public class BookingController {
 
         // Lấy danh sách phim theo ngày
         List<Movie> movieList = movieService.getMoviesByDate(date);
-
+        
         for (Movie movie : movieList) {
             String schedules = "schedules" + movie.getMovieId();
-            // Lay schedule theo phim theo ngay
+        // Lay schedule theo phim theo ngay
             List<Schedule> movieScheduleList = scheduleRepository.findScheduleTimesAndMoviesByDate(date, movie.getMovieId());
             List<MovieSchedule> movieScheduleList1 = new ArrayList<>();
             for (Schedule schedule : movieScheduleList) {
@@ -94,9 +94,9 @@ public class BookingController {
             }
             movie.setMovieScheduleList(movieScheduleList1);
         }
+        
 
-
-
+        
         // lay danh sach lich chieu phim
 //        List<Schedule> scheduleList = scheduleService.getAllSchedulesByMovieID()
 
@@ -113,9 +113,5 @@ public class BookingController {
         return "TKS-showtimes";  // Hiển thị trang TKS-showtimes
     }
 
-//    @GetMapping("/")
-//    public String createBookingSeat(Model model) {
-//        model.addAttribute("booking", new Booking());
-//        return "TKS-selecttingseat";
-//    }
+
 }

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Promotion List</title>
+<!-- Bootstrap 5 CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous" />
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+	integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+	integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+	crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/2fdd50f686.js"
+	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<style>
+/* css of sidebar */
+.list-group-item {
+	text-align: start;
+}
+
+.list-group-item a {
+	text-decoration: none;
+	color: black;
+}
+
+/* Add hover effect for all links */
+.list-group-item a:hover {
+	color: #007bff;
+}
+
+.sidebar {
+	height: 100vh;
+	background-color: #f8f9fa;
+}
+
+.content {
+	padding: 20px;
+	background-color: #e9ecef;
+	/* Gray background for content */
+}
+
+.white-background {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 5px;
+	border: 1px solid #dee2e6;
+	/* Gray border */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	/* Subtle shadow */
+}
+
+.bordered-title {
+	border-bottom: 2px solid #dee2e6;
+	padding-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+	<!-- Main Container -->
+	<div class="container-fluid">
+		<div class="row d-flex align-items-center"
+			style="background-color: #205081; height: 60px">
+			<div class="col-2">
+				<img
+					src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png"
+					alt="" style="height: 40px" />
+			</div>
+			<div class="col-10">
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="d-flex gap-4 align-items-center ms-5"></div>
+					<div class="d-flex gap-4">
+						<a href="#" class="text-white text-decoration-none"> <i
+							class="fa-solid fa-user"></i> <span>Welcome, tientv5</span>
+						</a>
+						<div class="text-white" style="cursor: pointer">
+							<i class="fa-solid fa-power-off"></i> <span>Logout</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-2 sidebar" style="background-color: white">
+				<!-- Sidebar content here -->
+				<div class="card-holder h-100 text-center"
+					style="background-color: white">
+					<div class="card-header" style="background-color: white">
+						<img
+							src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg"
+							alt=""
+							style="height: 100px; width: 100px; border-radius: 100%; align-self: center;" />
+						<h5 class="card-title">User name</h5>
+					</div>
+					<div class="card-selection align-items-center">
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item"><a href="">Register Account</a></li>
+							<li class="list-group-item"><a href="">Account
+									management</a></li>
+							<li class="list-group-item"><a href="">Booking Ticket</a></li>
+							<li class="list-group-item"><a href="">Ticket Selling
+									Management</a></li>
+							<li class="list-group-item"><a href="">Ticket Booking
+									Management</a></li>
+							<li class="list-group-item"><a href="">Employee
+									Management</a></li>
+							<li class="list-group-item"><a href="">Cinema Room
+									Management</a></li>
+							<li class="list-group-item"><a href="">Movie Management</a></li>
+							<li class="list-group-item"><a href="">Promotion
+									Management</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="col-10 content">
+				<div class="container-fluid white-background">
+					<!-- H3 with Bottom Border -->
+					<h3 class="text-center mb-4 bordered-title">Promotion list</h3>
+					<div class="d-flex justify-content-between mb-3">
+						<a class="btn btn-primary" type="button" href="/addPromotion">
+							<i class="fa-solid fa-circle-plus"></i> Add new
+						</a>
+					</div>
+					<div class="row">
+						<div class="col-9"></div>
+						<div class="col-3" style="margin-right: 0">
+							<!-- Search Form -->
+							<form class="d-flex align-items-center" th:action="@{/listPromotion/search}" method="get">
+								<label for="searchInput">
+									<button class="me-2" type="submit" style="border: none; background-color: unset;">Search:</button>
+								</label>
+								<input type="text" id="searchInput" class="form-control" name="keyword"
+																		maxlength="28" />
+							</form>
+						</div>
+					</div>
+
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Promotion ID</th>
+								<th>Title</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Discount Level</th>
+								<th>Detail</th>
+								<th>Edit</th>
+								<th>Delete</th>
+							</tr>
+						</thead>
+						<tbody>
+						<!-- Kiểm tra nếu listPromotions trống -->
+						<tr th:if="${#lists.isEmpty(listPromotions)}">
+							<td colspan="9" class="text-center">No promotions available.</td>
+						</tr>
+							<tr th:each="promotion, status : ${listPromotions}">
+								<td th:text="${status.count + currentPage*pageSize}"></td>
+								<td th:text="${promotion.promotionId}"></td>
+								<td th:text="${promotion.title}"></td>
+								<td th:text="${#temporals.format(promotion.startTime, 'dd/MM/yyyy')}"></td>
+								<td th:text="${#temporals.format(promotion.endTime, 'dd/MM/yyyy')}"></td>
+								<td th:text="${promotion.discountLevel}"></td>
+								<td th:text="${promotion.detail}"></td>
+								<td><a th:href="@{/editPromotion/{id}(id=${promotion.promotionId})}"
+									class="text-decoration-none" type="button"><i
+										class="fa fa-edit" aria-hidden="true"></i></a></td>
+								<td>
+									<!-- Nút để mở modal -->
+									<a type="button"
+									   th:data-id="${promotion.promotionId}"
+									class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#deleteModal">
+										<i class="fa-solid fa-trash-can"></i>
+								</a> <!-- Modal -->
+									<div class="modal fade" id="deleteModal" tabindex="-1">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Confirm Delete</h5>
+													<button type="button" class="btn-close"
+														data-bs-dismiss="modal"></button>
+												</div>
+												<div class="modal-body">
+													<p>Are you sure you want to delete this record?</p>
+												</div>
+												<div class="modal-footer">
+													<form id="deleteForm" method="post" th:action="@{/deletePromotion/{id}(id=${promotionId})}">
+														<input type="hidden" name="_method" value="delete">
+														<button type="submit" class="btn btn-primary" id="confirmDelete">OK</button>
+													</form>
+													<button type="button" class="btn btn-secondary"
+														data-bs-dismiss="modal">Cancel</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- Pagination -->
+					<nav aria-label="Page navigation example" th:if="${totalPages > 0}">
+						<ul class="pagination justify-content-end">
+							<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+								<a class="page-link" th:href="@{/listPromotion/search(keyword=${keyword}, page=${currentPage - 1}, size=${5})}" aria-label="Previous">
+									Previous
+								</a>
+							</li>
+							<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+								<a class="page-link" th:href="@{/listPromotion/search(keyword=${keyword}, page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+							</li>
+							<li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled' : ''">
+								<a class="page-link" th:href="@{/listPromotion/search(keyword=${keyword}, page=${currentPage + 1}, size=${pageSize})}" aria-label="Next">
+									Next
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let promotionId;
+
+		// Trigger the modal and set promotionId
+		$('#deleteModal').on('show.bs.modal', function (event) {
+			const button = $(event.relatedTarget);
+			promotionId = button.data('id');
+			console.log(promotionId);
+		});
+
+		// Handle the delete confirmation
+		$('#confirmDelete').on('click', function () {
+			const deleteForm = $('#deleteForm');
+			deleteForm.attr('action', '/deletePromotion/' + promotionId);
+			});
+		function goToPage(pageNumber) {
+			// Đảm bảo pageNumber không vượt quá tổng số trang hoặc nhỏ hơn 1
+			var totalPages = /*[[${totalPages}]]*/ 0;
+			if (pageNumber < 1) {
+				pageNumber = 1;
+			}
+			if (pageNumber > totalPages) {
+				pageNumber = totalPages;
+			}
+			window.location.href = "/promotions?page=" + (pageNumber - 1) + "&size=" + /*[[${size}]]*/ 5;
+		}
+	</script>
+</body>
+</html>
