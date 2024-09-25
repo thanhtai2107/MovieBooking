@@ -34,72 +34,7 @@
   <body>
     <div class="container-fluid">
       <!-- Header -->
-      <div
-        class="row d-flex align-items-center"
-        style="background-color: #205081; height: 60px"
-      >
-        <div class="col-2">
-          <img
-            src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png"
-            alt=""
-            style="height: 40px"
-          />
-        </div>
-        <div class="col-10">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-4 align-items-center ms-5">
-              <div class="">
-                <a href="#" class="text-decoration-none text-white"
-                  >Showtimes</a
-                >
-              </div>
-              <div class="dropdown">
-                <a
-                  class="dropdown-toggle text-decoration-none text-white"
-                  href="#"
-                  role="button"
-                  id="dropdownMenuLink"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Movies
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </li>
-                </ul>
-              </div>
-              <form action="">
-                <div
-                  class="bg-white d-flex align-items-center p-2 rounded-1 fs-6"
-                  style="height: 35px; width: 250px"
-                >
-                  <input
-                    type="text"
-                    class="border-0 w-100"
-                    style="outline: none"
-                    placeholder="Search"
-                  />
-                  <button class="btn p-0">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div class="d-flex gap-4">
-              <a href="#" class="text-white text-decoration-none">
-                <span>Login</span>
-              </a>
-              <div class="text-white" style="cursor: pointer">
-                <span>Register</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div th:insert="~{component/UserHeader}"></div>
 
       <!-- Content -->
       <div class="row">

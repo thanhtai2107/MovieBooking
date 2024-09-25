@@ -2,6 +2,7 @@ package com.example.MovieBooking.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,6 +55,7 @@ public class Account implements UserDetails {
     private String phoneNumber;
 
     @Column(name = "register_date")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate registerDate;
 
     @ManyToOne

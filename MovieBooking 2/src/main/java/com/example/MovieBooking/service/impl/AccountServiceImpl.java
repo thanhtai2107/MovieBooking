@@ -8,11 +8,14 @@ import com.example.MovieBooking.repository.AccountRepository;
 import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.service.IMemberService;
 import com.example.MovieBooking.service.IRoleService;
+import com.example.MovieBooking.service.IUploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -27,6 +30,9 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     private IMemberService memberService;
+
+    @Autowired
+    private IUploadImage uploadImage;
 
     @Override
     public void register(AccountReq account) {
@@ -70,5 +76,28 @@ public class AccountServiceImpl implements IAccountService {
                     .build();
         } else
             throw new UsernameNotFoundException("User not found");
+    }
+
+    @Override
+    public Account findUserById(Long id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void updateAccount(AccountReq account, MultipartFile imageUrl) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Account account1 = findUserById(account.getId());
+        account1.setPassword(account.getPassword());
+        account1.setFullname(account.getFullname());
+        account1.setDateOfBirth(LocalDate.parse(account.getDateOfBirth(), formatter));
+        account1.setGender(account.getGender());
+        account1.setIdentityCard(account.getIdentityCard());
+        account1.setPhoneNumber(account.getPhoneNumber());
+        account1.setAddress(account.getAddress());
+        account1.setEmail(account.getEmail());
+        if (!imageUrl.isEmpty()) {
+            account1.setImage(uploadImage.uploadImage(imageUrl));
+        }
+        accountRepository.save(account1);
     }
 }
