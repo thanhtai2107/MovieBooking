@@ -25,4 +25,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "WHERE sd.showDate = :date")
     List<Movie> findMoviesByDate(@Param("date") LocalDate date);
 
+//    List<Movie> findMoviesByDateAndMovieId(LocalDate date, Long movieId );
+
 }
