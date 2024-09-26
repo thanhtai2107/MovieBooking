@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements IMemberService {
+
     @Autowired
     private MemberRepository memberRepository;
 
+    public Member updateMember(Member member) {
+        return memberRepository.save(member);
+    }
     @Override
     public void saveMember(Member member) {
         memberRepository.save(member);

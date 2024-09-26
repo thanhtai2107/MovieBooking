@@ -1,7 +1,7 @@
 <div
         class="row d-flex align-items-center"
         style="background-color: #205081; height: 60px;"
->
+        xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="col-2">
         <a th:href="@{/}">
             <img
@@ -47,16 +47,30 @@
                    </form>
                 </div>
             </div>
-            <div class="d-flex gap-4">
-                <a href="#" class="text-white text-decoration-none">
-                    <i class="fa-solid fa-user"></i>
-                    <span>Welcome, tientv5</span>
-                </a>
-                <div class="text-white" style="cursor: pointer;">
-                    <a th:hreff="/login">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span>Logout</span>
+            <div sec:authorize="isAuthenticated()">
+                <div class="d-flex gap-4">
+                    <a th:href="@{/edit}" class="text-white text-decoration-none">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Welcome, <span sec:authentication="name"></span></span>
                     </a>
+                    <div class="text-white" style="cursor: pointer;">
+                        <a th:href="@{/logout}" class="text-white text-decoration-none">
+                            <i class="fa-solid fa-power-off"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <div class="d-flex gap-4">
+                    <a th:href="@{/login}" class="text-white text-decoration-none">
+                        <span>Login</span>
+                    </a>
+                    <div class="text-white" style="cursor: pointer;" >
+                        <a th:href="@{/register}" class="text-white text-decoration-none">
+                            <span>Register</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

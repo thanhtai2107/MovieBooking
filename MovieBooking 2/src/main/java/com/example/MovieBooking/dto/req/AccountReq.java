@@ -3,6 +3,7 @@ package com.example.MovieBooking.dto.req;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -25,6 +26,5 @@ public class AccountReq {
     @NotEmpty(message = "Gender is required")
     private String gender;
     private String identityCard;
-    private String image;
     private String phoneNumber;
 }
