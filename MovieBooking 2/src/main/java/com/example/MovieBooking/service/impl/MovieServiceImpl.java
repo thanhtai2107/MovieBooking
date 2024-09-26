@@ -31,17 +31,10 @@ public class MovieServiceImpl  implements IMovieService {
     public List<Movie> getMoviesByDate(LocalDate date) {
         return movieRepository.findMoviesByDate(date);
     }
+
+    public Movie getMovieById(Long id) {
+//        Long longId = Long.valueOf(id);
+        return movieRepository.findById(id).get();
+    }
 }
-//=======
-//import java.time.LocalDate;
-//import java.util.List;
-//
-//@Service
-//public class MovieServiceImpl implements IMovieService {
-//    @Autowired
-//    private MovieRepository movieRepository;
-//
-//
-//
-//>>>>>>> 991d711644320553baeeb1dc78afbd40f1ea4081
-//}
+
