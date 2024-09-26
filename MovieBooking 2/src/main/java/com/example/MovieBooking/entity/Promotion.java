@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -23,13 +24,13 @@ public class Promotion {
     private String detail;
 
     @Column(name = "discount_level")
-    private Integer discountLevel;
+    private BigDecimal discountLevel;
 
     @Column(name = "start_time")
-    private LocalDateTime startTime;
+    private LocalDate startTime;
 
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private LocalDate endTime;
 
     @Column(columnDefinition = "varchar(255)")
     private String image;
