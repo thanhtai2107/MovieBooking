@@ -16,10 +16,9 @@ public class MovieServiceImpl  implements IMovieService {
     @Autowired
     private MovieRepository movieRepository;
 
+
     public List<Movie> getAllMovies() {
-        List<Movie> movies = new ArrayList<Movie>();
-        movies = movieRepository.findAll();
-        return movies;
+        return movieRepository.findAll();
     }
 
     public List<Movie> findMovieCustom(String searchInput) {
@@ -31,6 +30,8 @@ public class MovieServiceImpl  implements IMovieService {
     public List<Movie> getMoviesByDate(LocalDate date) {
         return movieRepository.findMoviesByDate(date);
     }
+
+
 }
 //=======
 //import java.time.LocalDate;
