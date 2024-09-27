@@ -70,7 +70,7 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByUsername(username);
-        if (account.isPresent()) {
+        if (account.isPresent() && account.get().getStatus() == 1) {
             Account account1 = account.get();
             return Account.builder()
                     .username(account1.getUsername())
