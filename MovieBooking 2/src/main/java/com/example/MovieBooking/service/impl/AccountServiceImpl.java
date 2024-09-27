@@ -76,6 +76,7 @@ public class AccountServiceImpl implements IAccountService {
                     .username(account1.getUsername())
                     .password(account1.getPassword())
                     .role(account1.getRole())
+                    .status(account1.getStatus())
                     .build();
         } else
             throw new UsernameNotFoundException("User not found");
@@ -102,6 +103,11 @@ public class AccountServiceImpl implements IAccountService {
             account1.setImage(uploadImage.uploadImage(imageUrl));
         }
         accountRepository.save(account1);
+    }
+
+    @Override
+    public Account findUserByMemberId(Long memberId) {
+        return accountRepository.findAccountByMemberId(memberId);
     }
 
     public Optional<Account> getAccountByUserName(String userName){
