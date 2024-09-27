@@ -211,8 +211,8 @@ public class BookingController {
         return "redirect:/member/booking-list";
     } else {
         Booking booking = bookingOptional.get();
-        if (booking.getAccount().getAccountId() == account.getAccountId()){
-            Member member = account.getMember();
+        if (booking.getAccount().getUsername().equals(account.getUsername())){
+            Member member = booking.getAccount().getMember();
             Integer score = member.getScore();
             BookingDTO bookingDTO = bookingService.convertToBookingDTO(booking);
 
@@ -239,65 +239,71 @@ public class BookingController {
         System.out.println(bookingId + "-----------------------------------------------------------------");
         Optional<Booking> bookingOptional = bookingService.getBookingById(bookingId);
         if (bookingOptional.isPresent()) {
-            Member member = account.getMember();
-            int score = member.getScore();
             Booking booking = bookingOptional.get();
-            int useScore = booking.getUseScore();
 
-            if(booking.getStatus() == 1) { //Kiem tra da dat chua
-                return "redirect:/member/confirm-booking/" +bookingId;
-            } else {
-                if(convertTicket.equals("agree")) {
-                    if (score < useScore) {
-                        redirectAttributes.addFlashAttribute("error", "Not enough score to convert into ticket.");
-                    } else {
-                        member.setScore((int) ((score - useScore) + useScore*percentagePoints));
-                        System.out.println("score :" +score );
-                        System.out.println("useScore :" +useScore );
-                        booking.setStatus(1);
-                        memberServiceImpl.updateMember(member);
-                        bookingService.updateBooking(booking);
-                        return "redirect:/member/convert-to-ticket/" +bookingId;
-                    }
+            if (booking.getAccount().getUsername().equals(account.getUsername())){
+                Member member = booking.getAccount().getMember();
+                int score = member.getScore();
+
+                int useScore = booking.getUseScore();
+
+                if(booking.getStatus() == 1) { //Kiem tra da dat chua
+                    return "redirect:/member/confirm-booking/" +bookingId;
                 } else {
-                    if(bankOptional.isPresent() == false || cardNumberOptional.isPresent() == false) {
-                        // Kiem tra khong truyen tham
-                        System.out.println(00000000000000000000000);
-                    } else {
-                        long bankId = 0;
-                        String cardNumber = cardNumberOptional.get();
-                        boolean isValid = true;
-                        try {
-                            bankId = Long.parseLong(bankOptional.get());
-                        } catch (Exception e) {
-                            isValid = false;
-                        }
-
-                        Optional<Bank> bankOptional1 = bankServiceImpl.getBankById(bankId);
-                        if (!bankOptional1.isPresent()) {
-                            isValid = false;
-                            System.out.println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-                        }
-
-                        if (!Pattern.matches(CARD_NUMBER_REGEX, cardNumber)){
-                            isValid = false;
-                        }
-
-                        if (!isValid) {
-                            redirectAttributes.addFlashAttribute("errorBank", "Card number is not valid");
+                    if(convertTicket.equals("agree")) {
+                        if (score < useScore) {
+                            redirectAttributes.addFlashAttribute("error", "Not enough score to convert into ticket.");
                         } else {
+                            member.setScore((int) ((score - useScore) + useScore*percentagePoints));
+                            System.out.println("score :" +score );
+                            System.out.println("useScore :" +useScore );
+                            booking.setStatus(1);
+                            memberServiceImpl.updateMember(member);
+                            bookingService.updateBooking(booking);
+                            return "redirect:/member/convert-to-ticket/" +bookingId;
+                        }
+                    } else {
+                        if(bankOptional.isPresent() == false || cardNumberOptional.isPresent() == false) {
+                            // Kiem tra khong truyen tham
+                            System.out.println(00000000000000000000000);
+                        } else {
+                            long bankId = 0;
+                            String cardNumber = cardNumberOptional.get();
+                            boolean isValid = true;
+                            try {
+                                bankId = Long.parseLong(bankOptional.get());
+                            } catch (Exception e) {
+                                isValid = false;
+                            }
+
+                            Optional<Bank> bankOptional1 = bankServiceImpl.getBankById(bankId);
+                            if (!bankOptional1.isPresent()) {
+                                isValid = false;
+                                System.out.println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                            }
+
+                            if (!Pattern.matches(CARD_NUMBER_REGEX, cardNumber)){
+                                isValid = false;
+                            }
+
+                            if (!isValid) {
+                                redirectAttributes.addFlashAttribute("errorBank", "Card number is not valid");
+                            } else {
                                 member.setScore((int)(score + useScore*percentagePoints));
                                 System.out.println("score :" +score );
                                 System.out.println("useScore :" +useScore );
                                 booking.setStatus(1);
                                 memberServiceImpl.updateMember(member);
                                 bookingService.updateBooking(booking);
-                            return "redirect:/member/convert-to-ticket/" +bookingId;
-                        }
+                                return "redirect:/member/convert-to-ticket/" +bookingId;
+                            }
 
+                        }
                     }
                 }
             }
+
+
         }
         return "redirect:/member/confirm-booking/" +bookingId;
     }
@@ -327,10 +333,11 @@ public class BookingController {
         if (!bookingOptional.isPresent()) {
             return "redirect:/member/booking-list";
         } else {
-            if (!(bookingOptional.get().getAccount().getAccountId() == account.getAccountId())) {
+            Booking booking = bookingOptional.get();
+            if (!booking.getAccount().getUsername().equals(account.getUsername()))  {
                 return "redirect:/member/booking-list";
             } else {
-                Booking booking = bookingOptional.get();
+
                 Member member = booking.getAccount().getMember();
                 Integer score = member.getScore();
                 BookingDTO bookingDTO = bookingService.convertToBookingDTO(booking);
