@@ -84,14 +84,18 @@
         <div class="col-10 content">
             <div class="container-fluid white-background">
                 <h5 class="text-center mb-4 bordered-title">Add New Cinema Room</h5>
-                <form method="post" th:action="@{/cinemaRoom/addCinemaRoom}" th:object="${cinemaRoom}">
+                <form method="post" th:action="@{/cinemaRoom/addCinemaRoom}" th:object="${cinemaRoom}" id="cinemaRoomForm">
                     <div class="mb-3">
                         <b>Cinema Room Name: <span class="star">*</span></b>
-                        <input type="text" class="form-control" placeholder="Cinema Room Name" th:field="*{cinemaName}">
+                        <input type="text" class="form-control" id="cinemaName" placeholder="Cinema Room Name" th:field="*{cinemaName}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('cinemaName')}" th:errors="*{cinemaName}"></small>
+                        <small class="text-danger" id="cinemaNameError"></small>
                     </div>
                     <div class="mb-3">
                         <b>Seat Quantity: <span class="star">*</span></b>
-                        <input type="text" class="form-control" placeholder="Seat Quantity" th:field="*{seatQuantity}">
+                        <input type="text" class="form-control" id="seatQuantity" placeholder="Seat Quantity" th:field="*{seatQuantity}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('seatQuantity')}" th:errors="*{seatQuantity}"></small>
+                        <small class="text-danger" id="seatQuantityError"></small>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>Add</button>
@@ -103,6 +107,49 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function() {
+        $('#cinemaRoomForm').on('submit', function(event) {
+            console.log("Submit event triggered");
+
+            let isValid = true;
+
+            // Clear previous error messages
+            $('#cinemaNameError').text('');
+            $('#seatQuantityError').text('');
+
+            // Validate Cinema Room Name (not empty)
+            const cinemaName = $('#cinemaName').val().trim();
+            console.log("Cinema Name: " + cinemaName);
+            if (cinemaName === "") {
+                $('#cinemaNameError').text("Cinema Room Name cannot be empty");
+                isValid = false;
+            } else if (/[^a-zA-Z0-9\s]/.test(cinemaName)) { // Check for special characters
+                $('#cinemaNameError').text("Cinema Room Name cannot contain special characters.");
+                isValid = false;
+            }
+
+            // Validate Seat Quantity (not empty and must be a number)
+            const seatQuantity = $('#seatQuantity').val().trim();
+            console.log("Seat Quantity: " + seatQuantity);
+            if (seatQuantity === "") {
+                $('#seatQuantityError').text("Seat Quantity cannot be empty");
+                isValid = false;
+            } else if (!/^\d+$/.test(seatQuantity)) { // Check if input is a valid positive integer.
+                $('#seatQuantityError').text("Seat Quantity must be a valid positive integer.");
+                isValid = false;
+            } else if (parseInt(seatQuantity) <= 0) { // Check if number is greater than 0
+                $('#seatQuantityError').text("Seat Quantity must be greater than 0");
+                isValid = false;
+            }
+
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

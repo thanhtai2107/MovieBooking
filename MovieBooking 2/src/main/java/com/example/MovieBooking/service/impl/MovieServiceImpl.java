@@ -16,10 +16,9 @@ public class MovieServiceImpl  implements IMovieService {
     @Autowired
     private MovieRepository movieRepository;
 
+
     public List<Movie> getAllMovies() {
-        List<Movie> movies = new ArrayList<Movie>();
-        movies = movieRepository.findAll();
-        return movies;
+        return movieRepository.findAll();
     }
 
     public List<Movie> findMovieCustom(String searchInput) {
@@ -36,5 +35,6 @@ public class MovieServiceImpl  implements IMovieService {
 //        Long longId = Long.valueOf(id);
         return movieRepository.findById(id).get();
     }
+
 }
 
