@@ -115,10 +115,10 @@
                             <td th:text="${cinemaRoom.cinemaRoomId}"></td>
                             <td th:text="${cinemaRoom.cinemaName}"></td>
                             <td th:text="${cinemaRoom.seatQuantity}"></td>
-                            <td>
-                                <a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none">
-                                    <i class="fa-solid fa-circle-info"></i> Seat detail
-                                </a>
+                            <td><a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none" data-id="${cinemaRoom.cinemaRoomID}">
+                                <i class="fa-solid fa-circle-info"></i> Seat detail
+                            </a>
+
                             </td>
                         </tr>
                     </tbody>

@@ -1,5 +1,6 @@
 package com.example.MovieBooking.service.impl;
 
+import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.entity.Member;
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import java.util.Optional;
 
 @Service
@@ -67,12 +70,13 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByUsername(username);
-        if (account.isPresent()) {
+        if (account.isPresent() && account.get().getStatus() == 1) {
             Account account1 = account.get();
             return Account.builder()
                     .username(account1.getUsername())
                     .password(account1.getPassword())
                     .role(account1.getRole())
+                    .status(account1.getStatus())
                     .build();
         } else
             throw new UsernameNotFoundException("User not found");
@@ -99,5 +103,14 @@ public class AccountServiceImpl implements IAccountService {
             account1.setImage(uploadImage.uploadImage(imageUrl));
         }
         accountRepository.save(account1);
+    }
+
+    @Override
+    public Account findUserByMemberId(Long memberId) {
+        return accountRepository.findAccountByMemberId(memberId);
+    }
+
+    public Optional<Account> getAccountByUserName(String userName){
+        return accountRepository.findByUsername(userName);
     }
 }

@@ -3,14 +3,17 @@ package com.example.MovieBooking.controller;
 import com.example.MovieBooking.entity.CinemaRoom;
 import com.example.MovieBooking.entity.Seat;
 import com.example.MovieBooking.entity.SeatType;
+import com.example.MovieBooking.service.ISeatService;
 import com.example.MovieBooking.service.impl.CinemaRoomServiceImpl;
 import com.example.MovieBooking.service.impl.SeatServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,7 +29,6 @@ public class CinemaRoomController {
 
     @Autowired
     private SeatServiceImpl seatService;
-
 
     @GetMapping("/listCinemaRoom")
     public String listCinemaRoom(@RequestParam(value = "valueSearch", defaultValue = "", required = false) String valueSearch,
@@ -64,7 +66,10 @@ public class CinemaRoomController {
     }
 
     @PostMapping("/addCinemaRoom")
-    public String addCinemaRoom(@ModelAttribute("cinemaRoom") CinemaRoom cinemaRoom) {
+    public String addCinemaRoom(@Valid @ModelAttribute("cinemaRoom") CinemaRoom cinemaRoom, BindingResult result) {
+        if (result.hasErrors()) {
+            return "cinemaRoom/addCinemaRoom";
+        }
         cinemaRoomService.saveCinemaRoom(cinemaRoom);
         return "redirect:/cinemaRoom/listCinemaRoom";
     }
