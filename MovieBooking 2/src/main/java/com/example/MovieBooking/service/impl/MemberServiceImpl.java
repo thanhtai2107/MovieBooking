@@ -1,15 +1,24 @@
 package com.example.MovieBooking.service.impl;
 
+import com.example.MovieBooking.dto.req.AccountReq;
+import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.entity.Member;
 import com.example.MovieBooking.entity.dto.MemberDTO;
+import com.example.MovieBooking.repository.AccountRepository;
 import com.example.MovieBooking.repository.MemberRepository;
+import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.service.IMemberService;
+import com.example.MovieBooking.service.IUploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +27,9 @@ public class MemberServiceImpl implements IMemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private IUploadImage uploadImage;
 
     public Member updateMember(Member member) {
         return memberRepository.save(member);

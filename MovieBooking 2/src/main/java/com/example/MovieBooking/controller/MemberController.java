@@ -6,14 +6,16 @@ import com.example.MovieBooking.entity.Member;
 import com.example.MovieBooking.entity.dto.MemberDTO;
 import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.service.IMemberService;
+import com.example.MovieBooking.util.AccountRegisterValidate;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,6 +27,9 @@ public class MemberController {
 
     @Autowired
     private IAccountService accountService;
+
+    @Autowired
+    private AccountRegisterValidate accountRegisterValidate;
 
     @GetMapping("/members")
     public String memberManagement(@RequestParam(value = "searchInput", required = false, defaultValue = "") String searchInput
@@ -49,8 +54,7 @@ public class MemberController {
     @GetMapping("/member/{id}")
     public String memberDetail(@PathVariable("id") Long id, Model model) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        Member member = memberService.findMemberById(id);
-        Account account1 = member.getAccount();
+        Account account1 = accountService.findUserByMemberId(id);
         AccountReq accountEdit = AccountReq.builder()
                 .id(account1.getAccountId())
                 .username(account1.getUsername())
@@ -66,6 +70,16 @@ public class MemberController {
         System.out.println(accountEdit.toString());
         model.addAttribute("account", accountEdit);
         model.addAttribute("image", account1.getImage());
-        return "edit-account";
+        return "edit-member";
+    }
+
+    @PostMapping("/edit")
+    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model) throws IOException {
+        accountRegisterValidate.validate(account, bindingResult);
+        if(bindingResult.hasErrors()){
+            return "edit-member";
+        }
+        accountService.updateAccount(account, image);
+        return "redirect:members";
     }
 }

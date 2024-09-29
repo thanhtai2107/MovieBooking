@@ -72,7 +72,7 @@
               />
             </div>
             <div>
-              <form id="form-edit" action="" th:object="${account}" th:action="@{/edit}" enctype="multipart/form-data" method="post">
+              <form id="form-edit" action="" th:object="${account}" th:action="@{/member-management/edit}" enctype="multipart/form-data" method="post">
                 <input type="hidden" th:field="*{id}"/>
                 <div class="mb-3">
                   <label class="form-label">Account: <span class="text-danger">*</span></label>
