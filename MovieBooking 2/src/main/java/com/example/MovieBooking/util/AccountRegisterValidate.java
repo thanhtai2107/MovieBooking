@@ -31,11 +31,12 @@ public class AccountRegisterValidate implements Validator {
         AccountReq accountReq = (AccountReq) object;
         Account account = accountService.findUserByUsername(accountReq.getUsername());
 
+
         // Validate username
         String accountRegex = "^[a-zA-Z0-9]{3,}$";
         if (accountReq.getUsername().isBlank()) {
             errors.rejectValue("username", null, "Account is required");
-        } else if (!accountReq.getUsername().matches(accountRegex)) {
+        }  else if (!accountReq.getUsername().matches(accountRegex)) {
             errors.rejectValue("username", null,"Account format is incorrect");
         }
 
@@ -45,8 +46,6 @@ public class AccountRegisterValidate implements Validator {
             errors.rejectValue("password", null, "Password is required");
         }else if (!accountReq.getPassword().matches(passwordRegex)) {
             errors.rejectValue("password", null,"Password format is incorrect (Example?123)");
-        } else if (account != null) {
-            errors.rejectValue("username", null, "Account already exists");
         }
 
         // Validate confirm password
