@@ -42,7 +42,6 @@ public class AccountController{
     public String register(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model){
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
-            System.out.println("co loi");
             return "register";
         }
         accountService.register(account);

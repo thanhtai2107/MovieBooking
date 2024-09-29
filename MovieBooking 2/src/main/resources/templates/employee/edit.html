@@ -145,7 +145,7 @@
         <div class="col-10 content">
             <div class="container-fluid white-background">
                 <!-- H3 with Bottom Border -->
-                <h3 class="text-center mb-4 bordered-title">Add New Employee</h3>
+                <h3 class="text-center mb-4 bordered-title">Edit Employee</h3>
                 <!--                <form th:action="@{/addEmployee}" th:object="${employee}">-->
                 <!--                    <div class="mb-3">-->
                 <!--                        <b>Account: <span class="star">*</span></b>-->
@@ -212,11 +212,14 @@
                 box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
                   rgba(1, 1, 1, 0.08) 0px 0px 0px 1px;
               "
-                        th:action="@{add}"
+                        th:action="@{edit}"
                         th:object="${account}"
                         method="post"
                         id="form-register"
                 >
+                    <div>
+                        <input name="id" th:field="*{accountId}">
+                    </div>
                     <div class="mb-3">
                         <b>Account: <span class="star">*</span></b>
                         <input
@@ -255,10 +258,7 @@
                                 class="form-control"
                                 placeholder="Confirm password"
                                 aria-describedby="helpId"
-                                th:field="*{confirmPassword}"
                         />
-                        <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
-                               class=""></small>
                         <small id="confirm-password-err" class=""></small>
                     </div>
                     <div class="mb-3">
