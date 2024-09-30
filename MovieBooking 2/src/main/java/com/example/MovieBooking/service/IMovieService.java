@@ -1,17 +1,14 @@
 package com.example.MovieBooking.service;
-
 import com.example.MovieBooking.entity.Movie;
-import com.example.MovieBooking.entity.CinemaRoom;
-import com.example.MovieBooking.entity.Type;
-import com.example.MovieBooking.entity.Schedule;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface IMovieService {
     List<Movie> getAllMovies();
     Movie getMovieById(Long id);
-    Movie saveMovie(Movie movie);
+    Movie saveMovie(Movie movie, List<Long> typeIds, List<Long> scheduleIds);
+    Movie updateMovie(Long id, Movie updatedMovie, List<Long> typeIds, List<Long> scheduleIds);
     void deleteMovie(Long id);
     List<Movie> searchMovies(String query);
+    Movie getMovieByIdWithSchedules(Long id);
+    Movie getMovieWithTypesAndSchedules(Long id);
 }

@@ -1,11 +1,11 @@
 package com.example.MovieBooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Entity
@@ -20,15 +20,15 @@ public class CinemaRoom {
     @Column(name = "cinema_room_id")
     private Long cinemaRoomId;
 
-    @Column(name = "cinema_name")
-    private String cinemaName;
+    @Column(columnDefinition = "nvarchar(255)")
+    private String name;
 
-    @Column(name = "seat_quantity")
-    private Integer seatQuantity;
-
-    @OneToMany(mappedBy = "cinemaRoom")
-    private List<Movie> movieList;
+    @Column(columnDefinition = "nvarchar(255)")
+    private String cinemaName; // Ensure this field exists
 
     @OneToMany(mappedBy = "cinemaRoom")
-    private List<Seat> seatList;
+    @JsonBackReference
+    private List<Movie> movies;
+
+    // Other fields and methods...
 }
