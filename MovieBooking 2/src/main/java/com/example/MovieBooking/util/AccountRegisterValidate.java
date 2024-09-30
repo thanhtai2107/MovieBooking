@@ -76,23 +76,23 @@ public class AccountRegisterValidate implements Validator {
             errors.rejectValue("phoneNumber", null,"Phone number format is incorrect");
         }
 
-        if (accountReq.getDateOfBirth().isBlank()) {
-            errors.rejectValue("dateOfBirth", null, "Date of birth is required");
-        } else {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate localDate = LocalDate.parse(accountReq.getDateOfBirth(), formatter);
-                String[] dateReq = accountReq.getDateOfBirth().split("/");
-                String[] dateParse = localDate.toString().split("-");
-                System.out.println(dateReq[0] +" " + dateReq[1] + " " + dateReq[2]);
-                System.out.println(dateParse[0] +" " + dateParse[1] + " " + dateParse[2]);
-                if (!dateReq[0].equals(dateParse[2])) {
-                    errors.rejectValue("dateOfBirth", null, "Date of birth is incorrect");
-                }
-             } catch (DateTimeParseException e) {
-                errors.rejectValue("dateOfBirth", null,"Date of Birth format is incorrect dd/MM/yyyy");
-            }
-        }
+//        if (accountReq.getDateOfBirth().isBlank()) {
+//            errors.rejectValue("dateOfBirth", null, "Date of birth is required");
+//        } else {
+//            try {
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//                LocalDate localDate = LocalDate.parse(accountReq.getDateOfBirth(), formatter);
+//                String[] dateReq = accountReq.getDateOfBirth().split("/");
+//                String[] dateParse = localDate.toString().split("-");
+//                System.out.println(dateReq[0] +" " + dateReq[1] + " " + dateReq[2]);
+//                System.out.println(dateParse[0] +" " + dateParse[1] + " " + dateParse[2]);
+//                if (!dateReq[0].equals(dateParse[2])) {
+//                    errors.rejectValue("dateOfBirth", null, "Date of birth is incorrect");
+//                }
+//             } catch (DateTimeParseException e) {
+//                errors.rejectValue("dateOfBirth", null,"Date of Birth format is incorrect dd/MM/yyyy");
+//            }
+//        }
 
     }
 
