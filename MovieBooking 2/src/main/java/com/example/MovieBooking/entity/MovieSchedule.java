@@ -27,4 +27,5 @@ public class MovieSchedule implements Serializable {
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
 }
