@@ -105,6 +105,16 @@ public class AccountServiceImpl implements IAccountService {
         accountRepository.save(account1);
     }
 
+    @Override
+    public Account findUserByMemberId(Long memberId) {
+        return accountRepository.findAccountByMemberId(memberId);
+    }
+
+    @Override
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
+    }
+
     public Optional<Account> getAccountByUserName(String userName){
         return accountRepository.findByUsername(userName);
     }

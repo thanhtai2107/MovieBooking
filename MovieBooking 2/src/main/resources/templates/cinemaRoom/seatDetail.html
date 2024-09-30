@@ -185,25 +185,6 @@
 </div>
 
 <script>
-    // $(document).ready(function() {
-    //     // Khi click vào ghế, thêm class 'seat-selected'
-    //     $('.seat').on('click', function() {
-    //         // Loại bỏ class 'seat-selected' từ tất cả các ghế khác
-    //         // $('.seat').removeClass('seat-selected');
-    //
-    //         // Thêm class 'seat-selected' vào ghế được click
-    //         $(this).addClass('seat-selected');
-    //
-    //         // Lấy ID ghế từ thuộc tính data-seat-id và cập nhật vào input ẩn
-    //         var seatId = $(this).data('seat-id');
-    //         $('input[name="selectedSeat"]').val(seatId);
-    //
-    //         $('input[name="seatType"]').on('change', function () {
-    //             $('input[name="seatType"]').not(this).prop('checked', false);
-    //         });
-    //     });
-    // });
-
     $(document).ready(function() {
         $('.seat').on('click', function() {
             $(this).toggleClass('seat-selected');
@@ -226,22 +207,38 @@
                 }).appendTo('#seatForm');
             });
         });
+
+
+        // Handle form submission
+        $('#seatForm').on('submit', function(event) {
+            // Check if any seats are selected
+            let hasSelectedSeats = $('.seat-selected').length > 0;
+
+            // Check if any seat type is checked
+            let seatTypeChecked = $('input[name="seatType"]:checked').length > 0;
+
+            // If seats are selected but no seat type is checked, show error
+            if (hasSelectedSeats && !seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn loại ghế (Seat Normal hoặc Seat VIP).');
+                return false;
+            }
+
+            // If no seats are selected but a seat type is checked, show error
+            if (!hasSelectedSeats && seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn ghế trước khi chọn loại ghế.');
+                return false;
+            }
+
+            // If no seats are selected and no seat type is checked, navigate to the list page
+            if (!hasSelectedSeats && !seatTypeChecked) {
+                window.location.href = '/cinemaRoom/listCinemaRoom'; // Adjust this URL if necessary
+                return false;
+            }
+        });
     });
 </script>
-
-<!--Cập nhật nhiều seat 1 lúc-->
-<!--<script>-->
-<!--    document.getElementById('seatForm').addEventListener('submit', function(event) {-->
-<!--        let selectedSeatIds = [];-->
-<!--        // Collect all checked seat checkboxes-->
-<!--        document.querySelectorAll('.seat-checkbox:checked').forEach(function(checkbox) {-->
-<!--            selectedSeatIds.push(checkbox.value); // Add seat ID to array-->
-<!--        });-->
-
-<!--        // Assign seat IDs to hidden input-->
-<!--        document.getElementById('selectedSeats').value = selectedSeatIds.join(',');-->
-<!--    });-->
-<!--</script>-->
 
 </body>
 

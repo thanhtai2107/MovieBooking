@@ -47,6 +47,7 @@
                    </form>
                 </div>
             </div>
+
             <div sec:authorize="isAuthenticated()">
                 <div class="d-flex gap-4">
                     <a th:href="@{/edit}" class="text-white text-decoration-none">
@@ -65,6 +66,7 @@
                 <div class="d-flex gap-4">
                     <a th:href="@{/login}" class="text-white text-decoration-none">
                         <span>Login</span>
+
                     </a>
                     <div class="text-white" style="cursor: pointer;" >
                         <a th:href="@{/register}" class="text-white text-decoration-none">
