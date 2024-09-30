@@ -76,6 +76,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonBackReference
     private List<Booking> bookingList;
+  
+    @OneToMany(mappedBy = "movie")
+    private List<BookingSeat> bookingSeatList;
 
     @Override
     public String toString() {
@@ -100,4 +103,6 @@ public class Movie {
                 ", bookingList=" + bookingList +
                 '}';
     }
+    
+
 }

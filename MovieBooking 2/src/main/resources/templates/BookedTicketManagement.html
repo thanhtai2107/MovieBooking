@@ -81,26 +81,44 @@
         <div class="row d-flex justify-content-between mb-3">
           <div class="col-3 selection d-flex flex-row align-items-center gap-1">
             <label for="" class="m-0">Show</label>
-            <select class=" form-select form-select-sm" aria-label=".form-select-sm example">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10" selected>10</option>
-            </select>
+            <form th:action="@{/booked-ticket}" method="get">
+              <select class=" form-select form-select-sm"
+                      aria-label=".form-select-sm example"
+                      name="size"
+                      onchange="this.form.submit()"
+              >
+                  <option
+                          th:each="i : ${#numbers.sequence(1,10)}"
+                          th:value="${i}"
+                          th:text="${i}"
+                          th:selected="${i==size}">
+                  </option>
+              </select>
+              <input type="hidden" name="searchInput" th:value="${searchInput}">
+              <input type="hidden" name="page" th:value="0">
+            </form>
+
+<!--              <option value="1" th:selected="${size == 1}">1</option>-->
+<!--              <option value="2" th:selected="${size == 2}">2</option>-->
+<!--              <option value="3" th:selected="${size == 3}">3</option>-->
+<!--              <option value="4" th:selected="${size == 4}">4</option>-->
+<!--              <option value="5" th:selected="${size == 5}">5</option>-->
+<!--              <option value="6" th:selected="${size == 6}">6</option>-->
+<!--              <option value="7" th:selected="${size == 7}">7</option>-->
+<!--              <option value="8" th:selected="${size == 8}">8</option>-->
+<!--              <option value="9" th:selected="${size == 9}">9</option>-->
+<!--              <option value="10"th:selected="${size == 10}" selected>10</option>-->
+<!--            </select>-->
             <label for="" class="m-0">entries</label>
           </div>
           <div class="col-4 search-form">
             <!-- Search Form -->
-            <form class=" d-flex align-items-center">
+            <form th:href="@{/booked-ticket}" class=" d-flex align-items-center">
               <label for="searchInput" class="me-2 m-0">Search:</label>
-              <input type="text" id="searchInput" class="form-control w-75" placeholder="Search">
-            </form>
+              <input type="text" name="searchInput" id="searchInput" class="form-control w-75" placeholder="Search" th:value="${search}">
+              <input type="hidden" name="size" th:value="${size}">
+              <input type="hidden" name="page" th:value="0">
+            </form>cou
           </div>
         </div>
         <table class="table table-striped">
@@ -114,24 +132,60 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>1</td>
-            <td>Doctor Strange: Phù thủy tối thượng</td>
-            <td>18/11/2018 13:10</td>
-            <td>135.000</td>
-            <td><span class="text-primary">Waiting for ticket</span></td>
+          <tr th:if="${listBooking.isEmpty()}">
+            <td colspan="5" class="text-center">No bookings found</td>
           </tr>
+          <tr th:each="booking,count:${listBooking}" th:unless="${listBooking.isEmpty()}">
+            <td th:text="${count.index+1}"></td>
+            <td th:text="${booking.movie.nameVN}"></td>
+            <td th:text="${booking.bookingDate}"></td>
+            <td th:text="${booking.totalMoney}"></td>
+            <td th:text="${booking.status}"></td>
+          </tr>
+<!--          <tr>-->
+<!--            <td>1</td>-->
+<!--            <td>Doctor Strange: Phù thủy tối thượng</td>-->
+<!--            <td>18/11/2018 13:10</td>-->
+<!--            <td>135.000</td>-->
+<!--            <td><span class="text-primary">Waiting for ticket</span></td>-->
+<!--          </tr>-->
           </tbody>
         </table>
         <!-- Pagination -->
-        <nav aria-label="Page navigation example">
+        <nav aria-label="Page navigation example" th:if="${!listBooking.isEmpty()}">
           <ul class="pagination justify-content-end">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${currentPage - 1})}" tabindex="-1">Previous</a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item disabled">
-              <a class="page-link" href="#" >Next</a>
+            <!-- Page Numbers -->
+<!--            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                th:classappend="${i == currentPage} ? 'active'">-->
+<!--              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>-->
+<!--            </li>-->
+            <!-- Start Ellipsis if needed -->
+            <li class="page-item" th:if="${currentPage >= 3}">
+              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${0})}" th:text="1"></a>
+
+            </li>
+            <li class="page-item disabled" th:if="${currentPage > 3}"><span class="page-link">...</span></li>
+
+            <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
+            <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                th:if="${i >= 0 && i < totalPages}"
+                th:classappend="${i == currentPage} ? 'active'">
+              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
+            </li>
+
+            <!-- End Ellipsis if needed -->
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 3}"><span class="page-link">...</span></li>
+            <li class="page-item" th:if="${currentPage < totalPages - 3}">
+              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${totalPages - 1})}" th:text="${totalPages}"></a>
+            </li>
+
+
+            <!-- Next Button -->
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+              <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${currentPage + 1})}">Next</a>
             </li>
           </ul>
         </nav>

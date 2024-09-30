@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Room List</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2fdd50f686.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <style>
+        /* css of sidebar */
+        .list-group-item {
+            text-align: start;
+        }
+
+        .list-group-item a {
+            text-decoration: none;
+            color: black;
+
+        }
+
+        /* Add hover effect for all links */
+        .list-group-item a:hover {
+            color: #007bff;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #e9ecef;
+            /* Gray background for content */
+        }
+
+        .white-background {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            /* Gray border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+        }
+
+        .bordered-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Main Container -->
+<div class="container-fluid">
+    <!-- Header of admin -->
+    <div th:insert="~{component/AdminHeader}"></div>
+
+    <div class="row">
+        <!-- Sidebar of Admin -->
+        <div class="col-2 sidebar" style="background-color: white;">
+            <!-- Sidebar content here -->
+            <div th:insert="~{component/AdminSidebar}"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-10 content">
+            <div class="container-fluid white-background">
+                <!-- H5 with Bottom Border -->
+                <h5 class="text-center mb-4 bordered-title">Cinema room list</h5>
+                <div class="mb-3">
+                    <!-- Button -->
+                    <div class="d-flex justify-content-start mb-2">
+                        <a class="btn btn-primary" th:href="@{/cinemaRoom/formAddCinemaRoom}" ><i class="fa-solid fa-circle-plus"></i> Add new</a>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="d-flex justify-content-end">
+                        <form class="d-flex align-items-center" action="/cinemaRoom/listCinemaRoom" method="get">
+                            <label for="searchInput" class="me-2">Search:</label>
+                            <input type="text" id="searchInput" class="form-control w-75" th:value="${search}" name="valueSearch">
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cinema room ID</th>
+                        <th>Cinema room</th>
+                        <th>Seat quantity</th>
+                        <th>Seat detail</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${listCinemaRoom.isEmpty()}">
+                            <td colspan="5" class="text-center">No Cinema Room found</td>
+                        </tr>
+                        <tr th:each="cinemaRoom, iterStat : ${listCinemaRoom}" th:unless="${listCinemaRoom.isEmpty()}">
+                            <td th:text="${iterStat.index + (currentPage * size) + 1}"></td>
+                            <td th:text="${cinemaRoom.cinemaRoomId}"></td>
+                            <td th:text="${cinemaRoom.cinemaName}"></td>
+                            <td th:text="${cinemaRoom.seatQuantity}"></td>
+                            <td><a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none" data-id="${cinemaRoom.cinemaRoomID}">
+                                <i class="fa-solid fa-circle-info"></i> Seat detail
+                            </a>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example" th:if="${!listCinemaRoom.isEmpty()}">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size},page=${currentPage - 1})}" tabindex="-1">Previous</a>
+                        </li>
+
+                        <!-- Start Ellipsis if needed -->
+                        <li class="page-item" th:if="${currentPage >= 2}">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${0})}" th:text="1"></a>
+
+                        </li>
+                        <li class="page-item disabled" th:if="${currentPage > 2}"><span class="page-link">...</span></li>
+
+                        <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
+                        <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
+                            th:if="${i >= 0 && i < totalPages}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
+                        </li>
+
+                        <!-- End Ellipsis if needed -->
+                        <li class="page-item disabled" th:if="${currentPage < totalPages - 2}"><span class="page-link">...</span></li>
+                        <li class="page-item" th:if="${currentPage < totalPages - 2}">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${totalPages - 1})}" th:text="${totalPages}"></a>
+                        </li>
+
+
+                        <!-- Next Button -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${currentPage + 1})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -9,7 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.example.MovieBooking.entity.Movie;
+import com.example.MovieBooking.repository.MovieRepository;
+import com.example.MovieBooking.service.IMovieService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -216,4 +223,21 @@ public class MovieServiceImpl implements IMovieService {
         }
         return movie;
     }
+  
+    public List<Movie> findMovieCustom(String searchInput) {
+        List<Movie> movies = movieRepository.findMoviesCustom(searchInput);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getMoviesByDate(LocalDate date) {
+        return movieRepository.findMoviesByDate(date);
+    }
+
+    public Movie getMovieById(Long id) {
+//        Long longId = Long.valueOf(id);
+        return movieRepository.findById(id).get();
+    }
+
 }
+
