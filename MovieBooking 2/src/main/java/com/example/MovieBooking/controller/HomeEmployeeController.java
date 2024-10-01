@@ -1,6 +1,7 @@
 package com.example.MovieBooking.controller;
 
 import com.example.MovieBooking.entity.Booking;
+import com.example.MovieBooking.entity.Member;
 import com.example.MovieBooking.entity.Movie;
 import com.example.MovieBooking.entity.Promotion;
 import com.example.MovieBooking.service.IMemberService;
@@ -25,10 +26,13 @@ public class HomeEmployeeController {
 
     @GetMapping("/homeEmployee")
     public String homeEmployee(Model model) {
-
+        List<Member> members = memberService.getAllMembers();
         List<Booking> listBooking = bookingService.findAll();
         int countBooking = listBooking.size();
+        int countMember = members.size();
+        model.addAttribute("listMember", members);
         model.addAttribute("countBooking", countBooking);
+        model.addAttribute("countMember", countMember);
         return "homepageEmployee";
     }
 }
