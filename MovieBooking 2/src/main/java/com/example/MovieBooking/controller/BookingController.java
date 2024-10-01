@@ -69,7 +69,7 @@ public class BookingController {
     @Autowired
     private BankServiceImpl bankServiceImpl;
 
-    private final int pageSize = 2;
+    private final int pageSize = 3;
     private final float percentagePoints = 0.1F;
     private static final String CARD_NUMBER_REGEX = "^[0-9]{16,19}$";
 
@@ -97,7 +97,7 @@ public class BookingController {
 
     @GetMapping("/admin/booking-list")
     public String getBookingListPageByAdmin(Model model,
-                                           @RequestParam(value="search") Optional<String> searchOptial
+                                           @RequestParam(value="search") Optional<String> searchOptional
             ,@RequestParam(value="page") Optional<String> pageOptional) {
 
         int page = 1;
@@ -106,14 +106,14 @@ public class BookingController {
         Page<Booking> bookingPage = null;
         String search = "";
 
-        if (pageOptional.isPresent() == false || searchOptial.isPresent() == false) {
+        if (pageOptional.isPresent() == false || searchOptional.isPresent() == false) {
 //
             Pageable pageable = PageRequest.of(page - 1 , pageSize);
             bookingPage = bookingService.getBookings(pageable);
             List<Booking> bookings = bookingPage.getContent();
             bookingDTOList =  bookingService.convertToBookingDTOList(bookings);
-            if (searchOptial.isPresent()) {
-                search = searchOptial.get();
+            if (searchOptional.isPresent()) {
+                search = searchOptional.get();
             }
         } else {
             try {
@@ -124,14 +124,14 @@ public class BookingController {
                 // TODO: handle exception
             }
 
-            if (searchOptial.get().equals("")) {
+            if (searchOptional.get().equals("")) {
 
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage = bookingService.getBookings(pageable);
             } else {
-                search = searchOptial.get();
+                search = searchOptional.get();
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
-                bookingPage =  bookingService.getBookingsByConditionWithAdmin(pageable, searchOptial.get());
+                bookingPage =  bookingService.getBookingsByConditionWithAdmin(pageable, searchOptional.get());
             }
 
             List<Booking> bookings = bookingPage.getContent();
@@ -203,8 +203,15 @@ public class BookingController {
     }
 
     @GetMapping("/member/confirm-booking/{id}")
-    public String getConfirmBookingPageByMember(Model model, @PathVariable long id ,@AuthenticationPrincipal Account account){
-        Optional<Booking> bookingOptional = bookingService.getBookingById(id);
+    public String getConfirmBookingPageByMember(Model model, @PathVariable String id ,@AuthenticationPrincipal Account account){
+
+        try {
+            Long.parseLong(id);
+        }catch (Exception e) {
+            return "redirect:/member/booking-list";
+        }
+
+        Optional<Booking> bookingOptional = bookingService.getBookingById(Long.parseLong(id));
 
     if (!bookingOptional.isPresent()) {
 
@@ -213,7 +220,7 @@ public class BookingController {
         Booking booking = bookingOptional.get();
         if (booking.getAccount().getUsername().equals(account.getUsername())){
             Member member = booking.getAccount().getMember();
-            Integer score = member.getScore();
+            Long score = member.getScore();
             BookingDTO bookingDTO = bookingService.convertToBookingDTO(booking);
 
             List<Bank> bankList = bankServiceImpl.getAllBanks();
@@ -229,34 +236,57 @@ public class BookingController {
 
     @PostMapping("/member/update-ticket")
     public String convertToTicketByMember(Model model, HttpServletRequest request,
-                                          @RequestParam(value = "bookingId") long bookingId,
                                           RedirectAttributes redirectAttributes,
-                                          @RequestParam(value="convertTicket") String convertTicket,
+                                          @RequestParam(value = "bookingId") Optional<String> bookingIdOptional,
+                                          @RequestParam(value="convertTicket") Optional<String> convertTicketOptional,
                                           @RequestParam(value="bank") Optional<String> bankOptional,
                                           @RequestParam(value="cardNumber") Optional<String> cardNumberOptional,
                                           @AuthenticationPrincipal Account account){
 
-        System.out.println(bookingId + "-----------------------------------------------------------------");
+        if (!bookingIdOptional.isPresent()){
+            return "redirect:/member/booking-list";
+        }
+
+        try {
+            Long.parseLong(bookingIdOptional.get());
+        } catch (Exception e) {
+            return "redirect:/member/booking-list";
+        }
+
+        long bookingId = Long.parseLong(bookingIdOptional.get());
+
         Optional<Booking> bookingOptional = bookingService.getBookingById(bookingId);
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
 
             if (booking.getAccount().getUsername().equals(account.getUsername())){
                 Member member = booking.getAccount().getMember();
-                int score = member.getScore();
+                Long score = member.getScore();
 
-                int useScore = booking.getUseScore();
 
                 if(booking.getStatus() == 1) { //Kiem tra da dat chua
                     return "redirect:/member/confirm-booking/" +bookingId;
                 } else {
+                    if (!convertTicketOptional.isPresent()) {
+                        return "redirect:/member/confirm-booking/" +bookingId;
+                    }
+
+                    String convertTicket = convertTicketOptional.get();
                     if(convertTicket.equals("agree")) {
-                        if (score < useScore) {
+                        Long money = booking.getTotalMoney();
+                        if (score < money) {
                             redirectAttributes.addFlashAttribute("error", "Not enough score to convert into ticket.");
                         } else {
-                            member.setScore((int) ((score - useScore) + useScore*percentagePoints));
+                            System.out.println(money);
+                            member.setScore(member.getScore() - money);
+                            booking.setAddScore(0L);
+                            booking.setUseScore(money);
+                            //thanh toan = diem
+                            //member.score - score
+                            //set booking.addScore = 0
+
                             System.out.println("score :" +score );
-                            System.out.println("useScore :" +useScore );
+                            System.out.println("use money  :" +money );
                             booking.setStatus(1);
                             memberServiceImpl.updateMember(member);
                             bookingService.updateBooking(booking);
@@ -265,7 +295,6 @@ public class BookingController {
                     } else {
                         if(bankOptional.isPresent() == false || cardNumberOptional.isPresent() == false) {
                             // Kiem tra khong truyen tham
-                            System.out.println(00000000000000000000000);
                         } else {
                             long bankId = 0;
                             String cardNumber = cardNumberOptional.get();
@@ -279,7 +308,6 @@ public class BookingController {
                             Optional<Bank> bankOptional1 = bankServiceImpl.getBankById(bankId);
                             if (!bankOptional1.isPresent()) {
                                 isValid = false;
-                                System.out.println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
                             }
 
                             if (!Pattern.matches(CARD_NUMBER_REGEX, cardNumber)){
@@ -289,9 +317,14 @@ public class BookingController {
                             if (!isValid) {
                                 redirectAttributes.addFlashAttribute("errorBank", "Card number is not valid");
                             } else {
-                                member.setScore((int)(score + useScore*percentagePoints));
+                                //set booking.addScore = sotien * 0.1
+                                //set book.useScore = 0
+                                //update lai tong so Score trong bang member.Score = select sum(addScore) from Booking b where b.accountId = ?id
+
+                                booking.setUseScore(0L);
+                                booking.setAddScore((long) (booking.getTotalMoney()*0.1));
+                                member.setScore(member.getScore() +  (long) (booking.getTotalMoney()*0.1));
                                 System.out.println("score :" +score );
-                                System.out.println("useScore :" +useScore );
                                 booking.setStatus(1);
                                 memberServiceImpl.updateMember(member);
                                 bookingService.updateBooking(booking);
@@ -310,14 +343,23 @@ public class BookingController {
 
 
     @GetMapping("/admin/confirm-booking/{id}")
-    public String getConfirmBookingPageByAdmin(Model model, @PathVariable long id){
-        Optional<Booking> bookingOptional = bookingService.getBookingById(id);
+    public String getConfirmBookingPageByAdmin(Model model, @PathVariable Optional<String> id){
+        if (!id.isPresent()) {
+            return "redirect:/member/booking-list";
+        }
+        try {
+            Long.parseLong(id.get());
+        }catch(Exception e) {
+            return "redirect:/member/booking-list";
+        }
+
+        Optional<Booking> bookingOptional = bookingService.getBookingById(Long.parseLong(id.get()));
         if (!bookingOptional.isPresent()) {
             return "redirect:/member/booking-list";
         } else {
             Booking booking = bookingOptional.get();
             Member member = booking.getAccount().getMember();
-            Integer scoreOfMember = member.getScore();
+            Long scoreOfMember = member.getScore();
             BookingDTO bookingDTO = bookingService.convertToBookingDTO(booking);
 
             model.addAttribute("booking", bookingDTO);
@@ -327,9 +369,19 @@ public class BookingController {
     }
 
     @GetMapping("/member/convert-to-ticket/{id}")
-    public String getConvertToTicketPageByMember(Model model, @PathVariable long id, @AuthenticationPrincipal Account account) {
+    public String getConvertToTicketPageByMember(Model model, @PathVariable Optional<String> id, @AuthenticationPrincipal Account account) {
+if(!id.isPresent()) {
+    return "redirect:/member/booking-list";
+}
 
-        Optional<Booking> bookingOptional = bookingService.getBookingById(id);
+try {
+    Long.parseLong(id.get());
+} catch (Exception e) {
+    return "redirect:/member/booking-list";
+}
+
+
+        Optional<Booking> bookingOptional = bookingService.getBookingById(Long.parseLong(id.get()));
         if (!bookingOptional.isPresent()) {
             return "redirect:/member/booking-list";
         } else {
@@ -339,7 +391,7 @@ public class BookingController {
             } else {
 
                 Member member = booking.getAccount().getMember();
-                Integer score = member.getScore();
+                Long score = member.getScore();
                 BookingDTO bookingDTO = bookingService.convertToBookingDTO(booking);
 
 

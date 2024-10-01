@@ -41,9 +41,12 @@ public class AccountController{
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model){
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        if (account1 != null){
+            bindingResult.rejectValue("username", "Account already exists");
+        }
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
-            System.out.println("co loi");
             return "register";
         }
         accountService.register(account);
@@ -78,19 +81,11 @@ public class AccountController{
     }
 
     @PostMapping("/edit")
-    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model, HttpSession session) throws IOException {
-//        Account account1 = accountService.findUserById(account.getId());
-//        account1.setPassword(account.getPassword());
-//        account1.setFullname(account.getFullname());
-//        account1.setDateOfBirth(account.getDateOfBirth());
-//        account1.setGender(account.getGender());
-//        account1.setIdentityCard(account.getIdentityCard());
-//        account1.setPhoneNumber(account.getPhoneNumber());
-//        account1.setAddress(account.getAddress());
-//        account1.setEmail(account.getEmail());
-//        if (!image.isEmpty()) {
-//            account1.setImage(uploadImage.uploadImage(image));
-//        }
+    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model, HttpSession session) throws IOException {
+        accountRegisterValidate.validate(account, bindingResult);
+        if(bindingResult.hasErrors()){
+            return "edit-account";
+        }
         accountService.updateAccount(account, image);
         Account account1 = accountService.findUserByUsername(account.getUsername());
         session.setAttribute("account", account1);

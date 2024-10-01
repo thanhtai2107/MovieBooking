@@ -1,5 +1,6 @@
 package com.example.MovieBooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Entity
@@ -38,8 +38,8 @@ public class CinemaRoom {
     private String screen;
 
     @OneToMany(mappedBy = "cinemaRoom")
-    private List<Movie> movieList;
+    @JsonBackReference
+    private List<Movie> movies;
 
-    @OneToMany(mappedBy = "cinemaRoom")
-    private List<Seat> seatList;
+    // Other fields and methods...
 }

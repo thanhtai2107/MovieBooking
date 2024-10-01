@@ -1,6 +1,11 @@
 package com.example.MovieBooking.controller;
 
 import com.example.MovieBooking.entity.CinemaRoom;
+import com.example.MovieBooking.service.ICinemaRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.example.MovieBooking.entity.Seat;
 import com.example.MovieBooking.service.ICinemaRoomService;
 import com.example.MovieBooking.service.ISeatService;
@@ -18,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/cinemaRoom")
 public class CinemaRoomController {
-
     @Autowired
     private ICinemaRoomService cinemaRoomService;
 
@@ -103,4 +107,11 @@ public class CinemaRoomController {
         seatService.updateListSeatType(selectedSeat, seatType);
         return "redirect:/cinemaRoom/listCinemaRoom";
     }
+
+    @GetMapping("/list")
+    public List<CinemaRoom> getAllCinemaRooms() {
+        return cinemaRoomService.getAllCinemaRooms();
+    }
+
 }
+

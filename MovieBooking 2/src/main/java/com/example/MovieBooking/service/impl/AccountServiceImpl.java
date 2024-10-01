@@ -58,7 +58,7 @@ public class AccountServiceImpl implements IAccountService {
 
         accountRepository.save(account1);
 
-        Member member = new Member(null, 0, account1);
+        Member member = new Member(null, 0L, account1);
         memberService.saveMember(member);
     }
 
@@ -103,6 +103,16 @@ public class AccountServiceImpl implements IAccountService {
             account1.setImage(uploadImage.uploadImage(imageUrl));
         }
         accountRepository.save(account1);
+    }
+
+    @Override
+    public Account findUserByMemberId(Long memberId) {
+        return accountRepository.findAccountByMemberId(memberId);
+    }
+
+    @Override
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
     }
 
     public Optional<Account> getAccountByUserName(String userName){
