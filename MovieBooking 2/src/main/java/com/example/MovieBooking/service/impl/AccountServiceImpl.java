@@ -58,7 +58,7 @@ public class AccountServiceImpl implements IAccountService {
 
         accountRepository.save(account1);
 
-        Member member = new Member(null, 0, account1);
+        Member member = new Member(null, 0L, account1);
         memberService.saveMember(member);
     }
 
