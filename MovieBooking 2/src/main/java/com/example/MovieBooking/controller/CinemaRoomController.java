@@ -31,8 +31,8 @@ public class CinemaRoomController {
     @Autowired
     private ICinemaRoomService cinemaRoomService;
 
-    @Autowired
-    private CinemaRoomServiceImpl cinemaRoomService;
+//    @Autowired
+//    private CinemaRoomServiceImpl cinemaRoomService;
 
     @Autowired
     private SeatServiceImpl seatService;

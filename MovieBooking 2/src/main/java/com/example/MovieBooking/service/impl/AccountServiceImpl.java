@@ -76,7 +76,7 @@ public class AccountServiceImpl implements IAccountService {
                     .username(account1.getUsername())
                     .password(account1.getPassword())
                     .role(account1.getRole())
-                    .status((account1.getStatus()))
+                    .status(account1.getStatus())
                     .build();
         } else
             throw new UsernameNotFoundException("User not found");
