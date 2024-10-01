@@ -101,7 +101,7 @@
               <div class="card-body">
                 <div class="d-flex align-items-center">
                   <div>
-                    <h4 class="card-title">Số lượng phim: <span class="increase" th:text="${countMovie}"></span>
+                    <h4 class="card-title">Số lượng thành viên: <span class="increase" th:text="${countMember}"></span>
                     </h4>
                     <a href="/">Xem chi tiết</a>
                   </div>
@@ -128,26 +128,26 @@
 
         <!-- Table Section -->
         <div class="table-wrapper mt-4">
-          <h5 class="card-title" style="margin: 10px;">Danh sách phim</h5>
+          <h5 class="card-title" style="margin: 10px;">Danh sách thành viên</h5>
           <table class="table table-hover table-striped">
             <thead class="table-light">
             <tr>
               <th>#</th>
-              <th>Movie(ENG)</th>
-              <th>Movie(VN)</th>
-              <th>FromDate</th>
-              <th>Company</th>
-              <th>Duration</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Gender</th>
+              <th>Address</th>
+              <th>Score</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="movie, iterStat : ${listMovie}">
+            <tr th:each="member, iterStat : ${listMember}">
               <td th:text="${iterStat.index + 1}"></td>
-              <td th:text="${movie.nameEnglish}"></td>
-              <td th:text="${movie.nameVN}"></td>
-              <td th:text="${movie.fromDate}"></td>
-              <td th:text="${movie.productionCompany}"></td>
-              <td th:text="${movie.duration}"></td>
+              <td th:text="${member.account.username}"></td>
+              <td th:text="${member.account.email}"></td>
+              <td th:text="${member.account.gender}"></td>
+              <td th:text="${member.account.address}"></td>
+              <td th:text="${member.score}"></td>
             </tr>
             </tbody>
           </table>
