@@ -46,7 +46,6 @@ public class AccountController{
         }
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
-            System.out.println("co loi");
             return "register";
         }
         accountService.register(account);

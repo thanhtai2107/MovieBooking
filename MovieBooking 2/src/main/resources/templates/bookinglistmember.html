@@ -118,7 +118,7 @@
 <!-- Main Container -->
 <div class="container-fluid">
     <!-- Header Customer -->
-    <div th:replace = "component/UserHeader::header">...</div>
+    <div th:insert="~{component/UserHeader}">...</div>
 
 
 
@@ -126,7 +126,7 @@
         <!-- Sidebar of User -->
         <div class="col-2 sidebar" style="background-color: white;">
             <!-- Sidebar content here -->
-            <div th:replace = "component/UserSideBar::sidebar">...</div>
+            <div th:insert="~{component/UserSideBar}">...</div>
         </div>
 
         <!-- Main Content -->
