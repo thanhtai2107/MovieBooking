@@ -24,7 +24,7 @@ public class BookingDTO {
     private int status;
     private String screen;
     private long total;
-    private int useScore;
+    private Long useScore;
 
 
     @Override

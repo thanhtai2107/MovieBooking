@@ -18,7 +18,7 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
-    private Integer score;
+    private Long score;
 
     @OneToOne
     @JoinColumn(name = "account_id")
