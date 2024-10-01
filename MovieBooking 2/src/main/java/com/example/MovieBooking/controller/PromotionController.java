@@ -5,8 +5,6 @@ import com.example.MovieBooking.service.impl.UploadImageImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,12 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.MovieBooking.entity.Promotion;
 import com.example.MovieBooking.service.impl.PromotionServiceImpl;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Controller
 public class PromotionController {
@@ -82,9 +77,11 @@ public class PromotionController {
 	public String addPromotion(
 			@Valid @ModelAttribute("promotion") PromotionDTO promotionDTO,
 			BindingResult bindingResult,
-			Model model
+			Model model,
+			RedirectAttributes redirectAttributes
 	) throws IOException {
 		if (bindingResult.hasErrors()) {
+			model.addAttribute("message", "Unsuccessfully add.");
 			return "addPromotion";
 		}
 		String imageLink = uploadImageService.uploadImage(promotionDTO.getImage());
@@ -97,6 +94,7 @@ public class PromotionController {
 		promotion.setDetail(promotionDTO.getDetail());
 		promotion.setImage(imageLink);
 		promotionService.savePromotion(promotion);
+		redirectAttributes.addFlashAttribute("message", "Successfully add.");
 		return "redirect:/listPromotion";
 	}
 
@@ -121,12 +119,14 @@ public class PromotionController {
 			@Valid @ModelAttribute("promotion") PromotionDTO promotionDTO,
 			@RequestParam("image") MultipartFile file,
 			BindingResult bindingResult,
-			Model model
+			Model model,
+            RedirectAttributes redirectAttributes
 	) throws IOException {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("promotion", promotionDTO);
 			model.addAttribute("promotionID", promotionDTO.getPromotionId());
 			System.out.println(promotionDTO.toString());
+			model.addAttribute("message", "Unsuccessfully update.");
 			return "editPromotion";
 		}
 
@@ -145,16 +145,19 @@ public class PromotionController {
 			promotion.setImage(promotionDTO.getImageLink());
 		}
 		promotionService.savePromotion(promotion);
+		redirectAttributes.addFlashAttribute("message", "Successfully update.");
 		return "redirect:/listPromotion";
 }
 
 	@PostMapping("/deletePromotion/{id}")
-	public String deletePromotion(@PathVariable Long id) {
+	public String deletePromotion(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
         System.out.println(id);
 		try {
 			promotionService.deletePromotionById(id);
+            redirectAttributes.addFlashAttribute("message", "Successfully delete.");
 			return "redirect:/listPromotion";
 		} catch (Exception e) {
+            model.addAttribute("message", "Fail to delete this promotion.");
 			return "listPromotion";
 		}
 	}
