@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -27,4 +28,18 @@ public class MovieDate implements Serializable {
     @ManyToOne
     @JoinColumn(name = "show_date_id")
     private ShowDate showDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MovieDate movieDate = (MovieDate) o;
+        return Objects.equals(movie, movieDate.movie) &&
+               Objects.equals(showDate, movieDate.showDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movie, showDate);
+    }
 }

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-@Repository
 public interface CinemaRoomRepository extends JpaRepository<CinemaRoom, Long> {
     @Query("from CinemaRoom c where c.cinemaName like %?1%")
     Page<CinemaRoom> findByCinemaRoomName(String valueSearch, Pageable pageable);

@@ -56,19 +56,8 @@
             /* Gray background for content */
         }
 
-        .white-background {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
-            /* Gray border */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow */
-        }
-
-        .bordered-title {
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 10px;
+        small {
+            color: red;
         }
     </style>
 </head>
@@ -155,9 +144,10 @@
         <!-- Main Content -->
         <div class="col-10 content">
             <div class="card">
+<!--                <form th:action="@{/editPromotion}" method="post" enctype="multipart/form-data" th:object="${promotion}" id="form-editPromotion">-->
                 <div class="row d-flex justify-content-center">
                     <img
-                            th:src="@{${promotion.image}}"
+                            th:src="@{${promotion.imageLink}}"
                             class="card-img-center"
                             alt="..."
                             style="
@@ -166,11 +156,13 @@
                                 overflow: hidden;
                                 "
                     />
+<!--                    <input name="imageLink" id="imageLink" type="hidden" th:value="*{imageLink}"></input>-->
                 </div>
 
                 <div class="card-body">
-                    <form th:action="@{/editPromotion}" method="post">
-                        <input name="id" id="promotionId" type="hidden" th:value="${promotion.promotionId}"></input>
+                    <form th:action="@{/editPromotion}" method="post" enctype="multipart/form-data" th:object="${promotion}" id="form-editPromotion">
+                        <input name="promotionId" id="promotionId" type="hidden" th:value="${promotion.promotionId}"></input>
+                        <input name="imageLink" id="imageLink" type="hidden" th:value="*{imageLink}"></input>
                         <div class="mb-3">
                             <label for="title" class="form-label"
                             ><strong>Title:</strong></label
@@ -181,8 +173,9 @@
                                     id="title"
                                     name="title"
                                     th:value="${promotion.title}"
-                                    required
                             />
+                            <small id="title-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small>
                         </div>
                         <div class="mb-3">
                             <label for="startTime" class="form-label"
@@ -192,10 +185,12 @@
                                     type="date"
                                     class="form-control"
                                     id="startTime"
-                                    name="startTimeString"
+                                    name="startTime"
                                     placeholder="Start Time"
                                     th:value="${promotion.startTime}"
                             />
+                            <small id="startTime-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></small>
                         </div>
                         <div class="mb-3">
                             <label for="endTime" class="form-label"
@@ -205,10 +200,12 @@
                                     type="date"
                                     class="form-control"
                                     id="endTime"
-                                    name="endTimeString"
+                                    name="endTime"
                                     placeholder="End Time"
                                     th:value="${promotion.endTime}"
                             />
+                            <small id="endTime-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></small>
                         </div>
                         <div class="mb-3">
                             <label for="discountLevel" class="form-label"
@@ -218,10 +215,12 @@
                                     type="number"
                                     class="form-control"
                                     id="discountLevel"
-                                    name="discountLevelString"
+                                    name="discountLevel"
                                     placeholder="Discount Level"
                                     th:value="${promotion.discountLevel}"
                             />
+                            <small id="discountLevel-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('discountLevel')}" th:errors="*{discountLevel}"></small>
                         </div>
                         <div class="mb-3">
                             <label for="detail" class="form-label"
@@ -235,6 +234,8 @@
                                     placeholder="Detail"
                                     th:value="${promotion.detail}"
                             />
+                            <small id="detail-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('detail')}" th:errors="*{detail}"></small>
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label"
@@ -244,8 +245,12 @@
                                     type="file"
                                     class="form-control"
                                     id="image"
-                                    name="imageLink"
+                                    name="image"
+                                    th:field="*{image}"
+
                             />
+                            <small id="image-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></small>
                         </div>
                         <div class="d-flex justify-content-start">
                             <button type="submit" class="btn btn-primary me-2">
@@ -261,15 +266,196 @@
                         </div>
                     </form>
                 </div>
+<!--                </form>-->
             </div>
 
         </div>
     </div>
 </div>
 <script>
+    // back to previos page
     function goBack() {
         window.history.back();
     }
+    // validate client-side:
+    $(document).ready(function () {
+        let titleError = false;
+        let startTimeError = false;
+        let endTimeError = false;
+        let discountLevelError = false;
+        let detailError = false;
+        let imageError = false;
+
+        function isValidDate(dateString) {
+            // Biểu thức chính quy kiểm tra định dạng yyyy-MM-dd
+            var regex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!regex.test(dateString)) return false;
+            var [year, month, day] = dateString.split('-').map(Number);
+            var date = new Date(year, month - 1, day);
+
+            return date && (date.getMonth() + 1) === month && date.getDate() === day && date.getFullYear() === year;
+        }
+
+        // Check validate
+        $("#title").on("blur", function () {
+            checkTitle();
+        });
+        $("#startTime").on("blur", function () {
+            checkStartTime();
+        });
+        $("#endTime").on("blur", function () {
+            checkEndTime();
+        });
+        $("#discountLevel").on("blur", function () {
+            checkDiscountLevel();
+        });
+        $("#detail").on("blur", function () {
+            checkDetail();
+        });
+        $("#image").on("blur", function () {
+            if ($(this).val()) {
+                checkImage();  // Only call checkImage() if an image is selected
+            }
+        });
+
+        // Function check title
+        function checkTitle() {
+            let title = $("#title").val();
+
+            // Kiểm tra nếu title trống hoặc chỉ chứa khoảng trắng
+            if (title.trim() == "") {
+                // Hiển thị lỗi và cập nhật nội dung lỗi
+                $("#title-err").show();
+                $("#title-err").text("Title is required");
+                titleError = false;
+            } else {
+                // Ẩn thông báo lỗi nếu tiêu đề hợp lệ
+                $("#title-err").hide();
+                titleError = true;
+            }
+        }
+        // Function check startDate
+        function checkStartTime() {
+            let startTime = $("#startTime").val();
+            if (startTime.trim() == "") {
+                $("#startTime-err").show();
+                $("#startTime-err").text("StartTime is required");
+                startTimeError = false;
+            } else
+            if (!isValidDate(startTime)) {
+                $("#startTime-err").show();
+                $("#startTime-err").text("Please enter a valid date!");
+                startTimeError = false;
+            } else {
+                $("#startTime-err").hide();
+                startTimeError = true;
+            }
+        }
+        function checkEndTime() {
+            let startTime = $("#startTime").val();
+            let endTime = $("#endTime").val();
+
+            // Kiểm tra nếu endTime trống
+            if (endTime.trim() == "") {
+                $("#endTime-err").show();
+                $("#endTime-err").text("EndTime is required");
+                endTimeError = false;
+            }
+            // Kiểm tra tính hợp lệ của startTime và endTime
+            else if (!isValidDate(endTime)) {
+                $("#endTime-err").show();
+                $("#endTime-err").text("Please enter a valid date!");
+                endTimeError = false;
+            }
+            // Kiểm tra nếu có cả startTime và endTime, so sánh hai ngày
+            else if (startTime && endTime) {
+                var startDate = new Date(startTime);
+                var endDate = new Date(endTime);
+
+                if (startDate > endDate) {
+                    $("#endTime-err").show();
+                    $("#endTime-err").text(
+                        "EndTime must be equal to or greater than startTime!"
+                    );
+                    endTimeError = false;
+                } else {
+                    // Ngày hợp lệ, ẩn lỗi
+                    $("#endTime-err").hide();
+                    endTimeError = true;
+                }
+            }
+            // Nếu mọi thứ đều hợp lệ
+            else {
+                $("#endTime-err").hide();
+                endTimeError = true;
+            }
+        }
+        // Function check discount level
+        function checkDiscountLevel() {
+            let discountLevel = $("#discountLevel").val();
+            if (discountLevel.trim() == "") {
+                $("#discountLevel-err").show();
+                $("#discountLevel-err").text("Discount level is required");
+                discountLevelError = false;
+            } else
+            if (isNaN(discountLevel)) {
+                $("#discountLevel-err").show();
+                $("#discountLevel-err").text("Please enter a valid number!");
+                discountLevelError = false;
+            } else {
+                $("#discountLevel-err").hide();
+                discountLevelError = true;
+            }
+        }
+        // Function check detail
+        function checkDetail() {
+            let detail = $("#detail").val();
+            if (detail.trim() == "") {
+                $("#detail-err").show();
+                $("#detail-err").text("Detail is required");
+                detailError = false;
+            } else {
+                $("#detail-err").hide();
+                detailError = true;
+            }
+        }
+        // Function check image
+        function checkImage() {
+            let fileInput = $("#image");
+            let filePath = fileInput.val();
+            // Các định dạng ảnh được cho phép
+            let allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (!allowedExtensions.exec(filePath)){
+                $("#image-err").show();
+                $("#image-err").text("File image is not valid");
+                imageError = false;
+            }
+            else {
+                $("#image-err").hide();
+                imageError = true;
+            }
+        }
+
+            $("#form-editPromotion").on("submit", function (e) {
+                checkTitle();
+                checkStartTime();
+                checkEndTime();
+                checkDiscountLevel();
+                checkDetail();
+                if ($("#image").val()) {
+                    checkImage();  // Call checkImage only if the field has a value
+                } else {
+                    imageError = true;  // No error if no image is provided
+                }
+
+                if (!titleError || !startTimeError || !endTimeError || !discountLevelError
+                    || !detailError || !imageError) {
+                    e.preventDefault();
+                }
+            });
+
+    });
 </script>
 </body>
 </html>
