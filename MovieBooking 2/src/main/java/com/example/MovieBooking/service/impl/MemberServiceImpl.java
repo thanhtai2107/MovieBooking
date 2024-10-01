@@ -19,4 +19,10 @@ public class MemberServiceImpl implements IMemberService {
     public void saveMember(Member member) {
         memberRepository.save(member);
     }
+
+    @Override
+    public Integer getTotalScore(Long id) {
+        return memberRepository.getToTalScore(id);
+    }
+
 }

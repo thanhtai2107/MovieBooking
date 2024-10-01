@@ -3,10 +3,11 @@
   <div th:fragment = "sidebar"
           class="card-holder h-100 text-center" style="background-color: white;">
     <div class="card-header" style="background-color: white;">
-      <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
+      <img th:if="${session.account.image}"  th:src="${session.account.image}" alt=""
            style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
-      <h5 class="card-title">tientv5</h5>
-      <h6 class="card-subtitle mb-2 text-muted"><span><i class="fa-solid fa-star text-warning"></i></span>Score: 100</h6>
+      <img th:unless="${session.account.image}"  src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
+      <h5 class="card-title" th:text="${session.account.username}"></h5>
+      <h6 class="card-subtitle mb-2 text-muted"><i class="fa-solid fa-star text-warning"></i><span th:text="' Score: ' + ${session.score}"></span></h6>
     </div>
     <div class="card-selection align-items-center">
       <ul class="list-group list-group-flush">

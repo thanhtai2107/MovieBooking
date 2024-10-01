@@ -140,7 +140,7 @@
                         <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
                         <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
                             th:if="${i >= 0 && i < totalPages}"
-                            th:classappend="${i == currentPage} ? 'active'">
+                            th:classappend="${i == currentPage} ? 'page-item active': ''">
                             <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
                         </li>
 

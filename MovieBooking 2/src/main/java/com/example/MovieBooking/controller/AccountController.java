@@ -4,6 +4,7 @@ import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.util.AccountRegisterValidate;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +78,7 @@ public class AccountController{
     }
 
     @PostMapping("/edit")
-    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model) throws IOException {
+    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model, HttpSession session) throws IOException {
 //        Account account1 = accountService.findUserById(account.getId());
 //        account1.setPassword(account.getPassword());
 //        account1.setFullname(account.getFullname());
@@ -91,6 +92,8 @@ public class AccountController{
 //            account1.setImage(uploadImage.uploadImage(image));
 //        }
         accountService.updateAccount(account, image);
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        session.setAttribute("account", account1);
         return "redirect:/edit";
     }
 }

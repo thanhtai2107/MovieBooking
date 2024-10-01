@@ -1,9 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div
         class="row d-flex align-items-center"
         style="background-color: #205081; height: 60px;"
         xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="col-2">
-        <a th:href="@{/}">
+        <a th:href="@{/home}">
             <img
                     src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png"
                     alt=""
@@ -27,10 +29,8 @@
                         Movies
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                        <li th:each="movie : ${session.movieList}">
+                            <a class="dropdown-item" th:href="@{/search-in-header(searchHeaderInput=${movie.content})}" th:text="${movie.content}"></a>
                         </li>
                     </ul>
                 </div>
@@ -39,12 +39,12 @@
                         style="height: 35px;width: 250px;"
 
                 >
-                   <form th:action="@{/search-in-header}" method="get" class="d-flex align-items-center">
-                       <input type="text" name="searchHeaderInput" th:value="${searchHeaderInput}" class="border-0 w-100" style="outline: none" placeholder="Search"/>
-                       <button type="submit" class="btn ">
-                           <i class="fa-solid fa-magnifying-glass"></i>
-                       </button>
-                   </form>
+                    <form th:action="@{/search-in-header}" method="get" class="d-flex align-items-center">
+                        <input type="text" name="searchHeaderInput" th:value="${searchHeaderInput}" class="border-0 w-100" style="outline: none" placeholder="Search"/>
+                        <button type="submit" class="btn ">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -78,3 +78,5 @@
         </div>
     </div>
 </div>
+</html>
+

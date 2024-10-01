@@ -55,6 +55,11 @@ public class CinemaRoomServiceImpl implements ICinemaRoomService {
     }
 
     @Override
+    public boolean existsByCinemaRoomName(String cinemaRoomName) {
+        return cinemaRoomRepository.existsByCinemaName(cinemaRoomName);
+    }
+
+    @Override
     public void saveCinemaRoom(CinemaRoom cinemaRoom) {
         CinemaRoom cinemaRoomSaved = cinemaRoomRepository.save(cinemaRoom);
         generateSeats(cinemaRoomSaved);
