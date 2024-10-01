@@ -13,4 +13,5 @@ public interface CinemaRoomRepository extends JpaRepository<CinemaRoom, Long> {
 
     @Query("from CinemaRoom c where c.cinemaRoomId = ?1 or c.seatQuantity = ?1")
     Page<CinemaRoom> findByCinemaRoomIdOrSeatQuantity(Long valueSearch, Pageable pageable);
+    boolean existsByCinemaName(String cinemaName);
 }

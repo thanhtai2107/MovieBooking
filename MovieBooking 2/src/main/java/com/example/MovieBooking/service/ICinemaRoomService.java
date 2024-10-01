@@ -13,6 +13,8 @@ public interface ICinemaRoomService {
 
     CinemaRoom getCinemaRoomById(Long cinemaRoomId);
 
+    boolean existsByCinemaRoomName(String cinemaRoomName);
+
     void saveCinemaRoom(CinemaRoom cinemaRoom);
 }
 
