@@ -40,6 +40,15 @@ public class MemberServiceImpl implements IMemberService {
     }
 
     @Override
+    public Integer getTotalScore(Long id) {
+        return memberRepository.getToTalScore(id);
+    }
+
+    @Override
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
+    }
+
     public int getTotalPage(String search, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         return memberRepository.getAllMembers(search,pageable).getTotalPages();

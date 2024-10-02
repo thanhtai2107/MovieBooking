@@ -147,11 +147,12 @@
                     <div id="seat-container">
                         <div class="row rowSeat" th:each="seatRow, stat : ${seatRows}">
                             <div th:each="seat : ${seatRow}"
-                                 th:class="'seat ' + ${seat.seatType.seatTypeId == 1 ? 'seat-normal' : 'seat-vip'}
-                                + ' ' + ${seat.seatStatus == 0 ? 'available' : 'booked'}"
+                                 th:class="'seat ' + ${seat.seatType != null && seat.seatType.seatTypeId == 1 ? 'seat-normal' : 'seat-vip'}
+                                + ' ' + ${seat.seatStatus != null && seat.seatStatus == 0 ? 'available' : 'booked'}"
                                  th:attr="data-seat-id=${seat.seatId}">
+
                                 <!--boi vi co' security nen can phai them dong nay-->
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
 
                                 <!-- <input type="hidden" th:value="${seat.seatId}" name="selectedSeat" id="selectedSeat">-->
                                 <span th:text="${seat.seatRow} + ${seat.seatColumn}"></span>
