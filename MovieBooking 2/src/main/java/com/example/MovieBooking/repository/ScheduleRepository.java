@@ -19,6 +19,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             "JOIN md.showDate sd " +
             "WHERE sd.showDate = :date AND m.movieId = :id")
     List<Schedule> findScheduleTimesAndMoviesByDate(@Param("date") LocalDate date, Long id);
-
+    
+    
 
 }

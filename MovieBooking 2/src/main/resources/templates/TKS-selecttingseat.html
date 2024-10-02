@@ -255,10 +255,14 @@
               <form
                 class="content-wrapper"
                 id="seatForm"
-                action="/select-seat"
-                method="post"
+                th:action="@{/confirm(movieId=${movieId}, scheduleId=${scheduleId}, date=${#temporals.format(date, 'yyyy-MM-dd')})}" 
+                method="get"
                 data-max-quantity="${availableSeatsCount}"
               >
+                <!-- Input ẩn để gửi movieId và scheduleId -->
+                <input type="hidden" name="movieId" th:value="${movieId}" />
+                <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
+                <input type="hidden" name="date" th:value="${date}">
                 <!-- Display all seat of data -->
                 <div id="seat-container">
                   <div
@@ -316,7 +320,7 @@
             <!-- Continue Button -->
             <div class="row justify-content-end mt-4">
               <div class="col-auto">
-                <button class="btn btn-primary" id="continueButton">
+                <button type="submit" class="btn " id="continueButton" style="background-color: #337AB7; color: white">
                   <i class="fa-solid fa-arrow-right"></i> Continue
                 </button>
               </div>
@@ -411,6 +415,8 @@
             alert("Vui lòng chọn ít nhất một ghế trước khi tiếp tục.");
             return; // Ngăn chặn việc tiếp tục nếu không có ghế nào được chọn
           }
+          // Thay đổi action của form để chuyển hướng đến trang confirm
+          $("#seatForm").attr("action", "/confirm");
           // Gửi form
           $("#seatForm").submit();
         });

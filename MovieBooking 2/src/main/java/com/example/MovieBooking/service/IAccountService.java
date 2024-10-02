@@ -1,5 +1,6 @@
 package com.example.MovieBooking.service;
 
+import com.example.MovieBooking.dto.req.AccountDTO;
 import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,4 +13,6 @@ public interface IAccountService extends UserDetailsService {
     Account findUserByUsername(String username);
     Account findUserById(Long id);
     void updateAccount(AccountReq account, MultipartFile imageUrl) throws IOException;
+    AccountDTO getMemberById(Long id);
+    AccountDTO getMemberByIdentityCard(String identityCard);
 }

@@ -6,4 +6,5 @@ import org.springframework.data.domain.Page;
 
 public interface IBookingService {
     Page<Booking> getBookingsPagination(String searchInput, int page, int size );
+    Booking saveBooking(Booking booking);
 }

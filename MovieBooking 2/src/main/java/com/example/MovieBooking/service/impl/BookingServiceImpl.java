@@ -136,5 +136,10 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.find(searchInput,pageable);
     }
 
+    @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
 }
 

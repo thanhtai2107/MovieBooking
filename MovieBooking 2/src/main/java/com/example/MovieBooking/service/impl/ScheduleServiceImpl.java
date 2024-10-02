@@ -13,5 +13,9 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Autowired
     ScheduleRepository scheduleRepository;
-    
+
+    @Override
+    public Schedule getScheduleById(Long scheduleId) {
+        return scheduleRepository.getOne(scheduleId);
+    }
 }

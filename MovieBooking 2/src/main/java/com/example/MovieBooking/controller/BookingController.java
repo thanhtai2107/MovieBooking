@@ -1,15 +1,13 @@
 package com.example.MovieBooking.controller;
 
 
-import com.example.MovieBooking.entity.Booking;
+import com.example.MovieBooking.entity.*;
+import com.example.MovieBooking.service.IShowDateService;
 import com.example.MovieBooking.service.impl.BookingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
-import com.example.MovieBooking.entity.Movie;
-import com.example.MovieBooking.entity.MovieSchedule;
-import com.example.MovieBooking.entity.Schedule;
 import com.example.MovieBooking.repository.MovieRepository;
 import com.example.MovieBooking.repository.MovieScheduleRepository;
 import com.example.MovieBooking.repository.ScheduleRepository;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -37,6 +36,9 @@ public class BookingController {
     
     @Autowired
     private ScheduleRepository scheduleRepository;
+    
+    @Autowired
+    private IShowDateService showDateService;
 
 
     @Autowired
@@ -68,7 +70,7 @@ public class BookingController {
 //        return "TKS-showtimes"; 
 //    }
 
-    @GetMapping("/movies")
+    @GetMapping("/showtimes")
     public String getMoviesByDay(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -81,6 +83,14 @@ public class BookingController {
 
         // Lấy danh sách phim theo ngày
         List<Movie> movieList = movieService.getMoviesByDate(date);
+
+        ShowDate showDate = showDateService.findShowDateByDate(date);
+
+        // Kiểm tra nếu showDate là null
+        if (showDate == null) {
+            model.addAttribute("showDate", null); // Gán giá trị null cho showDate trong model
+            return "TKS-showtimes"; // Trả về trang hiển thị thông báo
+        }
         
         for (Movie movie : movieList) {
             String schedules = "schedules" + movie.getMovieId();
@@ -103,13 +113,13 @@ public class BookingController {
         // Truyền dữ liệu vào model để gửi tới view
         model.addAttribute("selectedDate", date);     // Ngày đã chọn
         model.addAttribute("movieList", movieList);   // Danh sách phim theo ngày
+        model.addAttribute("showDate", showDate);
 //        model.addAttribute("movieScheduleList", movieScheduleList); // Danh sach lich chieu theo phim theo ngay
 
         // Debug thông tin ngày và danh sách phim (nếu cần)
         System.out.println("Selected date: " + date);
         System.out.println("Movie list: " + movieList);
-
-        // Trả về view để hiển thị
+        System.out.println("Show date: " + showDate.getShowDate());     // Trả về view để hiển thị
         return "TKS-showtimes";  // Hiển thị trang TKS-showtimes
     }
 

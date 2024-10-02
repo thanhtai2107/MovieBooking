@@ -14,6 +14,8 @@ public interface ISeatService {
 
 
     void updateListSeatType(Long[] listSeatIds, String valueSeatType);
+    
+    List<Seat> getSeatSByIds(List<Long> seatIds);
 
     // Tìm tất cả ghế dựa trên scheduleId
    
