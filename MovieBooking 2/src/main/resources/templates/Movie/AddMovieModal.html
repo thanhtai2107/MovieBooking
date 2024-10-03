@@ -13,13 +13,13 @@
                 <form id="addMovieForm" th:action="@{/movies/add}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="movieNameENG" class="form-label required-field">Movie name (ENG):</label>
-                        <input type="text" class="form-control" id="movieNameENG" name="nameEnglish" required placeholder="Enter movie name in English">
-                        <div class="invalid-feedback">Please enter the movie name in English.</div>
+                        <input type="text" class="form-control" id="movieNameENG" name="nameEnglish" required placeholder="Enter movie name in English" maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in English (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="movieNameVN" class="form-label required-field">Movie name (VN):</label>
-                        <input type="text" class="form-control" id="movieNameVN" name="nameVN" required placeholder="Enter movie name in Vietnamese">
-                        <div class="invalid-feedback">Please enter the movie name in Vietnamese.</div>
+                        <input type="text" class="form-control" id="movieNameVN" name="nameVN" required placeholder="Enter movie name in Vietnamese" maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in Vietnamese (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="fromDate" class="form-label required-field">From date:</label>
@@ -48,8 +48,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label required-field">Duration:</label>
-                        <input type="number" class="form-control" id="duration" name="duration" required placeholder="Enter duration in minutes">
-                        <div class="invalid-feedback">Please enter the movie duration.</div>
+                        <input type="number" class="form-control" id="duration" name="duration" required placeholder="Enter duration in minutes" min="1">
+                        <div class="invalid-feedback">Please enter a valid movie duration (minimum 1 minute).</div>
                     </div>
                     <div class="mb-3">
                         <label for="version" class="form-label required-field">Version:</label>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add Movie</button>
+                        <button type="submit" class="btn btn-primary" id="saveNewMovie">Add Movie</button>
                     </div>
                 </form>
             </div>
@@ -159,6 +159,8 @@
         const fileInput = document.getElementById('largeImage');
         const fileName = document.getElementById('fileName');
         const chooseFileBtn = document.getElementById('chooseFileBtn');
+        const form = document.getElementById('addMovieForm');
+        const saveButton = document.getElementById('saveNewMovie');
 
         chooseFileBtn.addEventListener('click', function() {
             fileInput.click();
@@ -168,8 +170,123 @@
             if (event.target.files.length > 0) {
                 let simpleName = event.target.files[0].name.split('\\').pop().split('/').pop();
                 fileName.value = simpleName;
+                
+                // Preview image
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('movieThumbnail').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
             } else {
                 fileName.value = 'Không có tệp nào được chọn';
+            }
+        });
+
+        function sanitizeInput(input) {
+            return input.replace(/[&<>"']/g, function(match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            // Check required fields
+            form.querySelectorAll('input[required], textarea[required], select[required]').forEach(function(element) {
+                if (element.value.trim() === '') {
+                    isValid = false;
+                    element.classList.add('is-invalid');
+                } else {
+                    element.classList.remove('is-invalid');
+                }
+            });
+
+            // Validate movie name length (ENG and VN)
+            ['#movieNameENG', '#movieNameVN'].forEach(function(selector) {
+                const element = document.querySelector(selector);
+                if (element.value.length > 50) {
+                    isValid = false;
+                    element.classList.add('is-invalid');
+                    element.nextElementSibling.textContent = 'Movie name must not exceed 50 characters.';
+                }
+            });
+
+            // Validate duration
+            const duration = document.getElementById('duration');
+            if (isNaN(duration.value) || duration.value < 1) {
+                isValid = false;
+                duration.classList.add('is-invalid');
+                duration.nextElementSibling.textContent = 'Duration must be a positive number.';
+            }
+
+            // Check if From date is not later than To date
+            const fromDate = new Date(document.getElementById('fromDate').value);
+            const toDate = new Date(document.getElementById('toDate').value);
+            if (fromDate > toDate) {
+                isValid = false;
+                document.getElementById('fromDate').classList.add('is-invalid');
+                document.getElementById('toDate').classList.add('is-invalid');
+                document.getElementById('toDate').nextElementSibling.textContent = 'To date must be after From date.';
+            }
+
+            // Validate image file
+            const imageFile = fileInput.files[0];
+            if (imageFile) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(imageFile.type)) {
+                    isValid = false;
+                    fileInput.classList.add('is-invalid');
+                    fileName.nextElementSibling.textContent = 'Please select a valid image file (JPEG, PNG, or GIF).';
+                }
+            }
+
+            return isValid;
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (validateForm()) {
+                const formData = new FormData(form);
+                
+                // Sanitize text inputs
+                formData.forEach((value, key) => {
+                    if (typeof value === 'string') {
+                        formData.set(key, sanitizeInput(value));
+                    }
+                });
+
+                saveButton.disabled = true;
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    $('#addMovieModal').modal('hide');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error adding movie. Please try again.');
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                });
             }
         });
     });
