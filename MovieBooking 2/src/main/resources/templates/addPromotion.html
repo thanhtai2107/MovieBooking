@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Promotion</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+    />
+    <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://kit.fontawesome.com/2fdd50f686.js"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"
+    ></script>
+    <style>
+        /* css of sidebar */
+        .list-group-item a {
+            text-decoration: none;
+            color: black;
+        }
+
+        /* Add hover effect for all links */
+        .list-group-item a:hover {
+            color: #007bff;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #e9ecef;
+            /* Gray background for content */
+        }
+
+        small {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Main Container -->
+<div class="container-fluid">
+    <div
+            class="row d-flex align-items-center"
+            style="background-color: #205081; height: 60px"
+    >
+        <div class="col-2">
+            <img
+                    src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png"
+                    alt=""
+                    style="height: 40px"
+            />
+        </div>
+        <div class="col-10">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-4 align-items-center ms-5"></div>
+                <div class="d-flex gap-4">
+                    <a href="#" class="text-white text-decoration-none">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Welcome, tientv5</span>
+                    </a>
+                    <div class="text-white" style="cursor: pointer">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2 sidebar" style="background-color: white">
+            <!-- Sidebar content here -->
+            <div
+                    class="card-holder h-100 text-center"
+                    style="background-color: white"
+            >
+                <div class="card-header" style="background-color: white">
+                    <img
+                            src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg"
+                            alt=""
+                            style="
+                  height: 100px;
+                  width: 100px;
+                  border-radius: 100%;
+                  align-self: center;
+                "
+                    />
+                    <h5 class="card-title">User name</h5>
+                </div>
+                <div class="card-selection align-items-center">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><a href="">Register Account</a></li>
+                        <li class="list-group-item">
+                            <a href="">Account management</a>
+                        </li>
+                        <li class="list-group-item"><a href="">Booking Ticket</a></li>
+                        <li class="list-group-item">
+                            <a href="">Ticket Selling Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="">Ticket Booking Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="">Employee Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="">Cinema Room Management</a>
+                        </li>
+                        <li class="list-group-item"><a href="">Movie Management</a></li>
+                        <li class="list-group-item">
+                            <a href="">Promotion Management</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-10 content">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Add new Promotion</h4>
+                </div>
+                <div th:if="${errorMessage}" class="error-message">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div class="card-body">
+                    <form method="post" th:action="@{/addPromotion}" enctype="multipart/form-data" id="form-addPromotion" th:object="${promotion}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label"
+                            ><strong>Title:</strong></label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Title"
+                                    th:field="*{title}"
+                            />
+                            <small id="title-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startTime" class="form-label"
+                            ><strong>Start Time:</strong></label
+                            >
+                            <input
+                                    type="date"
+                                    class="form-control"
+                                    id="startTime"
+                                    name="startTimeString"
+                                    placeholder="Start Time"
+                                    th:field="*{startTime}"
+                            />
+                            <small id="startTime-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endTime" class="form-label"
+                            ><strong>End Time:</strong></label
+                            >
+                            <input
+                                    type="date"
+                                    class="form-control"
+                                    id="endTime"
+                                    name="endTimeString"
+                                    placeholder="End Time"
+                                    th:field="*{endTime}"
+                            />
+                            <small id="endTime-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="discountLevel" class="form-label"
+                            ><strong>Discount Level:</strong></label
+                            >
+                            <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    class="form-control"
+                                    id="discountLevel"
+                                    name="discountLevelString"
+                                    placeholder="Discount Level"
+                                    th:field="*{discountLevel}"
+                            />
+                            <small id="discountLevel-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('discountLevel')}" th:errors="*{discountLevel}"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="detail" class="form-label"
+                            ><strong>Detail:</strong></label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="detail"
+                                    name="detail"
+                                    placeholder="Detail"
+                                    th:field="*{detail}"
+                            />
+                            <small id="detail-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('detail')}" th:errors="*{detail}"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label"
+                            ><strong>Image:</strong></label
+                            >
+                            <input
+                                    type="file"
+                                    class="form-control"
+                                    id="image"
+                                    name="image"
+                                    placeholder="Không có tệp nào được chọn"
+                                    th:field="*{image}"
+                            />
+                            <small id="image-err"></small>
+                            <small class="text-danger" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></small>
+                        </div>
+                        <div class="d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fa-solid fa-check"></i> Add
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    onclick="goBack()"
+                            >
+                                <i class="fa-solid fa-xmark"></i> Back
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // back to previos page
+    function goBack() {
+        window.history.back();
+    }
+    // validate client-side:
+    $(document).ready(function () {
+        let titleError = false;
+        let startTimeError = false;
+        let endTimeError = false;
+        let discountLevelError = false;
+        let detailError = false;
+        let imageError = false;
+
+        function isValidDate(dateString) {
+            // Biểu thức chính quy kiểm tra định dạng yyyy-MM-dd
+            var regex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!regex.test(dateString)) return false;
+            var [year, month, day] = dateString.split('-').map(Number);
+            var date = new Date(year, month - 1, day);
+
+            return date && (date.getMonth() + 1) === month && date.getDate() === day && date.getFullYear() === year;
+        }
+
+        // Check validate
+        $("#title").on("blur", function () {
+            checkTitle();
+        });
+        $("#startTime").on("blur", function () {
+            checkStartTime();
+        });
+        $("#endTime").on("blur", function () {
+            checkEndTime();
+        });
+        $("#discountLevel").on("blur", function () {
+            checkDiscountLevel();
+        });
+        $("#detail").on("blur", function () {
+            checkDetail();
+        });
+        $("#image").on("blur", function () {
+            checkImage();
+        });
+
+        // Function check title
+        function checkTitle() {
+            let title = $("#title").val();
+
+            // Kiểm tra nếu title trống hoặc chỉ chứa khoảng trắng
+            if (title.trim() == "") {
+                // Hiển thị lỗi và cập nhật nội dung lỗi
+                $("#title-err").show();
+                $("#title-err").text("Title is required");
+                titleError = false;
+            } else {
+                // Ẩn thông báo lỗi nếu tiêu đề hợp lệ
+                $("#title-err").hide();
+                titleError = true;
+            }
+        }
+        // Function check startDate
+        function checkStartTime() {
+            let startTime = $("#startTime").val();
+            if (startTime.trim() == "") {
+                $("#startTime-err").show();
+                $("#startTime-err").text("StartTime is required");
+                startTimeError = false;
+            } else
+                if (!isValidDate(startTime)) {
+                    $("#startTime-err").show();
+                    $("#startTime-err").text("Please enter a valid date!");
+                    startTimeError = false;
+                } else {
+                    $("#startTime-err").hide();
+                    startTimeError = true;
+                }
+        }
+        function checkEndTime() {
+            let startTime = $("#startTime").val();
+            let endTime = $("#endTime").val();
+
+            // Kiểm tra nếu endTime trống
+            if (endTime.trim() == "") {
+                $("#endTime-err").show();
+                $("#endTime-err").text("EndTime is required");
+                endTimeError = false;
+            }
+            // Kiểm tra tính hợp lệ của startTime và endTime
+            else if (!isValidDate(endTime)) {
+                $("#endTime-err").show();
+                $("#endTime-err").text("Please enter a valid date!");
+                endTimeError = false;
+            }
+            // Kiểm tra nếu có cả startTime và endTime, so sánh hai ngày
+            else if (startTime && endTime) {
+                var startDate = new Date(startTime);
+                var endDate = new Date(endTime);
+
+                if (startDate > endDate) {
+                    $("#endTime-err").show();
+                    $("#endTime-err").text(
+                        "EndTime must be equal to or greater than startTime!"
+                    );
+                    endTimeError = false;
+                } else {
+                    // Ngày hợp lệ, ẩn lỗi
+                    $("#endTime-err").hide();
+                    endTimeError = true;
+                }
+            }
+            // Nếu mọi thứ đều hợp lệ
+            else {
+                $("#endTime-err").hide();
+                endTimeError = true;
+            }
+        }
+        // Function check discount level
+        function checkDiscountLevel() {
+            let discountLevel = $("#discountLevel").val();
+            if (discountLevel.trim() == "") {
+                $("#discountLevel-err").show();
+                $("#discountLevel-err").text("Discount level is required");
+                discountLevelError = false;
+            } else
+            if (isNaN(discountLevel)) {
+                $("#discountLevel-err").show();
+                $("#discountLevel-err").text("Please enter a valid number!");
+                discountLevelError = false;
+            } else {
+                $("#discountLevel-err").hide();
+                discountLevelError = true;
+            }
+        }
+        // Function check detail
+        function checkDetail() {
+            let detail = $("#detail").val();
+            if (detail.trim() == "") {
+                $("#detail-err").show();
+                $("#detail-err").text("Detail is required");
+                detailError = false;
+            } else {
+                $("#detail-err").hide();
+                detailError = true;
+            }
+        }
+        // Function check image
+        function checkImage() {
+            let fileInput = $("#image");
+            let filePath = fileInput.val();
+            // Các định dạng ảnh được cho phép
+            let allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (filePath.trim() == "") {
+                $("#image-err").show();
+                $("#image-err").text("File is required");
+                detailError = false;
+            } else
+                if (!allowedExtensions.exec(filePath)){
+                    $("#image-err").show();
+                    $("#image-err").text("File image is not valid");
+                    imageError = false;
+                    }
+                else {
+                    $("#image-err").hide();
+                    imageError = true;
+            }
+        }
+
+        $("#form-addPromotion").on("submit", function (e) {
+            checkTitle();
+            checkStartTime();
+            checkEndTime();
+            checkDiscountLevel();
+            checkDetail();
+            checkImage();
+
+            if (!titleError || !startTimeError || !endTimeError || !discountLevelError
+                || !detailError || !imageError) {
+                e.preventDefault();
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Long> {
-	
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM MovieSchedule ms WHERE ms.movie.movieId = :movieId")

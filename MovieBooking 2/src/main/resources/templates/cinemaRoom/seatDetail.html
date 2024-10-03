@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Room Detail</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2fdd50f686.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <style>
+        /* css of sidebar */
+        .list-group-item {
+            text-align: start;
+        }
+
+        .list-group-item a {
+            text-decoration: none;
+            color: black;
+
+        }
+
+        /* Add hover effect for all links */
+        .list-group-item a:hover {
+            color: #007bff;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #e9ecef;
+        }
+
+        .white-background {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bordered-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .seat {
+            display: flex;
+            width: 35px;
+            height: 35px;
+            margin: 5px;
+            border-radius: 5px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .seat-normal {
+            background-color: #e0e0e0;
+            box-shadow: 2px 2px 5px rgb(255, 255, 255),
+            inset -4px -5px 4px rgba(0, 0, 0, 0.2),
+            inset 2px 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .seat-vip {
+            background-color: #409cff;
+            box-shadow: 2px 2px 5px rgb(255, 255, 255),
+            inset -4px -6px 4px rgba(0, 0, 0, 0.2),
+            inset 2px 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .seat-selected {
+            background-color: #3ed060;
+            box-shadow: 2px 2px 5px rgb(255, 255, 255),
+            inset -4px -5px 4px rgba(0, 0, 0, 0.2),
+            inset 2px 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .seat-sold {
+            background-color: #e92c2c;
+            box-shadow: 2px 2px 5px rgb(255, 255, 255),
+            inset -4px -5px 4px rgba(0, 0, 0, 0.2),
+            inset 2px 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .screen {
+            margin: 20px 0;
+            text-align: center;
+            border-bottom: 3px solid #bbb;
+        }
+
+        .content-wrapper {
+            width: 33.33%;
+            margin: 0 auto;
+        }
+
+        .seat-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .seat-spacer {
+            width: 50px;
+        }
+
+        .rowSeat {
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Main Container -->
+<div class="container-fluid">
+
+    <!-- Header of admin -->
+    <div th:insert="~{component/AdminHeader}"></div>
+
+    <div class="row">
+        <!-- Sidebar of Admin -->
+        <div class="col-2 sidebar" style="background-color: white;">
+            <!-- Sidebar content here -->
+            <div th:insert="~{component/AdminSidebar}"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-10 content">
+            <div class="container-fluid white-background">
+                <h5 class="text-center mb-4 bordered-title">Seat detail: <span th:text="${nameCinemaRoom}"/></h5>
+                <form class="content-wrapper" id="seatForm" action="/cinemaRoom/updateSeatType" method="post">
+                    <!-- Display all seat of data -->
+                    <div id="seat-container">
+                        <div class="row rowSeat" th:each="seatRow, stat : ${seatRows}">
+                            <div th:each="seat : ${seatRow}"
+                                 th:class="'seat ' + ${seat.seatType.seatTypeId == 1 ? 'seat-normal' : 'seat-vip'}
+                                + ' ' + ${seat.seatStatus == 0 ? 'available' : 'booked'}"
+                                 th:attr="data-seat-id=${seat.seatId}">
+                                <!--boi vi co' security nen can phai them dong nay-->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                <!-- <input type="hidden" th:value="${seat.seatId}" name="selectedSeat" id="selectedSeat">-->
+                                <span th:text="${seat.seatRow} + ${seat.seatColumn}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="screen">Screen</div>
+
+                    <!-- Radio buttons for seat type -->
+                    <div class="d-flex justify-content-center mt-4 mb-4">
+                        <div class="form-check me-4">
+                            <input class="form-check-input" type="checkbox" id="seatNormalRadio" name="seatType" value="normal">
+                            <label class="form-check-label" for="seatNormalRadio">Seat Normal</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="seatVIPRadio" name="seatType" value="VIP">
+                            <label class="form-check-label" for="seatVIPRadio">Seat VIP</label>
+                        </div>
+                    </div>
+
+                    <!-- Save and Back buttons -->
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-check"></i> Save</button>
+                        <a th:href="@{/cinemaRoom/listCinemaRoom}" class="btn btn-primary"><i class="fa-solid fa-xmark"></i> Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.seat').on('click', function() {
+            $(this).toggleClass('seat-selected');
+
+            // Cập nhật danh sách ghế đã chọn
+            let selectedSeats = [];
+            $('.seat-selected').each(function() {
+                selectedSeats.push($(this).data('seat-id'));
+            });
+
+            // Xóa các input cũ sau khi click vào 1 seat
+            $('input[name="selectedSeat"]').remove();
+
+            // Thêm input cho từng ghế đã chọn
+            selectedSeats.forEach(function(seatId) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'selectedSeat',
+                    value: seatId
+                }).appendTo('#seatForm');
+            });
+        });
+
+
+        // Handle form submission
+        $('#seatForm').on('submit', function(event) {
+            // Check if any seats are selected
+            let hasSelectedSeats = $('.seat-selected').length > 0;
+
+            // Check if any seat type is checked
+            let seatTypeChecked = $('input[name="seatType"]:checked').length > 0;
+
+            // If seats are selected but no seat type is checked, show error
+            if (hasSelectedSeats && !seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn loại ghế (Seat Normal hoặc Seat VIP).');
+                return false;
+            }
+
+            // If no seats are selected but a seat type is checked, show error
+            if (!hasSelectedSeats && seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn ghế trước khi chọn loại ghế.');
+                return false;
+            }
+
+            // If no seats are selected and no seat type is checked, navigate to the list page
+            if (!hasSelectedSeats && !seatTypeChecked) {
+                window.location.href = '/cinemaRoom/listCinemaRoom'; // Adjust this URL if necessary
+                return false;
+            }
+        });
+    });
+</script>
+
+</body>
+
+</html>

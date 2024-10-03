@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2fdd50f686.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        /* .navbar {
+            background-color: #003366;
+        }
+
+        .navbar-brand {
+            color: #fff;
+        }
+
+        .nav-link {
+            color: #fff;
+        } */
+
+        .movie-list {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .movie-card {
+            width: 150px;
+            margin: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            position: relative;
+            object-fit: cover;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .schedule-btn {
+            width: 100%;
+            height: 15%;
+            background-color: #ff3333;
+            color: #fff;
+            border: none;
+            position: absolute;
+            bottom: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-card:hover .schedule-btn {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<!-- Movie List Section -->
+<div class="container-fluid">
+    <div th:include="component/UserHeader"></div>
+    <div class="row">
+        <div class="movie-list row d-flex align-items-center justify-content-center">
+            <h2>MOVIE LIST</h2>
+            <div id="movie-container" class="col col-xl-10 col-md-8 col-sm-12 d-flex justify-content-center flex-wrap container-fluid white-background shadow p-3 mb-5 bg-body rounded">
+<!--                &lt;!&ndash; Movie Card 1 &ndash;&gt;-->
+<!--                <div class="movie-card">-->
+<!--                    <img src="https://via.placeholder.com/150x220.png?text=POSTER+Updating" alt="Poster Updating 1">-->
+<!--                    <button class="schedule-btn">View schedule</button>-->
+<!--                </div>-->
+                <div th:if="${movies.isEmpty()}" style="height: 50vh; align-items: center; justify-content: center">
+                    <h4 class="text-center"  >No movies found</h4>
+                </div>
+                <div th:unless="${movies.isEmpty()}" th:each="movie:${movies}" class="movie-card">
+                    <img th:if="${movie.smallImage == null}" src="https://via.placeholder.com/150x220.png?text=POSTER+Updating" alt="Poster Updating">
+                    <img th:unless="${movie.smallImage == null}" th:src="${movie.smallImage}" th:alt="${movie.nameVN}">
+                    <a  class="btn schedule-btn" th:href="@{/movies(movieId=${movie.movieId},date=${selectedDate})}">View schedule</a>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- <script>
+            $(document).ready(function () {
+                const movies = [
+                    { title: "Poster Updating 1", posterUrl: "" },
+                    { title: "Poster Updating 2", posterUrl: "" },
+                    { title: "Avengers", posterUrl: "https://m.media-amazon.com/images/I/81ExhpBEbHL._AC_SY679_.jpg" },
+                    { title: "Doctor Strange", posterUrl: "https://m.media-amazon.com/images/I/71niXI3lxlL._AC_SY679_.jpg" },
+                    { title: "Spider-Man", posterUrl: "https://th.bing.com/th/id/OIP.WnAMMuI8YKDz5UxkdoM05QAAAA?rs=1&pid=ImgDetMain" },
+                    { title: "Guardians of the Galaxy", posterUrl: "" },
+                    { title: "Black Panther", posterUrl: "https://th.bing.com/th/id/OIP.eOVN36WXB6Ok-njlQhklUgAAAA?rs=1&pid=ImgDetMain" },
+                    { title: "The Batman", posterUrl: "" }
+                ];
+
+                const placeholderUrl = "https://via.placeholder.com/150x220.png?text=POSTER+Updating";
+
+                function renderMovies(movieData) {
+                    const $movieContainer = $('#movie-container');
+                    $movieContainer.empty();  // Clear the container
+
+                    movieData.forEach(function (movie) {
+                        const moviePoster = movie.posterUrl || placeholderUrl;
+
+                        const movieCardHtml = `
+                            <div class="movie-card">
+                                <img src="${moviePoster}" alt="${movie.title}" style= "">
+                                <button class="schedule-btn">View schedule</button>
+                            </div>
+                        `;
+                        $movieContainer.append(movieCardHtml);
+                    });
+                }
+
+                renderMovies(movies);
+            });
+        </script> -->
+
+    </div>
+</div>
+</body>
+
+</html>

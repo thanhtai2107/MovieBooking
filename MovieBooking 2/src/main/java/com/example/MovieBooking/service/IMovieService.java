@@ -2,6 +2,11 @@ package com.example.MovieBooking.service;
 import com.example.MovieBooking.entity.Movie;
 import java.util.List;
 
+import com.example.MovieBooking.entity.Movie;
+
+import java.time.LocalDate;
+import java.util.List;
+
 public interface IMovieService {
     List<Movie> getAllMovies();
     Movie getMovieById(Long id);
@@ -11,4 +16,5 @@ public interface IMovieService {
     List<Movie> searchMovies(String query);
     Movie getMovieByIdWithSchedules(Long id);
     Movie getMovieWithTypesAndSchedules(Long id);
+    public List<Movie> getMoviesByDate(LocalDate date);
 }
