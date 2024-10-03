@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,13 +48,23 @@
   <body>
     <div class="container-fluid">
       <!-- Header -->
-      <div th:insert="~{component/AdminHeader}"></div>
-
-      <!-- Content -->
+      <div sec:authorize="hasAuthority('EMPLOYEE')">
+        <div th:insert="~{component/EmployeeHeader}"></div>
+      </div>
+      <div sec:authorize="hasAuthority('ADMIN')">
+        <div th:insert="~{component/AdminHeader}"></div>
+      </div>
       <div class="row">
+        <!-- Sidebar and Content Wrapper -->
         <div class="col-2">
-          <div th:insert="~{component/AdminSideBar}"></div>
+          <div sec:authorize="hasAuthority('EMPLOYEE')">
+            <div th:insert="~{component/EmployeeSideBar}"></div>
+          </div>
+          <div sec:authorize="hasAuthority('ADMIN')">
+            <div th:insert="~{component/AdminSidebar}"></div>
+          </div>
         </div>
+
         <div class="col-10" style="background-color: #eff0f3; min-height: 90vh">
           <div class="bg-white mt-5 p-3">
             <div class="mb-3" style="border-bottom: 1px solid #dee2e6">
