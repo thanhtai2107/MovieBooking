@@ -72,7 +72,7 @@ public class BookingServiceImpl implements IBookingService {
         LocalDate date = booking.getShowDate().getShowDate();
         String time = booking.getSchedule().getScheduleTime();
         int status = booking.getStatus();
-        int useScore = booking.getUseScore();
+        Long useScore = booking.getUseScore();
         String screen = booking.getMovie().getCinemaRoom().getScreen();
         long total = booking.getTotalMoney();
         StringBuilder seatString = new StringBuilder();
@@ -143,6 +143,10 @@ public class BookingServiceImpl implements IBookingService {
     }
 
     @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
     public Page<Booking> getBookingsAddedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return bookingRepository.findAddedScoreByDate(id,fromDate,toDate,pageable);

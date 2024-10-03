@@ -1,24 +1,48 @@
+<div th:fragment = "sidebar">
 
     <!-- Sidebar content here -->
+<<<<<<< HEAD
+    <div class="card-holder h-100 text-center" style="background-color: white;">
+        <div class="card-header" style="background-color: white;">
+            <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
+                 style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
+            <h5 class="card-title">User name</h5>
+=======
     <div class="card-holder h-100 text-center" style="background-color: white;"
          xmlns:sec="http://www.w3.org/1999/xhtml">
         <div class="card-header" style="background-color: white;">
             <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
                  style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
             <h5 sec:authentication="name" class="card-title"></h5>
+>>>>>>> 5cfda3d37a97a3144902784c2836145a355e95ab
         </div>
         <div class="card-selection align-items-center">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><a href="">Register Account</a></li>
+<<<<<<< HEAD
                 <li class="list-group-item"><a href="">Account management</a></li>
                 <li class="list-group-item"><a href="">Booking Ticket</a></li>
                 <li class="list-group-item"><a href="">Ticket Selling Management</a></li>
                 <li class="list-group-item"><a href="">Ticket Booking Management</a></li>
                 <li class="list-group-item"><a href="">Employee Management</a></li>
-                <li class="list-group-item"><a href="/cinemaRoom/listCinemaRoom">Cinema Room Management</a></li>
+                <li class="list-group-item"><a href="">Cinema Room Management</a></li>
                 <li class="list-group-item"><a href="">Movie Management</a></li>
                 <li class="list-group-item"><a href="">Promotion Management</a></li>
             </ul>
 
         </div>
     </div>
+</div>
+=======
+                <li class="list-group-item"><a href="/member-management/members">Account management</a></li>
+                <li class="list-group-item"><a href="">Booking Ticket</a></li>
+                <li class="list-group-item"><a href="/showtimes">Ticket Selling Management</a></li>
+                <li class="list-group-item"><a href="/admin/booking-list">Ticket Booking Management</a></li>
+                <li class="list-group-item"><a href="/employee-management/employees">Employee Management</a></li>
+                <li class="list-group-item"><a href="/cinemaRoom/listCinemaRoom">Cinema Room Management</a></li>
+                <li class="list-group-item"><a href="/movies">Movie Management</a></li>
+                <li class="list-group-item"><a href="/listPromotion">Promotion Management</a></li>
+            </ul>
+        </div>
+    </div>
+>>>>>>> 5cfda3d37a97a3144902784c2836145a355e95ab

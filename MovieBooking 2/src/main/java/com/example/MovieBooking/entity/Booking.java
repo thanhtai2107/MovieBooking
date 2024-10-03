@@ -38,10 +38,10 @@ public class Booking {
     private ShowDate showDate;
 
     @Column(name = "add_score")
-    private Integer addScore;
+    private Long addScore;
 
     @Column(name = "use_score")
-    private Integer useScore;
+    private Long useScore;
 
     @Column(name = "booking_date")
     private LocalDate bookingDate;

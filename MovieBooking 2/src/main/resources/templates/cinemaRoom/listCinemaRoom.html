@@ -115,10 +115,10 @@
                             <td th:text="${cinemaRoom.cinemaRoomId}"></td>
                             <td th:text="${cinemaRoom.cinemaName}"></td>
                             <td th:text="${cinemaRoom.seatQuantity}"></td>
-                            <td>
-                                <a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none">
-                                    <i class="fa-solid fa-circle-info"></i> Seat detail
-                                </a>
+                            <td><a th:href="@{/cinemaRoom/seatDetail(cinemaRoomId=${cinemaRoom.cinemaRoomId})}"  class="text-decoration-none" data-id="${cinemaRoom.cinemaRoomID}">
+                                <i class="fa-solid fa-circle-info"></i> Seat detail
+                            </a>
+
                             </td>
                         </tr>
                     </tbody>
@@ -140,7 +140,7 @@
                         <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
                         <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
                             th:if="${i >= 0 && i < totalPages}"
-                            th:classappend="${i == currentPage} ? 'active'">
+                            th:classappend="${i == currentPage} ? 'page-item active': ''">
                             <a class="page-link" th:href="@{/cinemaRoom/listCinemaRoom(valueSearch=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
                         </li>
 
