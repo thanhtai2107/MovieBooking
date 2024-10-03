@@ -3,6 +3,12 @@ package com.example.MovieBooking.controller;
 
 import com.example.MovieBooking.entity.*;
 import com.example.MovieBooking.entity.dto.BookingDTO;
+import com.example.MovieBooking.service.IAccountService;
+import com.example.MovieBooking.service.impl.BankServiceImpl;
+import com.example.MovieBooking.service.impl.BookingServiceImpl;
+
+import com.example.MovieBooking.service.impl.MovieServiceImpl;
+import com.example.MovieBooking.service.impl.ScheduleServiceImpl;
 import com.example.MovieBooking.service.IShowDateService;
 import com.example.MovieBooking.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +27,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.regex.Pattern;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +82,8 @@ public class BookingController {
     @Autowired
     private BankServiceImpl bankServiceImpl;
 
+    @Autowired
+    private IAccountService accountService;
     private final int pageSize = 3;
     private final float percentagePoints = 0.1F;
     private static final String CARD_NUMBER_REGEX = "^[0-9]{16,19}$";
@@ -76,13 +94,17 @@ public class BookingController {
     public String bookedTicket(@RequestParam(value = "page", defaultValue = "0")int page
             ,@RequestParam(value = "size",defaultValue = "10")int size
             ,@RequestParam(value = "searchInput", defaultValue = "", required = false)String searchInput
+            ,@AuthenticationPrincipal Account account
             ,Model model){
 //        List<Integer> entry = new ArrayList<>(10);
         String search = "";
         if(searchInput != null){
             search = searchInput;
         }
-        Page<Booking> listBooking = bookingService.getBookingsPagination(search, page, size);
+
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+
+        Page<Booking> listBooking = bookingService.getBookingsPagination(account1.getAccountId(),search, page, size);
         System.out.println(listBooking.toList().size());
         model.addAttribute("listBooking", listBooking);
         model.addAttribute("totalPages", listBooking.getTotalPages());
@@ -407,6 +429,39 @@ try {
 //    public String bookingSelling(){
 //        return "TKS-showtimes";
 //    }
+    @GetMapping("/movie-show-time")
+    public String scheduleOfMovie(@RequestParam(value = "date", required = false)
+                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                    @RequestParam(value = "movieId", required = false)Long id,
+                                    Model model){
+        List<Movie> movieList = new ArrayList<>();
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(date,id);
+        System.out.println("shcedule" + scheduleList.size());
+        Movie movie = movieService.getMovieById(id);
+//           List<Movie> movieList = new ArrayList<>();
+//           movieList.add(movie);
+        List<MovieSchedule> movieSchedulesOfMovie = new ArrayList<>();
+        for (Schedule schedule : scheduleList) {
+            MovieSchedule movieSchedule = new MovieSchedule();
+            movieSchedule.setSchedule(schedule);
+            movieSchedulesOfMovie.add(movieSchedule);
+        }
+        movie.setMovieScheduleList(movieSchedulesOfMovie);
+        movieList.add(movie);
+
+        System.out.println("schedule movie service" + movieSchedulesOfMovie.size());
+
+
+        model.addAttribute("currentHour", LocalTime.now().toString());
+
+        model.addAttribute("movieList", movieList);
+//           model.addAttribute("scheduleList", scheduleList);
+        model.addAttribute("movieId",id);
+        return "ShowTimeWithId";
+    }
 
     @GetMapping("/showtimes")
     public String getMoviesByDay(
@@ -481,21 +536,25 @@ try {
                                 ,@RequestParam(value = "toDate", required = false, defaultValue = "")String toDate
                                 ,@RequestParam(value = "actionScore", required = false)String actionScore
                                 ,@RequestParam(value = "page", defaultValue = "0")int page
-                                ,@RequestParam(value = "size",defaultValue = "1")int size
+                                ,@RequestParam(value = "size",defaultValue = "10")int size
+                                ,@AuthenticationPrincipal Account account
                                 ,Model model){
         LocalDate validFrom = null;
         LocalDate validTo = null;
         Page<Booking> pageBookingList;
         List<Booking> bookingList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         if(!fromDate.isEmpty() && !toDate.isEmpty()){
-            validFrom = LocalDate.parse(fromDate);
-            validTo = LocalDate.parse(toDate);
+            validFrom = LocalDate.parse(fromDate,formatter);
+            validTo = LocalDate.parse(toDate,formatter);
         }
 
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+
         if("addedScore".equals(actionScore)){
-            pageBookingList = bookingService.getBookingsAddedScoreByDate(1l,validFrom,validTo,page,size);
+            pageBookingList = bookingService.getBookingsAddedScoreByDate(account1.getAccountId(),validFrom,validTo,page,size);
         } else {
-            pageBookingList = bookingService.getBookingsUsedScoreByDate(1l,validFrom,validTo,page,size);
+            pageBookingList = bookingService.getBookingsUsedScoreByDate(account1.getAccountId(),validFrom,validTo,page,size);
         }
         bookingList = pageBookingList.toList();
         model.addAttribute("bookingList", bookingList);
