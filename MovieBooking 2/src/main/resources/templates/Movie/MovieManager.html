@@ -25,6 +25,57 @@
         .is-invalid { border-color: #dc3545; padding-right: calc(1.5em + 0.75rem); background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right calc(0.375em + 0.1875rem) center; background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem); }
         .invalid-feedback { display: none; width: 100%; margin-top: 0.25rem; font-size: 0.875em; color: #dc3545; }
         .is-invalid ~ .invalid-feedback { display: block; }
+        .edit-movie.btn-link {
+            padding-left: 0;
+        }
+        /* Thêm quy tắc mới này */
+        .detail-column {
+            padding-left: 4px !important;
+        }
+        .detail-column .btn-link {
+            padding-left: 0;
+        }
+        .table-header {
+            border-bottom: 2px solid #dee2e6;
+            box-shadow: 0 4px 6px -6px #222;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .search-container label {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+        #searchInput {
+            width: 200px;
+        }
+        .content-wrapper {
+            padding: 0 15px; /* Thêm padding để căn chỉnh với bảng */
+        }
+        .pagination .page-item .page-link {
+            color: #337AB7;
+            background-color: white;
+            border: 1px solid #dee2e6;
+        }
+
+        .pagination .page-item:not(:first-child):not(:last-child) .page-link {
+            padding: 6px 12px;
+        }
+
+        .pagination .page-item.active:not(:first-child):not(:last-child) .page-link {
+            color: white;
+            background-color: #337AB7;
+            border-color: #337AB7;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
     </style>
 </head>
 <body>
@@ -83,65 +134,61 @@
             <!-- Main Content -->
             <div class="col-10 content">
                 <div class="container-fluid white-background">
-                    <h1 class="mb-4">Movie list</h1>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <a href="#" class="btn btn-primary" id="addNewMovie">
-                                <i class="fa-solid fa-circle-plus"></i> Add new
-                                </a>
+                    <h2 style="text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #dee2e6;">Movie list</h2>
+                    <div class="content-wrapper">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <button id="addNewMovie" class="btn" style="background-color: #337AB7; color: white; border: none; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
+                                    <i class="fa-solid fa-circle-plus" style="margin-right: 5px;"></i> Add new
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="search-container">
+                            <label for="searchInput">Search:</label>
                             <input type="text" class="form-control" id="searchInput" placeholder="Search movies...">
                         </div>
+                        <table class="table table-striped">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="text-start">#</th>
+                                    <th class="text-start">Movie (ENG)</th>
+                                    <th class="text-start">Movie (VN)</th>
+                                    <th class="text-start">Release Date</th>
+                                    <th class="text-start">Movie Production Company</th>
+                                    <th class="text-start">Duration</th>
+                                    <th class="text-start">Version</th>
+                                    <th class="text-start">Detail</th>
+                                    <th class="text-start">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${movies.empty}" class="no-movies-row">
+                                    <td colspan="9" class="text-center">No movies found</td>
+                                </tr>
+                                <tr th:each="movie, iterStat : ${movies}" th:data-movie-id="${movie.movieId}">
+                                    <td class="text-start"><strong th:text="${iterStat.count}"></strong></td>
+                                    <td class="text-start" th:text="${movie.nameEnglish}"></td>
+                                    <td class="text-start" th:text="${movie.nameVN}"></td>
+                                    <td class="text-start" th:text="${#temporals.format(movie.fromDate, 'dd/MM/yyyy')}"></td>
+                                    <td class="text-start" th:text="${movie.productionCompany}"></td>
+                                    <td class="text-start" th:text="${movie.duration}"></td>
+                                    <td class="text-start" th:text="${movie.version}"></td>
+                                    <td class="text-start detail-column">
+                                        <a href="#" class="edit-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
+                                            <i class="fa-solid fa-circle-info"></i> Detail
+                                        </a>
+                                    </td>
+                                    <td class="text-start">
+                                        <a href="#" class="delete-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Movie (ENG)</th>
-                                <th>Movie (VN)</th>
-                                <th>Release Date</th>
-                                <th>Movie Production Company</th>
-                                <th>Duration</th>
-                                <th>Version</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:if="${movies.empty}">
-                                <td colspan="8" class="text-center">No movies found</td>
-                            </tr>
-                            <tr th:each="movie, iterStat : ${movies}" th:data-movie-id="${movie.movieId}">
-                                <td th:text="${iterStat.count}"></td>
-                                <td th:text="${movie.nameEnglish}"></td>
-                                <td th:text="${movie.nameVN}"></td>
-                                <td th:text="${#temporals.format(movie.fromDate, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${movie.productionCompany}"></td>
-                                <td th:text="${movie.duration}"></td>
-                                <td th:text="${movie.version}"></td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary edit-movie" th:data-id="${movie.movieId}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-danger delete-movie" th:data-id="${movie.movieId}">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                     <!-- Pagination controls -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="d-flex align-items-center">
-                            <label for="itemsPerPage" class="me-2">Show:</label>
-                            <select id="itemsPerPage" class="form-select form-select-sm" style="width: auto;">
-                                <option value="5">5</option>
-                                <option value="10" selected>10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
-                            <span class="ms-2">entries</span>
-                        </div>
+                    <div class="d-flex justify-content-end align-items-center mt-3">
                         <nav aria-label="Movie list pagination">
                             <ul class="pagination" id="pagination">
                                 <!-- Pagination buttons will be dynamically inserted here -->
@@ -157,14 +204,164 @@
 
     <script th:inline="javascript">
     $(document).ready(function() {
+        let currentPage = 1;
+        let itemsPerPage = 5;
+        let totalPages = 1;
+        let allRows;
+        let originalRows;
+
+        function initializeTable() {
+            originalRows = $('.table tbody tr').not('.no-movies-row');
+            allRows = originalRows.clone();
+            updateTableView();
+        }
+
+        function showPage(page) {
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            
+            allRows.hide();
+            allRows.slice(startIndex, endIndex).show();
+        }
+
+        function setupPagination() {
+            totalPages = Math.ceil(allRows.length / itemsPerPage);
+            const pagination = $('#pagination');
+            pagination.empty();
+
+            if (totalPages > 1) {
+                pagination.append('<li class="page-item"><a class="page-link" href="#">Previous</a></li>');
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    pagination.append('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
+                }
+                
+                pagination.append('<li class="page-item"><a class="page-link" href="#">Next</a></li>');
+            }
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            $('.pagination .page-item').removeClass('active disabled');
+            
+            $('.pagination .page-item:first').toggleClass('disabled', currentPage === 1);
+            $('.pagination .page-item:last').toggleClass('disabled', currentPage === totalPages);
+            
+            $('.pagination .page-item').each(function(index) {
+                if (index > 0 && index < $('.pagination .page-item').length - 1) {
+                    $(this).toggleClass('active', index === currentPage);
+                }
+            });
+        }
+
+        function sanitizeInput(input) {
+            return input.replace(/[&<>"']/g, function(match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
+        function normalizeSearchText(text) {
+            // Sanitize input first
+            text = sanitizeInput(text);
+            // Then normalize
+            return text.trim().replace(/\s+/g, ' ').toLowerCase();
+        }
+
+        function performSearch() {
+            var searchText = normalizeSearchText($('#searchInput').val());
+            
+            if (searchText === '') {
+                // Nếu ô tìm kiếm trống, khôi phục lại tất cả các hàng gốc
+                $('.table tbody').empty().append(originalRows.clone());
+                allRows = originalRows.clone();
+                $('.no-movies-row').addClass('d-none');
+            } else {
+                var hasVisibleRows = false;
+                
+                allRows = originalRows.clone(); // Reset allRows to original state
+                
+                allRows.each(function() {
+                    var row = $(this);
+                    var isMatch = false;
+                    
+                    // Tìm kiếm trong tất cả các cột
+                    row.find('td').each(function(index) {
+                        if (index < 8) { // Bỏ qua cột Detail và Delete
+                            var cellText = normalizeSearchText($(this).text());
+                            if (cellText.includes(searchText)) {
+                                isMatch = true;
+                                return false; // Break the inner loop
+                            }
+                        }
+                    });
+                    
+                    if (isMatch) {
+                        row.removeClass('d-none');
+                        hasVisibleRows = true;
+                    } else {
+                        row.addClass('d-none');
+                    }
+                });
+
+                // Cập nhật DOM
+                $('.table tbody').empty().append(allRows);
+
+                if (!hasVisibleRows) {
+                    if ($('.no-movies-row').length === 0) {
+                        $('.table tbody').append('<tr class="no-movies-row"><td colspan="9" class="text-center">No movies found</td></tr>');
+                    } else {
+                        $('.no-movies-row').removeClass('d-none');
+                    }
+                } else {
+                    $('.no-movies-row').addClass('d-none');
+                }
+            }
+
+            updateTableView();
+        }
+
+        function updateTableView() {
+            allRows = $('.table tbody tr').not('.no-movies-row, .d-none');
+            currentPage = 1;
+            setupPagination();
+            showPage(currentPage);
+        }
+
+        function addNoMoviesRow() {
+            if ($('.no-movies-row').length === 0) {
+                $('table tbody').append('<tr class="no-movies-row d-none"><td colspan="9" class="text-center">No movies found</td></tr>');
+            }
+        }
+
+        addNoMoviesRow();
+        initializeTable();
+
+        $('#searchInput').on('input', performSearch);
+
+        $(document).on('click', '.pagination .page-link', function(e) {
+            e.preventDefault();
+            const text = $(this).text();
+            if (text === 'Previous' && currentPage > 1) {
+                currentPage--;
+            } else if (text === 'Next' && currentPage < totalPages) {
+                currentPage++;
+            } else if (!isNaN(text)) {
+                currentPage = parseInt(text);
+            }
+            showPage(currentPage);
+            updatePagination();
+        });
+
         // Function to safely get a value, returning a default if undefined
         function safeGet(value, defaultValue = '') {
             return value !== undefined ? value : defaultValue;
-        }
-
-        // Function to safely call toLowerCase
-        function safeToLowerCase(str) {
-            return typeof str === 'string' ? str.toLowerCase() : '';
         }
 
         // Load modal function
@@ -198,31 +395,6 @@
             var movieId = $(this).data('id');
             loadModal('/movies/modal/delete/' + safeGet(movieId));
         });
-
-        // Add this new function for searching
-        function performSearch() {
-            var searchText = safeToLowerCase($('#searchInput').val());
-            
-            $('table tbody tr').each(function() {
-                var row = $(this);
-                var movieNameEng = safeToLowerCase(row.find('td:eq(1)').text());
-                var movieNameVN = safeToLowerCase(row.find('td:eq(2)').text());
-                var releaseDate = safeToLowerCase(row.find('td:eq(3)').text());
-                var productionCompany = safeToLowerCase(row.find('td:eq(4)').text());
-                
-                if (movieNameEng.includes(searchText) || 
-                    movieNameVN.includes(searchText) || 
-                    releaseDate.includes(searchText) || 
-                    productionCompany.includes(searchText)) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-        }
-
-        // Add event listener for search input
-        $('#searchInput').on('input', performSearch);
 
         // Other event listeners...
 
@@ -282,72 +454,24 @@
                 }
             });
         });
-    });
-    </script>
 
-    <script>
-    $(document).ready(function() {
-        $('#searchInput').on('input', function() {
-            var query = $(this).val();
-            if (query.length >= 2) {
-                $.get('/movies/search', { query: query }, function(data) {
-                    $('tbody').html($(data).find('tbody').html());
-                });
-            } else if (query.length === 0) {
-                $.get('/movies', function(data) {
-                    $('tbody').html($(data).find('tbody').html());
-                });
-            }
+        // Update this event listener
+        $('#searchInput').on('input', function(e) {
+            var input = $(this);
+            var value = input.val();
+            
+            // Remove space at the beginning
+            value = value.replace(/^\s+/, '');
+            
+            // Remove double spaces
+            value = value.replace(/\s{2,}/g, ' ');
+            
+            // Update input value
+            input.val(value);
+            
+            // Perform search
+            performSearch();
         });
-    });
-    </script>
-
-    <script>
-    $(document).ready(function() {
-        let currentPage = 1;
-        let itemsPerPage = 10;
-        const movies = $('.table tbody tr').toArray();
-
-        function showPage(page) {
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-
-            $('.table tbody tr').hide();
-            $('.table tbody tr').slice(startIndex, endIndex).show();
-        }
-
-        function setupPagination(totalPages) {
-            const pagination = $('#pagination');
-            pagination.empty();
-
-            for (let i = 1; i <= totalPages; i++) {
-                const li = $('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
-                if (i === currentPage) {
-                    li.addClass('active');
-                }
-                li.click(function(e) {
-                    e.preventDefault();
-                    currentPage = i;
-                    showPage(currentPage);
-                    setupPagination(totalPages);
-                });
-                pagination.append(li);
-            }
-        }
-
-        function updatePagination() {
-            const totalPages = Math.ceil(movies.length / itemsPerPage);
-            setupPagination(totalPages);
-            showPage(currentPage);
-        }
-
-        $('#itemsPerPage').change(function() {
-            itemsPerPage = parseInt($(this).val());
-            currentPage = 1;
-            updatePagination();
-        });
-
-        updatePagination();
     });
     </script>
 </body>
