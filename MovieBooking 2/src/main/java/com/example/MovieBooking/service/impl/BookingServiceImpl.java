@@ -142,6 +142,11 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.findWithString(id,searchInput,pageable);
     }
 
+//    @Override
+//    public Page<Booking> getBookingsPagination(String searchInput, int page, int size) {
+//        return null;
+//    }
+
     @Override
     public Booking saveBooking(Booking booking) {
         return bookingRepository.save(booking);

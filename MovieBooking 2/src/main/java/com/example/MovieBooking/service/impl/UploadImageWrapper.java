@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Service
 public class UploadImageWrapper implements IUploadImage {
+
     @Autowired
     private Cloudinary cloudinary;
 
