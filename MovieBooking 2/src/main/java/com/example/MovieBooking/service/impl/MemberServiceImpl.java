@@ -1,7 +1,11 @@
 package com.example.MovieBooking.service.impl;
 
+
+import com.example.MovieBooking.dto.req.AccountDTO;
+
 import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
+
 import com.example.MovieBooking.entity.Member;
 import com.example.MovieBooking.entity.dto.MemberDTO;
 import com.example.MovieBooking.repository.AccountRepository;
@@ -31,8 +35,13 @@ public class MemberServiceImpl implements IMemberService {
     @Autowired
     private IUploadImage uploadImage;
 
+    public int updateScoreMemberbyMemberId(Long memberId, int score) {
+        return memberRepository.updateScoreByMemberId(memberId,score);}
+
+
     public Member updateMember(Member member) {
         return memberRepository.save(member);
+
     }
     @Override
     public void saveMember(Member member) {
@@ -40,6 +49,28 @@ public class MemberServiceImpl implements IMemberService {
     }
 
     @Override
+    public AccountDTO getMember(Long id) {
+        Member member =  memberRepository.findById(id).orElse(null);
+        
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setMemberId(member.getMemberId());
+        accountDTO.setFullname(member.getAccount().getFullname());
+        accountDTO.setPhoneNumber(member.getAccount().getPhoneNumber());
+        accountDTO.setIdentityCard(member.getAccount().getIdentityCard());
+        accountDTO.setScore(Math.toIntExact(member.getScore()));
+        return accountDTO;
+    }
+
+    @Override
+    public Member getMemberByID(Long id) {
+        return memberRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Integer getScoreByMember(Long id) {
+        return memberRepository.findScoreByMemberId(id);
+    }
+
     public Integer getTotalScore(Long id) {
         return memberRepository.getToTalScore(id);
     }
@@ -77,5 +108,6 @@ public class MemberServiceImpl implements IMemberService {
             memberDTOS.add(memberDTO);
         }
         return memberDTOS;
+
     }
 }

@@ -138,6 +138,10 @@ public class BookingServiceImpl implements IBookingService {
     }
 
     @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
     public Page<Booking> getBookingsAddedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return bookingRepository.findAddedScoreByDate(id,fromDate,toDate,pageable);
