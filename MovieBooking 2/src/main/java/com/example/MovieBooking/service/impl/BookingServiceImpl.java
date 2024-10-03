@@ -132,9 +132,14 @@ public class BookingServiceImpl implements IBookingService {
     }
 
     @Override
-    public Page<Booking> getBookingsPagination(String searchInput, int page, int size) {
+    public Page<Booking> getBookingsPagination(Long id, String searchInput, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookingRepository.find(searchInput,pageable);
+        boolean isNumeric = searchInput.matches("\\d+");
+        if(isNumeric){
+            int numericSearch = Integer.parseInt(searchInput);
+            return bookingRepository.findWithNumeric(id,numericSearch,pageable);
+        }
+        return bookingRepository.findWithString(id,searchInput,pageable);
     }
 
     @Override

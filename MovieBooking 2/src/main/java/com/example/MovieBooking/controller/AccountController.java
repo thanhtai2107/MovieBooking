@@ -4,6 +4,7 @@ import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.util.AccountRegisterValidate;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,7 @@ public class AccountController{
 
     @GetMapping("/login")
     public String login(){
+
         return "login";
     }
 
@@ -58,6 +60,7 @@ public class AccountController{
     public String edit(Model model, @AuthenticationPrincipal Account account){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Account account1 = accountService.findUserByUsername(account.getUsername());
+        System.out.println(account1.getUsername());
         AccountReq accountEdit = AccountReq.builder()
                 .id(account1.getAccountId())
                 .username(account1.getUsername())
@@ -73,11 +76,15 @@ public class AccountController{
         System.out.println(accountEdit.toString());
         model.addAttribute("account", accountEdit);
         model.addAttribute("image", account1.getImage());
+//        session.setAttribute("accountSession", account1.getUsername());
         return "edit-account";
     }
 
     @PostMapping("/edit")
-    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model) throws IOException {
+    public String edit(@Valid @ModelAttribute("account") AccountReq account,
+                       @RequestParam(value = "image", required = false)
+                       MultipartFile image, Model model
+                        , HttpSession httpSession) throws IOException {
 //        Account account1 = accountService.findUserById(account.getId());
 //        account1.setPassword(account.getPassword());
 //        account1.setFullname(account.getFullname());
@@ -90,6 +97,7 @@ public class AccountController{
 //        if (!image.isEmpty()) {
 //            account1.setImage(uploadImage.uploadImage(image));
 //        }
+
         accountService.updateAccount(account, image);
         return "redirect:/edit";
     }
