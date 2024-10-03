@@ -21,9 +21,6 @@ public class CinemaRoom {
     private Long cinemaRoomId;
 
     @Column(columnDefinition = "nvarchar(255)")
-    private String name;
-
-    @Column(columnDefinition = "nvarchar(255)")
     private String cinemaName; // Ensure this field exists
 
     @OneToMany(mappedBy = "cinemaRoom")
