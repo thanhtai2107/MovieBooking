@@ -79,9 +79,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-
-
     <!-- Main Container -->
     <div class="container-fluid">
         <div th:insert="~{component/AdminHeader}"></div>
@@ -90,80 +87,81 @@
             <div class="col-2 sidebar" style="background-color: white;">
                 <!-- Sidebar content here -->
                 <div th:insert="~{component/AdminSidebar}"></div>
-            </div>
+          </div>
+        </div>
 
-            <!-- Main Content -->
-            <div class="col-10 content">
-                <div class="container-fluid white-background">
-                    <h2 style="text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #dee2e6;">Movie list</h2>
-                    <div class="content-wrapper">
-                        <div class="row mb-3">
-                            <div class="col">
-                                <button id="addNewMovie" class="btn" style="background-color: #337AB7; color: white; border: none; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
-                                    <i class="fa-solid fa-circle-plus" style="margin-right: 5px;"></i> Add new
-                                </button>
-                            </div>
+        <!-- Main Content -->
+        <div class="col-10 content">
+            <div class="container-fluid white-background">
+                <h2 style="text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #dee2e6;">Movie list</h2>
+                <div class="content-wrapper">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button id="addNewMovie" class="btn" style="background-color: #337AB7; color: white; border: none; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
+                                <i class="fa-solid fa-circle-plus" style="margin-right: 5px;"></i> Add new
+                            </button>
                         </div>
-                        <div class="search-container">
-                            <label for="searchInput">Search:</label>
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search movies...">
-                        </div>
-                        <table class="table table-striped">
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="text-start">#</th>
-                                    <th class="text-start">Movie (ENG)</th>
-                                    <th class="text-start">Movie (VN)</th>
-                                    <th class="text-start">Release Date</th>
-                                    <th class="text-start">Movie Production Company</th>
-                                    <th class="text-start">Duration</th>
-                                    <th class="text-start">Version</th>
-                                    <th class="text-start">Detail</th>
-                                    <th class="text-start">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:if="${movies.empty}" class="no-movies-row">
-                                    <td colspan="9" class="text-center">No movies found</td>
-                                </tr>
-                                <tr th:each="movie, iterStat : ${movies}" th:data-movie-id="${movie.movieId}">
-                                    <td class="text-start"><strong th:text="${iterStat.count}"></strong></td>
-                                    <td class="text-start" th:text="${movie.nameEnglish}"></td>
-                                    <td class="text-start" th:text="${movie.nameVN}"></td>
-                                    <td class="text-start" th:text="${#temporals.format(movie.fromDate, 'dd/MM/yyyy')}"></td>
-                                    <td class="text-start" th:text="${movie.productionCompany}"></td>
-                                    <td class="text-start" th:text="${movie.duration}"></td>
-                                    <td class="text-start" th:text="${movie.version}"></td>
-                                    <td class="text-start detail-column">
-                                        <a href="#" class="edit-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
-                                            <i class="fa-solid fa-circle-info"></i> Detail
-                                        </a>
-                                    </td>
-                                    <td class="text-start">
-                                        <a href="#" class="delete-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
-                    <!-- Pagination controls -->
-                    <div class="d-flex justify-content-end align-items-center mt-3">
-                        <nav aria-label="Movie list pagination">
-                            <ul class="pagination" id="pagination">
-                                <!-- Pagination buttons will be dynamically inserted here -->
-                            </ul>
-                        </nav>
+                    <div class="search-container">
+                        <label for="searchInput">Search:</label>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search movies...">
                     </div>
+                    <table class="table table-striped">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-start">#</th>
+                            <th class="text-start">Movie (ENG)</th>
+                            <th class="text-start">Movie (VN)</th>
+                            <th class="text-start">Release Date</th>
+                            <th class="text-start">Movie Production Company</th>
+                            <th class="text-start">Duration</th>
+                            <th class="text-start">Version</th>
+                            <th class="text-start">Detail</th>
+                            <th class="text-start">Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${movies.empty}" class="no-movies-row">
+                            <td colspan="9" class="text-center">No movies found</td>
+                        </tr>
+                        <tr th:each="movie, iterStat : ${movies}" th:data-movie-id="${movie.movieId}">
+                            <td class="text-start"><strong th:text="${iterStat.count}"></strong></td>
+                            <td class="text-start" th:text="${movie.nameEnglish}"></td>
+                            <td class="text-start" th:text="${movie.nameVN}"></td>
+                            <td class="text-start" th:text="${#temporals.format(movie.fromDate, 'dd/MM/yyyy')}"></td>
+                            <td class="text-start" th:text="${movie.productionCompany}"></td>
+                            <td class="text-start" th:text="${movie.duration}"></td>
+                            <td class="text-start" th:text="${movie.version}"></td>
+                            <td class="text-start detail-column">
+                                <a href="#" class="edit-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
+                                    <i class="fa-solid fa-circle-info"></i> Detail
+                                </a>
+                            </td>
+                            <td class="text-start">
+                                <a href="#" class="delete-movie btn btn-sm btn-link" style="color: #337AB7; text-decoration: none;" th:data-id="${movie.movieId}">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination controls -->
+                <div class="d-flex justify-content-end align-items-center mt-3">
+                    <nav aria-label="Movie list pagination">
+                        <ul class="pagination" id="pagination">
+                            <!-- Pagination buttons will be dynamically inserted here -->
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="modalContainer"></div>
+<div id="modalContainer"></div>
 
-    <script th:inline="javascript">
+<script th:inline="javascript">
     $(document).ready(function() {
         let currentPage = 1;
         let itemsPerPage = 5;
@@ -180,7 +178,7 @@
         function showPage(page) {
             const startIndex = (page - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            
+
             allRows.hide();
             allRows.slice(startIndex, endIndex).show();
         }
@@ -192,11 +190,11 @@
 
             if (totalPages > 1) {
                 pagination.append('<li class="page-item"><a class="page-link" href="#">Previous</a></li>');
-                
+
                 for (let i = 1; i <= totalPages; i++) {
                     pagination.append('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
                 }
-                
+
                 pagination.append('<li class="page-item"><a class="page-link" href="#">Next</a></li>');
             }
 
@@ -205,10 +203,10 @@
 
         function updatePagination() {
             $('.pagination .page-item').removeClass('active disabled');
-            
+
             $('.pagination .page-item:first').toggleClass('disabled', currentPage === 1);
             $('.pagination .page-item:last').toggleClass('disabled', currentPage === totalPages);
-            
+
             $('.pagination .page-item').each(function(index) {
                 if (index > 0 && index < $('.pagination .page-item').length - 1) {
                     $(this).toggleClass('active', index === currentPage);
@@ -237,7 +235,7 @@
 
         function performSearch() {
             var searchText = normalizeSearchText($('#searchInput').val());
-            
+
             if (searchText === '') {
                 // Nếu ô tìm kiếm trống, khôi phục lại tất cả các hàng gốc
                 $('.table tbody').empty().append(originalRows.clone());
@@ -245,13 +243,13 @@
                 $('.no-movies-row').addClass('d-none');
             } else {
                 var hasVisibleRows = false;
-                
+
                 allRows = originalRows.clone(); // Reset allRows to original state
-                
+
                 allRows.each(function() {
                     var row = $(this);
                     var isMatch = false;
-                    
+
                     // Tìm kiếm trong tất cả các cột
                     row.find('td').each(function(index) {
                         if (index < 8) { // Bỏ qua cột Detail và Delete
@@ -262,7 +260,7 @@
                             }
                         }
                     });
-                    
+
                     if (isMatch) {
                         row.removeClass('d-none');
                         hasVisibleRows = true;
@@ -376,9 +374,9 @@
 
             var form = $('#addMovieForm');
             var formData = new FormData(form[0]);
-            
+
             $('#saveNewMovie').prop('disabled', true);
-            
+
             $.ajax({
                 url: '/movies/create',
                 type: 'POST',
@@ -420,20 +418,20 @@
         $('#searchInput').on('input', function(e) {
             var input = $(this);
             var value = input.val();
-            
+
             // Remove space at the beginning
             value = value.replace(/^\s+/, '');
-            
+
             // Remove double spaces
             value = value.replace(/\s{2,}/g, ' ');
-            
+
             // Update input value
             input.val(value);
-            
+
             // Perform search
             performSearch();
         });
     });
-    </script>
+</script>
 </body>
 </html>
