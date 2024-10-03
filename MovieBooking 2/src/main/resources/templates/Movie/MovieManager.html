@@ -79,56 +79,15 @@
     </style>
 </head>
 <body>
-<!-- Header -->
-<div class="row d-flex align-items-center" style="background-color: #205081; height: 60px">
-    <div class="col-2">
-        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-FPT.png" alt="" style="height: 40px" />
-    </div>
-    <div class="col-10">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-4 align-items-center ms-5">
-            </div>
-            <div class="d-flex gap-4">
-                <a href="#" class="text-white text-decoration-none">
-                    <i class="fa-solid fa-user"></i>
-                    <span th:text="'Welcome, ' + ${#authentication.name}">Welcome, User</span>
-                </a>
-                <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn btn-link text-white" style="text-decoration: none;">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span>Logout</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Container -->
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-2 sidebar">
-            <div class="card-holder h-100 text-center">
-                <div class="card-header">
-                    <img src="https://i.pinimg.com/564x/5b/b1/6e/5bb16e3e270ae5dd89dd9f29064eb12a.jpg" alt=""
-                         style="height: 100px; width: 100px; border-radius: 100%; align-self: center;">
-                    <h5 class="card-title" th:text="${#authentication.name}">User name</h5>
-                </div>
-                <div class="card-selection align-items-center">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><a th:href="@{/register}">Register Account</a></li>
-                        <li class="list-group-item"><a th:href="@{/account-management}">Account management</a></li>
-                        <li class="list-group-item"><a th:href="@{/booking}">Booking Ticket</a></li>
-                        <li class="list-group-item"><a th:href="@{/ticket-selling}">Ticket Selling Management</a></li>
-                        <li class="list-group-item"><a th:href="@{/ticket-booking}">Ticket Booking Management</a></li>
-                        <li class="list-group-item"><a th:href="@{/employee-management}">Employee Management</a></li>
-                        <li class="list-group-item"><a th:href="@{/cinema-room}">Cinema Room Management</a></li>
-                        <li class="list-group-item"><a th:href="@{/movie-management}">Movie Management</a></li>
-                        <li class="list-group-item"><a th:href="@{/promotion}">Promotion Management</a></li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <div th:insert="~{component/AdminHeader}"></div>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-2 sidebar" style="background-color: white;">
+                <!-- Sidebar content here -->
+                <div th:insert="~{component/AdminSidebar}"></div>
+          </div>
         </div>
 
         <!-- Main Content -->

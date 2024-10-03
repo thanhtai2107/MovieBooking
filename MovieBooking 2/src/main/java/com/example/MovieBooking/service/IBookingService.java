@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IBookingService {
     Page<Booking> getBookingsPagination(Long id,String searchInput, int page, int size );
-    Page<Booking> getBookingsPagination(String searchInput, int page, int size );
+//    Page<Booking> getBookingsPagination(String searchInput, int page, int size );
     Booking saveBooking(Booking booking);
     Page<Booking> getBookingsAddedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size);
     Page<Booking> getBookingsUsedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size);

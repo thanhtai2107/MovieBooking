@@ -18,7 +18,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 @Controller
-@RequestMapping("/movie")
+@RequestMapping("/movies")
 public class MovieController {
 
     private final IMovieService movieService;

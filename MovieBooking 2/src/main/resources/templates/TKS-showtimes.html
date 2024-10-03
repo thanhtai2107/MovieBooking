@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.thymeleaf.org "
->
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.thymeleaf.org "
+        xmlns:sec="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -110,11 +110,21 @@
     <!-- Main Container -->
     <div class="container-fluid">
       <!-- Header-->
-      <div th:insert="~{component/AdminHeader}"></div>
+      <div sec:authorize="hasAuthority('EMPLOYEE')">
+        <div th:insert="~{component/EmployeeHeader}"></div>
+      </div>
+      <div sec:authorize="hasAuthority('ADMIN')">
+        <div th:insert="~{component/AdminHeader}"></div>
+      </div>
       <div class="row">
         <!-- Sidebar and Content Wrapper -->
         <div class="col-2">
-          <div th:insert="~{component/EmployeeSideBar}"></div>
+          <div sec:authorize="hasAuthority('EMPLOYEE')">
+            <div th:insert="~{component/EmployeeSideBar}"></div>
+          </div>
+          <div sec:authorize="hasAuthority('ADMIN')">
+            <div th:insert="~{component/AdminSidebar}"></div>
+          </div>
         </div>
         <!-- Main Content -->
         <div class="col-10 content">
@@ -163,8 +173,8 @@
                   <div class="row gap-2 ps-2">
                     <a
                       th:each="showtime : ${movie.movieScheduleList}"
-                      th:if="${#temporals.format(showDate.showDate , 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd') 
-                        ? showtime.schedule.scheduleTime > #dates.format(#dates.createNow(), 'HH:mm') 
+                      th:if="${#temporals.format(showDate.showDate , 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')
+                        ? showtime.schedule.scheduleTime > #dates.format(#dates.createNow(), 'HH:mm')
                         : true}"
                       th:href="@{/select-seat(movieId=${movie.movieId}, scheduleId=${showtime.schedule.scheduleId}, date=${selectedDate})}"
                       class="btn btn-light btn-time rounded-4 fw-bolder bg-secondary-subtle"
