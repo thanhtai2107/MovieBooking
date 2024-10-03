@@ -59,7 +59,7 @@ public class AccountServiceImpl implements IAccountService {
 
         accountRepository.save(account1);
 
-        Member member = new Member(null, 0, account1);
+        Member member = new Member(null, 0L, account1);
         memberService.saveMember(member);
     }
 
@@ -71,12 +71,13 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByUsername(username);
-        if (account.isPresent()) {
+        if (account.isPresent() && account.get().getStatus() == 1) {
             Account account1 = account.get();
             return Account.builder()
                     .username(account1.getUsername())
                     .password(account1.getPassword())
                     .role(account1.getRole())
+                    .status(account1.getStatus())
                     .build();
         } else
             throw new UsernameNotFoundException("User not found");
@@ -119,7 +120,7 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public AccountDTO getMemberByIdentityCard(String identityCard) {
-        Object[] object =  accountRepository.findByIdentityCard(identityCard);
+        Object[] object = accountRepository.findByIdentityCard(identityCard);
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setMemberId(Long.valueOf(object[0].toString()));
         accountDTO.setFullname(object[2].toString());
@@ -127,6 +128,15 @@ public class AccountServiceImpl implements IAccountService {
         accountDTO.setPhoneNumber(object[3].toString());
         accountDTO.setScore(Integer.valueOf(object[4].toString()));
         return accountDTO;
+
+    }
+    public Account findUserByMemberId(Long memberId) {
+        return accountRepository.findAccountByMemberId(memberId);
+    }
+
+    @Override
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
     }
 
     public Optional<Account> getAccountByUserName(String userName){

@@ -158,10 +158,10 @@ public class BookingSeatController{
             @RequestParam("seat") List<Long> listSeats,
             @RequestParam("sum") Long totalMoney,
             @RequestParam("date")  String dateconfirm,
-            @RequestParam(value = "agree", defaultValue = "false") boolean isAgree,  // Đặt giá trị mặc định là false
+            @RequestParam(value = "Agree" ) String isAgree,  // Đặt giá trị mặc định là false
             Model model
             ) {
-        
+        System.out.println(isAgree + ": isAgree here");
         List<Seat> seatList = new ArrayList<>();
         LocalDate showDateParse = LocalDate.parse(dateconfirm);
         ShowDate showDate = showDateService.findShowDateByDate(showDateParse);
@@ -189,7 +189,7 @@ public class BookingSeatController{
             
         } else {
             booking.setAccount(null); // Gán null nếu memberId không có
-            booking.setUseScore(0);
+            booking.setUseScore(0L);
         }
         
         double scoreToAdd = (double) totalMoney * 0.1;
@@ -198,29 +198,29 @@ public class BookingSeatController{
         if (memberId != null) {
             currentScore = memberService.getScoreByMember(memberId); // Gọi phương thức lấy điểm của thành viên
         }
-        if (isAgree){
+        if (isAgree.equals("Agree")) {
             // check currentScore >=  total , if not , just add more score
-            if(totalMoney > currentScore){
+            if((int) Math.toIntExact(totalMoney) > currentScore){
                 currentScore += (int) scoreToAdd;
 //                memberService.updateMember(memberId,currentScore);
-                member.setScore(currentScore);
+                member.setScore((long) Math.toIntExact(currentScore));
                 memberService.saveMember(member);
             } else {
-                currentScore = currentScore -  totalMoney.intValue();
-                useScore = currentScore;
+                currentScore = currentScore -  totalMoney.intValue() + (int) scoreToAdd;
+                useScore = (int) Math.toIntExact(totalMoney);
 //                memberService.updateMember(memberId,useScore);
-                member.setScore(useScore);
+                member.setScore((long) Math.toIntExact(currentScore));
                 memberService.saveMember(member);
             }
         } else {
             newScore = currentScore + (int)scoreToAdd;
 //            memberService.updateMember(memberId,newScore);
-            member.setScore(newScore);
+            member.setScore((long) Math.toIntExact(newScore));
             memberService.saveMember(member);
         }
         
-        booking.setAddScore(newScore);  // Assuming addScore is calculated somewhere
-        booking.setUseScore(member != null ? useScore : null); // Modify based on business logic
+        booking.setAddScore((long) scoreToAdd);  // Assuming addScore is calculated somewhere
+        booking.setUseScore(member != null ? (long) Math.toIntExact(useScore) : null); // Modify based on business logic
         booking.setMovie(movie);
         
         
@@ -264,7 +264,7 @@ public class BookingSeatController{
     @GetMapping("/getMember")
     @ResponseBody
     public AccountDTO getMember(@RequestParam("memberInput") Long id,
-                                @RequestParam(value = "agree", defaultValue = "false") boolean isAgree,  // Đặt giá trị mặc định là false
+                                @RequestParam(value = "Agree", defaultValue = "false") boolean isAgree,  // Đặt giá trị mặc định là false
                                 @RequestParam("total") int total,
                                 @RequestParam("score") double currentScore,
                                 Model model

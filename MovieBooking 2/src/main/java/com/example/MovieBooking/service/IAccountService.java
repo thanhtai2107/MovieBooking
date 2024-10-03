@@ -15,4 +15,6 @@ public interface IAccountService extends UserDetailsService {
     void updateAccount(AccountReq account, MultipartFile imageUrl) throws IOException;
     AccountDTO getMemberById(Long id);
     AccountDTO getMemberByIdentityCard(String identityCard);
+    Account findUserByMemberId(Long memberId);
+    void saveAccount(Account account);
 }

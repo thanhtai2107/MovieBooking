@@ -104,13 +104,13 @@
 <!-- Main Container -->
 <div class="container-fluid">
     <!-- Header -->
-    <div th:replace = "component/CustomerHeader::header">...</div>
+    <div th:insert="~{component/UserHeader}">...</div>
 
     <div class="row">
         <!-- Sidebar of Admin -->
         <div class="col-2 sidebar" style="background-color: white;">
             <!-- Sidebar content here -->
-            <div th:replace = "component/CustomerSideBar::sidebar">...</div>
+            <div th:insert="~{component/UserSideBar}">...</div>
 
 
         </div>
@@ -188,7 +188,7 @@
                                     <div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="convertTicket"
-                                                   id="agree" value="agree" th:attr="data-score=${score}, data-usescore=${booking.getUseScore()}">
+                                                   id="agree" value="agree" th:attr="data-score=${score}, data-totalmoney=${booking.getTotal()}">
                                             <label class="form-check-label" for="agree">Agree</label>
                                         </div>
                                         <div class="form-check">
@@ -255,14 +255,14 @@
         agreeElement.on('click', function () {
             const score = parseFloat($(this).attr('data-score'));
             console.log('score: ' + score);
-            const useScore = parseFloat($(this).attr('data-usescore'));
-            console.log('useScore: '+useScore);
+            const totalMoney = parseFloat($(this).attr('data-totalmoney'));
+            console.log('totalmoney: '+totalMoney);
             $('#bank').prop('disabled', true);
             $('#cardNumber').prop('disabled', true);
             $('.error').removeClass('d-none', 'd-block');
             $('.error').addClass('d-none');
 
-            if (score < useScore) {
+            if (score < totalMoney) {
                 $('.alertConvert').removeClass('d-none', 'd-block');
                 $('.alertConvert').addClass('d-block');
             } else {
@@ -295,10 +295,10 @@
             console.log(convertValue);
             if (convertValue === 'agree') {
                 const score = parseFloat($('#agree').attr('data-score'));
-                const useScore = parseFloat($('#agree').attr('data-usescore'));
+                const totalMoney = parseFloat($('#agree').attr('data-totalmoney'));
                 console.log(score);
-                console.log(useScore);
-                if (score < useScore) {
+                console.log(totalMoney);
+                if (score < totalMoney) {
                     $('.alertConvert').removeClass('d-none', 'd-block');
                     $('.alertConvert').addClass('d-block');
                 } else {

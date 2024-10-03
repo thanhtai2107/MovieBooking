@@ -1,37 +1,38 @@
 package com.example.MovieBooking.controller;
 
 import com.example.MovieBooking.entity.CinemaRoom;
+import com.example.MovieBooking.service.ICinemaRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.example.MovieBooking.entity.Seat;
-import com.example.MovieBooking.entity.SeatType;
-import com.example.MovieBooking.service.impl.CinemaRoomServiceImpl;
-import com.example.MovieBooking.service.impl.SeatServiceImpl;
+import com.example.MovieBooking.service.ICinemaRoomService;
+import com.example.MovieBooking.service.ISeatService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/cinemaRoom")
 public class CinemaRoomController {
+    @Autowired
+    private ICinemaRoomService cinemaRoomService;
 
     @Autowired
-    private CinemaRoomServiceImpl cinemaRoomService;
-
-    @Autowired
-    private SeatServiceImpl seatService;
-
+    private ISeatService seatService;
 
     @GetMapping("/listCinemaRoom")
     public String listCinemaRoom(@RequestParam(value = "valueSearch", defaultValue = "", required = false) String valueSearch,
                                  @RequestParam(value = "page", defaultValue = "0") int page,
-                                 @RequestParam(value = "size", defaultValue = "1") int size,
+                                 @RequestParam(value = "size", defaultValue = "5") int size,
                                  Model model) {
         String search = "";
         Page<CinemaRoom> listCinemaRoom;
@@ -64,7 +65,17 @@ public class CinemaRoomController {
     }
 
     @PostMapping("/addCinemaRoom")
-    public String addCinemaRoom(@ModelAttribute("cinemaRoom") CinemaRoom cinemaRoom) {
+    public String addCinemaRoom(@Valid @ModelAttribute("cinemaRoom") CinemaRoom cinemaRoom, BindingResult result) {
+        // Check for validation errors
+        if (result.hasErrors()) {
+            return "cinemaRoom/addCinemaRoom";
+        }
+
+        // Check if the cinema room name already exists in the database
+        if (cinemaRoomService.existsByCinemaRoomName(cinemaRoom.getCinemaName())) {
+            result.rejectValue("cinemaName", "error.cinemaRoom", "Cinema Room Name already exists.");
+            return "cinemaRoom/addCinemaRoom";
+        }
         cinemaRoomService.saveCinemaRoom(cinemaRoom);
         return "redirect:/cinemaRoom/listCinemaRoom";
     }
@@ -86,18 +97,23 @@ public class CinemaRoomController {
 
         model.addAttribute("seatRows", rows); // Thêm danh sách hàng vào model
         model.addAttribute("nameCinemaRoom", cinemaRoom.getCinemaName());
+
+
         return "cinemaRoom/seatDetail";
     }
 
     //Cập nhật nhiều seat
     @PostMapping("/updateSeatType")
     public String updateSeatType(@RequestParam("selectedSeat") Long[] selectedSeat,@RequestParam("seatType") String seatType) {
-
         // Gọi service để cập nhật loại ghế
         seatService.updateListSeatType(selectedSeat, seatType);
-
         return "redirect:/cinemaRoom/listCinemaRoom";
     }
 
+    @GetMapping("/list")
+    public List<CinemaRoom> getAllCinemaRooms() {
+        return cinemaRoomService.getAllCinemaRooms();
+    }
 
 }
+
