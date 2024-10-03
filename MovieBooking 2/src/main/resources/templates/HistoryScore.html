@@ -20,6 +20,13 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <style>
 
+
+        .list-group-item .history-score {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+
         .sidebar {
             height: 100vh;
             background-color: #f8f9fa;
@@ -138,13 +145,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>18/11/2018 13:10</td>
-                        <td>Doctor Strange: Phù thủy tối thượng</td>
-                        <td>13.500</td>
-                        <td></td>
-                    </tr>
                     <tr th:if="${bookingList.size() == 0}">
                         <td colspan="5" class="text-center">No bookings found</td>
                     </tr>

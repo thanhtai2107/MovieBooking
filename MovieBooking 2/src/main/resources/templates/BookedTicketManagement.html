@@ -20,6 +20,12 @@
           integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <style>
 
+    .list-group-item .booked-ticket {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+
     .sidebar {
       height: 100vh;
       background-color: #f8f9fa;
@@ -115,10 +121,10 @@
             <!-- Search Form -->
             <form th:href="@{/booked-ticket}" class=" d-flex align-items-center">
               <label for="searchInput" class="me-2 m-0">Search:</label>
-              <input type="text" name="searchInput" id="searchInput" class="form-control w-75" placeholder="Search" th:value="${search}">
+              <input type="text" name="searchInput" id="searchInput" class="form-control w-75"  th:value="${search}">
               <input type="hidden" name="size" th:value="${size}">
               <input type="hidden" name="page" th:value="0">
-            </form>cou
+            </form>
           </div>
         </div>
         <table class="table table-striped">
@@ -140,7 +146,8 @@
             <td th:text="${booking.movie.nameVN}"></td>
             <td th:text="${booking.bookingDate}"></td>
             <td th:text="${booking.totalMoney}"></td>
-            <td th:text="${booking.status}"></td>
+            <td th:if="${booking.status == 0}"><span style="font-weight: bold; color: #007bff">Waiting for ticket</span></td>
+            <td th:unless="${booking.status == 0}"><span style="font-weight: bold; color: #3ed060" >Finished</span></td>
           </tr>
 <!--          <tr>-->
 <!--            <td>1</td>-->
