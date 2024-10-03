@@ -11,6 +11,7 @@ import com.example.MovieBooking.util.AccountRegisterValidate;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
-@RequestMapping("/employee")
+@RequestMapping("/employee-management")
 public class EmployeeController {
 
     @Autowired
@@ -39,7 +40,7 @@ public class EmployeeController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/list")
+    @GetMapping("/employees")
     public String showListEmployee(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "search", defaultValue = "") String username) {
 
@@ -47,7 +48,8 @@ public class EmployeeController {
 //        List<Employee> employeeList = employeeService.getALl();
 //        System.out.println(employeeList);
         model.addAttribute("search", username);
-        model.addAttribute("list", list);
+        model.addAttribute("list", list.toList());
+        System.out.println(list.toList().size());
         model.addAttribute("totalPages", list.getTotalPages());
         model.addAttribute("currentPage", pageNo);
         System.out.println(list.getTotalPages());
@@ -64,14 +66,22 @@ public class EmployeeController {
     }
 
     @PostMapping("/add")
-    public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
-        accountRegisterValidate.validate(account, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "employee/add";
+    public ResponseEntity<?> addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
+        try {
+            employeeService.add(account);
+            return ResponseEntity.ok().body("Employee added successfully"); // Trả về phản hồi JSON
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error adding employee");
         }
-        employeeService.add(account);
-        return "redirect:/employee/list";
     }
+//    public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
+//        accountRegisterValidate.validate(account, bindingResult);
+//        if (bindingResult.hasErrors()) {
+//            return "employee/add";
+//        }
+//        employeeService.add(account);
+//        return "redirect:/employee/list";
+//    }
 
     @GetMapping("/edit")
     public String edit(Model model,@RequestParam("id")Long id){

@@ -81,13 +81,13 @@
                 <!-- H3 with Bottom Border -->
                 <h3 class="text-center mb-4 bordered-title">Employee List</h3>
                 <div class="d-flex justify-content-between mb-3 position-relative" style="height: 80px;">
-                    <button class="btn btn-primary position-absolute top-0 start-0"><i
-                            class="fa-solid fa-circle-plus"></i> Add new</button>
+                    <a  href="/employee-management/add" class="btn btn-primary position-absolute top-0 start-0"><i
+                            class="fa-solid fa-circle-plus"></i> Add new</a>
                     <!-- Search Form -->
                     <form class="d-flex align-items-center position-absolute bottom-0 end-0" method="get"
-                          action="/employee/list">
+                          action="/employee-management/employees">
                         <label  class="me-2">Search:</label>
-                        <input type="text" name="search" th:value="${search}" class="form-control w-75" placeholder="Search">
+                        <input type="text" name="search" th:value="${search}" class="form-control w-75">
                     </form>
                 </div>
                 <table class="table table-striped">
@@ -108,8 +108,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <th:block th:each="employee,stat : ${list}">
-                        <tr>
+                    <tr th:if="${#lists.isEmpty(list)}">
+                        <td colspan="12" class="text-center">No employee find.</td>
+                    </tr>
+
+                        <tr th:each="employee,stat : ${list}">
                             <td th:text="${stat.count}"></td>
                             <td th:text="${employee.account.username}"></td>
                             <td th:text="${employee.account.fullname}"></td>
@@ -157,7 +160,7 @@
                                 </div>
                             </td>
                         </tr>
-                    </th:block>
+
                     <!-- Add more rows as needed -->
                     </tbody>
                 </table>
@@ -195,6 +198,12 @@
         const deleteForm = $('#deleteForm');
         deleteForm.attr('action', 'delete/' + accountId);
     });
+
+        // Kiểm tra xem có tham số "message=success" trên URL không
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('message') === 'success') {
+        toastr.success('Nhân viên đã được thêm thành công!', 'Thành công');
+    }
 </script>
 
 </body>
