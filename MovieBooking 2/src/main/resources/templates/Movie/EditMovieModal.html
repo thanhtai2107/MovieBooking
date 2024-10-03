@@ -64,13 +64,13 @@
                     <input type="hidden" th:field="*{movieId}">
                     <div class="mb-3">
                         <label for="movieNameENG" class="form-label required-field">Movie name (ENG):</label>
-                        <input type="text" class="form-control" id="movieNameENG" th:field="*{nameEnglish}" required>
-                        <div class="invalid-feedback">Please enter the movie name in English.</div>
+                        <input type="text" class="form-control" id="movieNameENG" th:field="*{nameEnglish}" required maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in English (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="movieNameVN" class="form-label required-field">Movie name (VN):</label>
-                        <input type="text" class="form-control" id="movieNameVN" th:field="*{nameVN}" required>
-                        <div class="invalid-feedback">Please enter the movie name in Vietnamese.</div>
+                        <input type="text" class="form-control" id="movieNameVN" th:field="*{nameVN}" required maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in Vietnamese (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="fromDate" class="form-label required-field">From date:</label>
@@ -99,8 +99,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label required-field">Duration:</label>
-                        <input type="number" class="form-control" id="duration" th:field="*{duration}" required>
-                        <div class="invalid-feedback">Please enter the movie duration.</div>
+                        <input type="number" class="form-control" id="duration" th:field="*{duration}" required min="1">
+                        <div class="invalid-feedback">Please enter a valid movie duration (minimum 1 minute).</div>
                     </div>
                     <div class="mb-3">
                         <label for="version" class="form-label required-field">Version:</label>
@@ -157,6 +157,7 @@
                                 <span class="file-name" id="fileName">Không có tệp nào được chọn</span>
                             </div>
                         </div>
+                        <div class="invalid-feedback">Please select a valid image file (JPEG, PNG, or GIF).</div>
                     </div>
                 </form>
             </div>
@@ -181,11 +182,23 @@
             }
         });
 
+        function sanitizeInput(input) {
+            return input.replace(/[&<>"']/g, function(match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
         function validateForm() {
             let isValid = true;
 
             // Check required fields
-            $('#editMovieForm input[required], #editMovieForm textarea[required]').each(function() {
+            $('#editMovieForm input[required], #editMovieForm textarea[required], #editMovieForm select[required]').each(function() {
                 if ($(this).val().trim() === '') {
                     isValid = false;
                     $(this).addClass('is-invalid');
@@ -218,17 +231,10 @@
                 isValid = false;
                 $('#fromDate').addClass('is-invalid');
                 $('#toDate').addClass('is-invalid');
+                $('#toDate').next('.invalid-feedback').text('To date must be after From date.');
             } else {
                 $('#fromDate').removeClass('is-invalid');
                 $('#toDate').removeClass('is-invalid');
-            }
-
-            // Add validation for content
-            if ($('#content').val().trim() === '') {
-                isValid = false;
-                $('#content').addClass('is-invalid');
-            } else {
-                $('#content').removeClass('is-invalid');
             }
 
             // Validate image file
@@ -250,6 +256,14 @@
         function submitForm() {
             var form = $('#editMovieForm')[0];
             var formData = new FormData(form);
+
+            // Sanitize text inputs
+            formData.forEach((value, key) => {
+                if (typeof value === 'string') {
+                    formData.set(key, sanitizeInput(value));
+                }
+            });
+
             $.ajax({
                 url: form.action,
                 type: 'POST',
@@ -262,7 +276,7 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('Error updating movie:', xhr.responseText);
-                    // Error handling is now done through form validation
+                    alert('Error updating movie. Please try again.');
                 }
             });
         }
