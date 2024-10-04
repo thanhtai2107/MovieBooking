@@ -153,9 +153,9 @@
                 box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
                   rgba(1, 1, 1, 0.08) 0px 0px 0px 1px;
               "
-
+                        th:action="@{add}"
                         th:object="${account}"
-
+                        method="post"
                         id="form-register"
                 >
                     <div class="mb-3">
@@ -562,35 +562,35 @@
         }
 
         $("#form-register").on("submit", function (e) {
-            // checkAccount();
-            // checkPassword();
-            // checkConfirmPassword();
-            // checkFullname();
-            // checkAddress();
-            // checkGender();
-            // checkDob();
-            // checkEmail();
-            // checkPhone();
-            // checkIdentity();
-            // if (!accountErr || !passwordErr || !confirmPasswordErr || !fullnameErr
-            //     || !addressErr || !genderErr || !dobErr || !emailErr || !phoneErr || !identityErr) {
-            //     e.preventDefault();
-            // }
-            e.preventDefault();  // Ngăn form gửi dữ liệu theo cách truyền thống
+            checkAccount();
+            checkPassword();
+            checkConfirmPassword();
+            checkFullname();
+            checkAddress();
+            checkGender();
+            checkDob();
+            checkEmail();
+            checkPhone();
+            checkIdentity();
+            if (!accountErr || !passwordErr || !confirmPasswordErr || !fullnameErr
+                || !addressErr || !genderErr || !dobErr || !emailErr || !phoneErr || !identityErr) {
+                e.preventDefault();
+            }
+            // e.preventDefault();  // Ngăn form gửi dữ liệu theo cách truyền thống
 
             // Gửi dữ liệu form qua AJAX
-            $.ajax({
-                url: '/employee-management/add',  // Thay bằng URL endpoint xử lý việc thêm nhân viên
-                type: 'POST',
-                data: $(this).serialize(), // Gửi toàn bộ dữ liệu form
-                success: function(response) {
-                    // Nếu thêm thành công, chuyển hướng đến trang danh sách nhân viên
-                    window.location.href = '/employee-management/employees?message=success';
-                },
-                error: function(xhr, status, error) {
-                    toastr.error('Có lỗi xảy ra khi thêm nhân viên.', 'Lỗi');
-                }
-            });
+            // $.ajax({
+            //     url: '/employee-management/add',  // Thay bằng URL endpoint xử lý việc thêm nhân viên
+            //     type: 'POST',
+            //     data: $(this).serialize(), // Gửi toàn bộ dữ liệu form
+            //     success: function(response) {
+            //         // Nếu thêm thành công, chuyển hướng đến trang danh sách nhân viên
+            //         window.location.href = '/employee-management/employees?message=success';
+            //     },
+            //     error: function(xhr, status, error) {
+            //         toastr.error('Có lỗi xảy ra khi thêm nhân viên.', 'Lỗi');
+            //     }
+            // });
         });
     });
 </script>

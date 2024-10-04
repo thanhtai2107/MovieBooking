@@ -120,6 +120,11 @@
         .rowSeat {
             justify-content: center;
         }
+
+        .btn{
+            background-color: #205081;
+            color: white;
+        }
     </style>
 </head>
 
@@ -147,11 +152,12 @@
                     <div id="seat-container">
                         <div class="row rowSeat" th:each="seatRow, stat : ${seatRows}">
                             <div th:each="seat : ${seatRow}"
-                                 th:class="'seat ' + ${seat.seatType.seatTypeId == 1 ? 'seat-normal' : 'seat-vip'}
-                                + ' ' + ${seat.seatStatus == 0 ? 'available' : 'booked'}"
+                                 th:class="'seat ' + ${seat.seatType != null && seat.seatType.seatTypeId == 1 ? 'seat-normal' : 'seat-vip'}
+                                + ' ' + ${seat.seatStatus != null && seat.seatStatus == 0 ? 'available' : 'booked'}"
                                  th:attr="data-seat-id=${seat.seatId}">
+
                                 <!--boi vi co' security nen can phai them dong nay-->
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
 
                                 <!-- <input type="hidden" th:value="${seat.seatId}" name="selectedSeat" id="selectedSeat">-->
                                 <span th:text="${seat.seatRow} + ${seat.seatColumn}"></span>
@@ -175,8 +181,8 @@
 
                     <!-- Save and Back buttons -->
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-check"></i> Save</button>
-                        <a th:href="@{/cinemaRoom/listCinemaRoom}" class="btn btn-primary"><i class="fa-solid fa-xmark"></i> Back</a>
+                        <button type="submit" class="btn me-2"><i class="fa-solid fa-check"></i> Save</button>
+                        <a th:href="@{/cinemaRoom/listCinemaRoom}" class="btn"><i class="fa-solid fa-xmark"></i> Back</a>
                     </div>
                 </form>
             </div>
@@ -185,25 +191,6 @@
 </div>
 
 <script>
-    // $(document).ready(function() {
-    //     // Khi click vào ghế, thêm class 'seat-selected'
-    //     $('.seat').on('click', function() {
-    //         // Loại bỏ class 'seat-selected' từ tất cả các ghế khác
-    //         // $('.seat').removeClass('seat-selected');
-    //
-    //         // Thêm class 'seat-selected' vào ghế được click
-    //         $(this).addClass('seat-selected');
-    //
-    //         // Lấy ID ghế từ thuộc tính data-seat-id và cập nhật vào input ẩn
-    //         var seatId = $(this).data('seat-id');
-    //         $('input[name="selectedSeat"]').val(seatId);
-    //
-    //         $('input[name="seatType"]').on('change', function () {
-    //             $('input[name="seatType"]').not(this).prop('checked', false);
-    //         });
-    //     });
-    // });
-
     $(document).ready(function() {
         $('.seat').on('click', function() {
             $(this).toggleClass('seat-selected');
@@ -226,22 +213,38 @@
                 }).appendTo('#seatForm');
             });
         });
+
+
+        // Handle form submission
+        $('#seatForm').on('submit', function(event) {
+            // Check if any seats are selected
+            let hasSelectedSeats = $('.seat-selected').length > 0;
+
+            // Check if any seat type is checked
+            let seatTypeChecked = $('input[name="seatType"]:checked').length > 0;
+
+            // If seats are selected but no seat type is checked, show error
+            if (hasSelectedSeats && !seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn loại ghế (Seat Normal hoặc Seat VIP).');
+                return false;
+            }
+
+            // If no seats are selected but a seat type is checked, show error
+            if (!hasSelectedSeats && seatTypeChecked) {
+                event.preventDefault();
+                alert('Vui lòng chọn ghế trước khi chọn loại ghế.');
+                return false;
+            }
+
+            // If no seats are selected and no seat type is checked, navigate to the list page
+            if (!hasSelectedSeats && !seatTypeChecked) {
+                window.location.href = '/cinemaRoom/listCinemaRoom'; // Adjust this URL if necessary
+                return false;
+            }
+        });
     });
 </script>
-
-<!--Cập nhật nhiều seat 1 lúc-->
-<!--<script>-->
-<!--    document.getElementById('seatForm').addEventListener('submit', function(event) {-->
-<!--        let selectedSeatIds = [];-->
-<!--        // Collect all checked seat checkboxes-->
-<!--        document.querySelectorAll('.seat-checkbox:checked').forEach(function(checkbox) {-->
-<!--            selectedSeatIds.push(checkbox.value); // Add seat ID to array-->
-<!--        });-->
-
-<!--        // Assign seat IDs to hidden input-->
-<!--        document.getElementById('selectedSeats').value = selectedSeatIds.join(',');-->
-<!--    });-->
-<!--</script>-->
 
 </body>
 

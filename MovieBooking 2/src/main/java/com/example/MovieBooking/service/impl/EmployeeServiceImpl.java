@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public Page<Employee> getAll(String username,Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo-1,1);
+        Pageable pageable = PageRequest.of(pageNo-1,5);
         return employeeRepository.findAll(username,pageable);
     }
 

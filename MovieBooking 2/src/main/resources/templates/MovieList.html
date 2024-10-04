@@ -47,12 +47,14 @@
             border: 1px solid #ddd;
             position: relative;
             object-fit: cover;
+            height: 200px;
         }
 
         .movie-card img {
             width: 100%;
             height: 100%;
             display: block;
+            object-fit: cover;
         }
 
         .schedule-btn {
@@ -96,7 +98,7 @@
                 <div th:unless="${movies.isEmpty()}" th:each="movie:${movies}" class="movie-card">
                     <img th:if="${movie.smallImage == null}" src="https://via.placeholder.com/150x220.png?text=POSTER+Updating" alt="Poster Updating">
                     <img th:unless="${movie.smallImage == null}" th:src="${movie.smallImage}" th:alt="${movie.nameVN}">
-                    <button class="schedule-btn">View schedule</button>
+                    <a  class="btn schedule-btn" th:href="@{/movie-show-time(movieId=${movie.movieId},date=${selectedDate})}">View schedule</a>
                 </div>
             </div>
         </div>

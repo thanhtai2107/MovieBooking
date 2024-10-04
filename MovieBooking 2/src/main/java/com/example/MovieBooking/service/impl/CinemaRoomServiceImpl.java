@@ -1,6 +1,9 @@
 package com.example.MovieBooking.service.impl;
 
 import com.example.MovieBooking.entity.CinemaRoom;
+import com.example.MovieBooking.repository.CinemaRoomRepository;
+import com.example.MovieBooking.service.ICinemaRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.example.MovieBooking.entity.Seat;
 import com.example.MovieBooking.entity.SeatType;
 import com.example.MovieBooking.repository.CinemaRoomRepository;
@@ -17,10 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CinemaRoomServiceImpl implements ICinemaRoomService {
-
     @Autowired
     private CinemaRoomRepository cinemaRoomRepository;
 
@@ -52,6 +56,11 @@ public class CinemaRoomServiceImpl implements ICinemaRoomService {
     public CinemaRoom getCinemaRoomById(Long cinemaRoomId){
         Optional<CinemaRoom> findCinemaRoom = cinemaRoomRepository.findById(cinemaRoomId);
         return findCinemaRoom.orElse(null);
+    }
+
+    @Override
+    public boolean existsByCinemaRoomName(String cinemaRoomName) {
+        return cinemaRoomRepository.existsByCinemaName(cinemaRoomName);
     }
 
     @Override

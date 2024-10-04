@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomePage</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+    />
+    <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://kit.fontawesome.com/2fdd50f686.js"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"
+    ></script>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        /* padding: 0 35px; */
+        /* background: rgb(88, 130, 238); */
+        background-color: #4158D0;
+        background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+    }
+
+    .wrapper {
+        /* max-width: 1100px; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 80px;
+        position: relative;
+
+    }
+
+    .wrapper i {
+        height: 50px;
+        width: 50px;
+        background: rgb(80, 6, 136);
+        text-align: center;
+        line-height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: absolute;
+        /*font-size: 1.25 rem;*/
+        transform: translateY(-50%);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.23);
+
+    }
+
+    .wrapper i:first-child {
+        left: 0px;
+    }
+
+    .wrapper i:last-child {
+        right: 0px;
+    }
+
+    .wrapper .carousel {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: calc((100% / 3));
+        /* gap: 16px; */
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: 0;
+    }
+
+    .slide-container {
+        background: #16BFFD;
+        /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #CB3066, #16BFFD);
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #CB3066, #16BFFD);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+
+    .suggest-container {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(6, 91, 143, 1) 100%);
+
+    }
+
+    .carousel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel :where(.card, .img) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .carousel.dragging {
+        scroll-snap-type: none;
+        scroll-behavior: auto;
+    }
+
+    .carousel.no-transition {
+        scroll-behavior: auto;
+    }
+
+    .carousel.dragging .card {
+        cursor: grab;
+        user-select: none;
+    }
+
+    .carousel .card {
+        padding: 20px;
+        scroll-snap-align: start;
+        height: 100%;
+        list-style: none;
+        background: #fff;
+        border-radius: 8px;
+        display: flex;
+        cursor: pointer;
+        width: 80%;
+        padding-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .carousel-image {
+        height: 550px; /* Fixed height */
+        object-fit: cover; /* Ensures the image covers the container */
+    }
+
+    .carousel {
+        display: flex;
+        overflow: hidden; /* Hide any overflowing content */
+    }
+    .card {
+        flex-shrink: 0; /* Prevent the cards from shrinking */
+        width: 300px; /* Define the width of each card */
+        margin: 0 10px; /* Optional: add margin between cards */
+    }
+
+
+    .card .img {
+        /* background: green; */
+        width: 100%;
+        height: 100%;
+        /* border-radius: 50%; */
+    }
+
+    .card .img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* border-radius: 50%; */
+        border: 4px solid #fff;
+    }
+
+    .card h2 {
+        font-weight: 500;
+        font-size: 1.56rem;
+        margin: 30px 0 5px;
+    }
+
+    .card span {
+        color: #6a6d78;
+        font-size: 1.31rem;
+
+    }
+
+    .detail-promo {
+        position: relative;
+    }
+
+    .content-in-promo {
+        padding: 15px;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        opacity: 0;
+    }
+
+    .content-in-promo span {
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
+
+    }
+
+    .detail-promo:hover img {
+        opacity: 0.3;
+    }
+
+    .detail-promo:hover .content-in-promo {
+        opacity: 1;
+        /* background-color:  rgba(0, 0, 0, 0.23); */
+    }
+
+    footer h5 {
+        font-size: 18px;
+        margin-bottom: 1rem;
+    }
+
+    footer a {
+        color: white;
+        text-decoration: none;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+    }
+
+    footer p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    footer i {
+        font-size: 18px;
+    }
+
+    footer .social-icons a {
+        margin-right: 10px;
+    }
+
+
+    @media screen and (max-width: 900px) {
+        .wrapper .carousel {
+            grid-auto-columns: calc((100% / 2) - 9px);
+
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .wrapper .carousel {
+            grid-auto-columns: 100%;
+
+        }
+    }
+</style>
+<body>
+<div class="container-fluid">
+    <!-- Header -->
+    <div th:insert="~{component/UserHeader}"></div>
+
+    <!-- Content -->
+            <div class="row slide-container d-flex align-items-center justify-content-center">
+                <div id="carouselExampleControls" class="carousel slide pt-2 pb-2" style="width: 90%;"
+                     data-bs-ride="carousel">
+                    <div class="carousel-inner" >
+                        <div class="carousel-item" th:each="movie, count : ${listMovie}" th:classappend="${count.index == 0} ? 'active': ''">
+                            <img th:src="${movie.largeImage}" class="d-block w-100 carousel-image" alt="">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row suggest-container d-flex align-items-center justify-content-center">
+                <div class="title text-center mt-3 d-flex align-items-center justify-content-center  ">
+                    <h1 style="font-weight: bold; color: white;
+                border: 1px solid orangered; width: 30%; background-color: orangered;" class="rounded-pill">PHIM ĐANG
+                        CHIẾU</h1>
+                </div>
+                <div class="wrapper pt-3">
+                    <i id="left" class="fa-solid  fas fa-angle-left"></i>
+                    <ul class="carousel">
+                        <li class="card" th:each="movie : ${listMovie}">
+                            <div class="img"><img th:src="${movie.smallImage}" alt=""
+                                                  draggable="false">
+                            </div>
+                            <div class="content d-flex flex-column align-items-center justify-content-center">
+                                <h2 style="color: black; font-weight:bold;" th:text="${movie.nameVN}"></h2>
+                                <span th:text="${movie.duration} + ' phút | ' + ${movie.cinemaRoom.cinemaName}"></span>
+                                <span th:text="'Từ ngày ' +  ${movie.fromDate}"></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <i id="right" class="fa-solid fas fa-angle-right"></i>
+                </div>
+<!--                <div class="row promotion-contain " style="background-color: antiquewhite; padding: 30px;">-->
+<!--                    <div class="title d-flex align-items-center justify-content-center  mt-2">-->
+<!--                        <h1 style="font-weight: bold; color: rgba(0, 0, 0, 0.779);">KHUYẾN MÃI & ƯU ĐÃI</h1>-->
+<!--                    </div>-->
+<!--                    <div class="promotion-holder">-->
+<!--                        <div class="promotion-row flex-wrap row d-flex w-100 flex-row gap-4 justify-content-center align-items-center">-->
+<!--                            <div class="col-4" style="height: 300px; width: 40%; border: 2px solid gray; padding: 30px;">-->
+<!--                                <h3 style="color: orangered; font-family:Verdana, Geneva, Tahoma, sans-serif; font-weight: 600; padding: 30px;">KHUYẾN MÃI HẤP DẪN</h3>-->
+<!--                                <h5 style="padding: 30px; color: gray; font-family:Verdana, Geneva, Tahoma, sans-serif;" class="pt-0">-->
+<!--                                    Khám phá ngay hàng trăm lợi ích dành cho bạn trong chuyên mục-->
+<!--                                    Khuyến mãi & Ưu đãi hấp dẫn của Metiz Cinema.-->
+<!--                                </h5>-->
+<!--                            </div>-->
+<!--                            <div class="detail-promo col-2  p-0"-->
+<!--                                 style="height: 300px; width: 300px; background-color: orangered;" th:each="promotion : ${listPromotion}">-->
+<!--                                <img th:src="${promotion.image}"-->
+<!--                                     style="width: 100%; height: 100%; object-fit: cover;"></img>-->
+<!--                                <div-->
+<!--                                        class="content-in-promo text-center d-flex flex-column align-items-center justify-content-center">-->
+<!--                                <span th:text="${promotion.title}"></span>-->
+<!--                                    <a class="btn btn-outline-warning">Chi tiết</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="row promotion-contain" style="background-color: antiquewhite; padding: 30px;">
+                    <div class="title d-flex align-items-center justify-content-center mt-2">
+                        <h1 style="font-weight: bold; color: rgba(0, 0, 0, 0.779);">KHUYẾN MÃI & ƯU ĐÃI</h1>
+                    </div>
+                    <div class="promotion-holder">
+                        <div class="promotion-row flex-wrap row d-flex w-100 flex-row gap-4 justify-content-center align-items-center">
+                            <div class="col-4" style="height: 300px; width: 40%; border: 2px solid gray; padding: 30px;">
+                                <h3 style="color: orangered; font-family:Verdana, Geneva, Tahoma, sans-serif; font-weight: 600; padding: 30px;">
+                                    KHUYẾN MÃI HẤP DẪN
+                                </h3>
+                                <h5 style="padding: 30px; color: gray; font-family:Verdana, Geneva, Tahoma, sans-serif;" class="pt-0">
+                                    Khám phá ngay hàng trăm lợi ích dành cho bạn trong chuyên mục
+                                    Khuyến mãi & Ưu đãi hấp dẫn.
+                                </h5>
+                            </div>
+                            <div class="detail-promo col-2 p-0" style="height: 300px; width: 300px; background-color: orangered; position: relative;"
+                                 th:each="promotion : ${listPromotion}">
+                                <img th:src="${promotion.image}" style="width: 100%; height: 100%; object-fit: cover;"></img>
+                                <div class="content-in-promo text-center d-flex flex-column align-items-center justify-content-center"
+                                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); color: white;">
+                                    <span th:text="${promotion.title}" style="font-size: 18px; font-weight: bold;"></span>
+                                    <a class="btn btn-outline-warning mt-2">Chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-holder p-0">
+                    <footer class="text-white pt-4" style="background-color: #205081;">
+                        <div class="container">
+                            <div class="row">
+                                <!-- About Us Section -->
+                                <div class="col-md-4">
+                                    <h3>About Us</h3>
+                                    <p>
+                                        Welcome to our cinema! We provide the best experience for movie lovers. Enjoy the
+                                        latest movies with us.
+                                    </p>
+                                </div>
+
+                                <!-- Quick Links Section -->
+                                <div class="col-md-4">
+                                    <h3>Quick Links</h3>
+                                    <ul class="list-unstyled">
+                                        <li><a href="#" class="text-white">Home</a></li>
+                                        <li><a href="#" class="text-white">Movies</a></li>
+                                        <li><a href="#" class="text-white">Book Tickets</a></li>
+                                        <li><a href="#" class="text-white">Contact Us</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Social Media & Contact Section -->
+                                <div class="col-md-4">
+                                    <h3>Follow Us</h3>
+                                    <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                                    <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                                    <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+
+                                    <h5 class="mt-4">Contact Us</h5>
+                                    <p><i class="fas fa-envelope"></i> contact@cinema.com</p>
+                                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                                </div>
+                            </div>
+
+                            <!-- Copyright Section -->
+                            <div class="text-center mt-4">
+                                <p class="mb-0">&copy; 2024 Cinema. All Rights Reserved.</p>
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+            </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector(".carousel");
+        const arrowBtns = document.querySelectorAll(".wrapper i");
+        const wrapper = document.querySelector(".wrapper");
+
+        const firstCard = carousel.querySelector(".card");
+        const firstCardWidth = firstCard.offsetWidth;
+
+        let isDragging = false,
+            startX,
+            startScrollLeft,
+            timeoutId;
+
+        const dragStart = (e) => {
+            isDragging = true;
+            carousel.classList.add("dragging");
+            startX = e.pageX;
+            startScrollLeft = carousel.scrollLeft;
+        };
+
+        const dragging = (e) => {
+            if (!isDragging) return;
+
+            // Calculate the new scroll position
+            const newScrollLeft = startScrollLeft - (e.pageX - startX);
+
+            // Check if the new scroll position exceeds
+            // the carousel boundaries
+            if (newScrollLeft <= 0 || newScrollLeft >=
+                carousel.scrollWidth - carousel.offsetWidth) {
+
+                // If so, prevent further dragging
+                isDragging = false;
+                return;
+            }
+
+            // Otherwise, update the scroll position of the carousel
+            carousel.scrollLeft = newScrollLeft;
+        };
+
+        const dragStop = () => {
+            isDragging = false;
+            carousel.classList.remove("dragging");
+        };
+
+        const autoPlay = () => {
+
+            // Return if window is smaller than 800
+            if (window.innerWidth < 800) return;
+
+            // Calculate the total width of all cards
+            const totalCardWidth = carousel.scrollWidth;
+
+            // Calculate the maximum scroll position
+            const maxScrollLeft = totalCardWidth - carousel.offsetWidth;
+
+            // If the carousel is at the end, stop autoplay
+            if (carousel.scrollLeft >= maxScrollLeft) return;
+
+            // Autoplay the carousel after every 2500ms
+            timeoutId = setTimeout(() =>
+                carousel.scrollLeft += firstCardWidth, 2500);
+        };
+
+        carousel.addEventListener("mousedown", dragStart);
+        carousel.addEventListener("mousemove", dragging);
+        document.addEventListener("mouseup", dragStop);
+        wrapper.addEventListener("mouseenter", () =>
+            clearTimeout(timeoutId));
+        wrapper.addEventListener("mouseleave", autoPlay);
+
+        // Add event listeners for the arrow buttons to
+        // scroll the carousel left and right
+        arrowBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                carousel.scrollLeft += btn.id === "left" ?
+                    -firstCardWidth : firstCardWidth;
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        const carousel = $('.carousel');
+        const cardWidth = $('.card').outerWidth(true); // Get the full width of a single card, including margin
+        const visibleCards = Math.floor(carousel.width() / cardWidth); // How many cards can be fully visible at once
+        let scrollPosition = 0; // Track the scroll position
+
+        // Click event for the right arrow
+        $('#right').click(function() {
+            // Scroll to the next set of visible cards
+            if (scrollPosition < carousel[0].scrollWidth - carousel.width()) {
+                scrollPosition += cardWidth * visibleCards; // Move by the number of visible cards
+                carousel.animate({ scrollLeft: scrollPosition }, 600); // Smooth scrolling to the right
+            }
+        });
+
+        // Click event for the left arrow
+        $('#left').click(function() {
+            // Scroll to the previous set of visible cards
+            if (scrollPosition > 0) {
+                scrollPosition -= cardWidth * visibleCards; // Move by the number of visible cards
+                carousel.animate({ scrollLeft: scrollPosition }, 600); // Smooth scrolling to the left
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>

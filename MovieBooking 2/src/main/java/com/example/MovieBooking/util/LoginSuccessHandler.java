@@ -26,7 +26,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String role = authentication.getAuthorities().toString().replace("[", "").replace("]", "");
         if (role.equals("MEMBER")) {
-            response.sendRedirect("/index");
+            response.sendRedirect("/home");
+        } else if(role.equals("ADMIN")) {
+            response.sendRedirect("/homeAdmin");
+        } else if(role.equals("EMPLOYEE")) {
+            response.sendRedirect("/homeEmployee");
         }
     }
 }
