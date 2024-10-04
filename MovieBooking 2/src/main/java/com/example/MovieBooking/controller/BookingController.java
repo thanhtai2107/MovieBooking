@@ -35,6 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * @author Doan Minh Phong, Le Thanh Tri, Nguyen Van Su
+ * @version 1.0
+ * @since 2024
+ */
 @Controller
 public class BookingController {
     @Autowired
@@ -463,6 +469,15 @@ public class BookingController {
         return "ShowTimeWithId";
     }
 
+
+    /**
+     * The function show the list of movie 
+     * 
+     * @author Doan Minh Phong
+     * @param date 
+     * @param model
+     * @return 
+     */
     @GetMapping("/showtimes")
     public String getMoviesByDay(
             @RequestParam(value = "date", required = false)
