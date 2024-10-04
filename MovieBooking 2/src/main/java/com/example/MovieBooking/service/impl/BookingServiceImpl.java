@@ -18,6 +18,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
+/**
+ * 
+ *  This class contains methods related to booking operations.
+ * 
+ * @author Doan Minh Phong, Nguyen Van Su, Le Thanh Tri
+ * @version 1.0
+ * @since 2024-09-23
+ */
 @Service
 public class BookingServiceImpl implements IBookingService {
     @Autowired
@@ -147,6 +155,13 @@ public class BookingServiceImpl implements IBookingService {
 //        return null;
 //    }
 
+    /**
+     * Saves a new booking to the database.
+     *
+     * @author Doan Minh Phong
+     * @param booking The Booking object containing the booking details to be saved.
+     * @return The saved Booking object.
+     */
     @Override
     public Booking saveBooking(Booking booking) {
         return bookingRepository.save(booking);
