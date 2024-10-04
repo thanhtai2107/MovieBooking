@@ -160,13 +160,14 @@ public class BookingServiceImpl implements IBookingService {
     public Booking updateBooking(Booking booking){
         return bookingRepository.save(booking);
     }
-
+    
     /**
      * Get all bookings
      *
      * @author Le Thanh Tri
      * @return list booking
      */
+    @Override
     public List<Booking> findAll() {
         return bookingRepository.findAll();
     }
