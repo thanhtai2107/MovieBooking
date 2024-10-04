@@ -102,7 +102,15 @@ public class MemberController {
      * @throws IOException if file does not exist
      */
     @PostMapping("/edit")
+<<<<<<< HEAD
+    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model) throws IOException {
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        if (account1 != null){
+            bindingResult.rejectValue("username", "Account already exists");
+        }
+=======
     public String editMember(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model) throws IOException {
+>>>>>>> 16607893635211a848db781559e60d60dd4f7788
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
             return "edit-member";

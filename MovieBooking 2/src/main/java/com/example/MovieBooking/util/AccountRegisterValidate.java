@@ -25,56 +25,56 @@ public class AccountRegisterValidate implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
-        if (!( object instanceof AccountReq)) {
+        if (!(object instanceof AccountReq)) {
             return;
         }
         AccountReq accountReq = (AccountReq) object;
         Account account = accountService.findUserByUsername(accountReq.getUsername());
-
+        String userName = account.getUsername();
 
         // Validate username
         String accountRegex = "^[a-zA-Z0-9]{3,}$";
         if (accountReq.getUsername().isBlank()) {
             errors.rejectValue("username", null, "Account is required");
-        }  else if (!accountReq.getUsername().matches(accountRegex)) {
-            errors.rejectValue("username", null,"Account format is incorrect");
+        } else if (!accountReq.getUsername().matches(accountRegex)) {
+            errors.rejectValue("username", null, "Account format is incorrect");
         }
 
-        // Validate password
-        String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!.* ).{8,}$";
-        if (accountReq.getPassword().isBlank()) {
-            errors.rejectValue("password", null, "Password is required");
-        }else if (!accountReq.getPassword().matches(passwordRegex)) {
-            errors.rejectValue("password", null,"Password format is incorrect (Example?123)");
-        }
+            // Validate password
+            String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!.* ).{8,}$";
+            if (accountReq.getPassword().isBlank()) {
+                errors.rejectValue("password", null, "Password is required");
+            } else if (!accountReq.getPassword().matches(passwordRegex)) {
+                errors.rejectValue("password", null, "Password format is incorrect (Example?123)");
+            }
 
-        // Validate confirm password
-        if (accountReq.getConfirmPassword().isBlank()) {
-            errors.rejectValue("confirmPassword", null, "Confirm password is required");
-        } else if(!accountReq.getConfirmPassword().equals(accountReq.getPassword())){
-            errors.rejectValue("confirmPassword", null,"Confirm password does not match Password");
-        }
+            // Validate confirm password
+            if (accountReq.getConfirmPassword().isBlank()) {
+                errors.rejectValue("confirmPassword", null, "Confirm password is required");
+            } else if (!accountReq.getConfirmPassword().equals(accountReq.getPassword())) {
+                errors.rejectValue("confirmPassword", null, "Confirm password does not match Password");
+            }
 
-        String identityRegex = "^\\d{12}$";
-        if (accountReq.getIdentityCard().isBlank()) {
-            errors.rejectValue("identityCard", null, "Identity card is required");
-        } else if (!accountReq.getIdentityCard().matches(identityRegex)) {
-            errors.rejectValue("identityCard", null,"Identity card format is incorrect");
-        }
+            String identityRegex = "^\\d{12}$";
+            if (accountReq.getIdentityCard().isBlank()) {
+                errors.rejectValue("identityCard", null, "Identity card is required");
+            } else if (!accountReq.getIdentityCard().matches(identityRegex)) {
+                errors.rejectValue("identityCard", null, "Identity card format is incorrect");
+            }
 
-        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        if (accountReq.getEmail().isBlank()) {
-            errors.rejectValue("email", null, "Email is required");
-        } else if (!accountReq.getEmail().matches(emailRegex)) {
-            errors.rejectValue("email", null,"Email format is incorrect");
-        }
+            String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            if (accountReq.getEmail().isBlank()) {
+                errors.rejectValue("email", null, "Email is required");
+            } else if (!accountReq.getEmail().matches(emailRegex)) {
+                errors.rejectValue("email", null, "Email format is incorrect");
+            }
 
-        String phoneRegex = "^(0|84)[0-9]{9}$";
-        if (accountReq.getPhoneNumber().isBlank()) {
-            errors.rejectValue("phoneNumber", null, "Phone number is required");
-        } else if (!accountReq.getPhoneNumber().matches(phoneRegex)) {
-            errors.rejectValue("phoneNumber", null,"Phone number format is incorrect");
-        }
+            String phoneRegex = "^(0|84)[0-9]{9}$";
+            if (accountReq.getPhoneNumber().isBlank()) {
+                errors.rejectValue("phoneNumber", null, "Phone number is required");
+            } else if (!accountReq.getPhoneNumber().matches(phoneRegex)) {
+                errors.rejectValue("phoneNumber", null, "Phone number format is incorrect");
+            }
 
 //        if (accountReq.getDateOfBirth().isBlank()) {
 //            errors.rejectValue("dateOfBirth", null, "Date of birth is required");
@@ -94,12 +94,5 @@ public class AccountRegisterValidate implements Validator {
 //            }
 //        }
 
-    }
-
-    public static void main(String[] args) {
-        String accountRegex = "^[a-zA-Z0-9]{3,}$";
-        String username = "use";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        System.out.println(LocalDate.parse("29/02/2021", formatter));
-    }
+        }
 }
