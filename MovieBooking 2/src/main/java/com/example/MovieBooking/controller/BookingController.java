@@ -198,12 +198,12 @@ public class BookingController {
                 // TODO: handle exception
             }
 
-            if (searchOptial.get().equals("")) {
+            if (searchOptial.get().isEmpty()) {
 
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage = bookingService.getBookingByUserName(pageable, account.getUsername());
             } else {
-                search = searchOptial.get();
+                search = (String) searchOptial.get();
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage =  bookingService.getBookingsByConditionWithUser(pageable, account.getUsername(), searchOptial.get());
             }

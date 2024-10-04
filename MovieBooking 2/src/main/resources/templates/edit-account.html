@@ -74,6 +74,9 @@
             <div>
               <form id="form-edit" action="" th:object="${account}" th:action="@{edit}" enctype="multipart/form-data" method="post">
                 <input type="hidden" th:field="*{id}"/>
+                <div th:if="${success}">
+                  <div class="text-danger my-3" th:text="${success}"></div>
+                </div>
                 <div class="mb-3">
                   <label class="form-label">Account: <span class="text-danger">*</span></label>
                   <input
@@ -85,6 +88,7 @@
                           aria-describedby="helpId"
                           th:field="*{username}"
                           readonly
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
                   <small id="account-err"></small>
@@ -99,6 +103,7 @@
                           placeholder="Password"
                           aria-describedby="helpId"
                           th:value="*{password}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class=""></small>
                   <small id="password-err" class=""></small>
@@ -114,6 +119,7 @@
                           placeholder="Confirm password"
                           aria-describedby="helpId"
                           th:value="*{password}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class=""></small>
                   <small id="confirm-password-err" class=""></small>
@@ -128,6 +134,7 @@
                           placeholder="Fullname"
                           aria-describedby="helpId"
                           th:field="*{fullname}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class=""></small>
                   <small id="fullname-err" class=""></small>
@@ -143,6 +150,7 @@
                           placeholder="Date of birth"
                           aria-describedby="helpId"
                           th:field="*{dateOfBirth}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class=""></small>
                   <small id="dob-err" class=""></small>
@@ -160,7 +168,7 @@
                           value="Nam"
                   />
                   <label for="male">Nam</label>
-                  <input type="radio" id="female" name="gender" value="Nu" th:checked="${account.gender.equals('Nu')}" th:field="*{gender}"/>
+                  <input class="ms-2" type="radio" id="female" name="gender" value="Nu" th:checked="${account.gender.equals('Nu')}" th:field="*{gender}"/>
                   <label for="female">Nữ</label>
                   </div>
                 </div>
@@ -175,6 +183,7 @@
                           placeholder="Identity card"
                           aria-describedby="helpId"
                           th:field="*{identityCard}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('identityCard')}" th:errors="*{identityCard}" class=""></small>
                   <small id="identity-err" class=""></small>
@@ -189,6 +198,7 @@
                           placeholder="Email"
                           aria-describedby="helpId"
                           th:field="*{email}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" ></small>
                   <small id="email-err" class=""></small>
@@ -203,6 +213,7 @@
                           placeholder="Address"
                           aria-describedby="helpId"
                           th:field="*{address}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('address')}" th:errors="*{address}" ></small>
                   <small id="address-err" class=""></small>
@@ -217,6 +228,7 @@
                           placeholder="Phone number"
                           aria-describedby="helpId"
                           th:field="*{phoneNumber}"
+                          style="height: 45px"
                   />
                   <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></small>
                   <small id="phone-err" class=""></small>
@@ -230,12 +242,13 @@
                     class="form-control"
                     placeholder=""
                     aria-describedby="helpId"
+
                   />
                 </div>
                 <div>
                   <button
                     class="btn text-white"
-                    style="background-color: #347ab7"
+                    style="background-color: #347ab7; font-size: 17px;height: 45px"
                     type="submit"
                   >
                     <i class="fa-solid fa-check"></i>
@@ -243,7 +256,7 @@
                   </button>
                   <button
                     class="btn text-white"
-                    style="background-color: #347ab7"
+                    style="background-color: #347ab7;font-size: 17px;height: 45px"
                   >
                     <i class="fa-solid fa-xmark"></i>
                     Back
@@ -270,8 +283,8 @@
 
         function isValidDate(year, month, day) {
           var d = new Date(year, month - 1, day);
-          const split = d.toLocaleDateString().split("/");
-          if (split[2] == year && split[1] == parseInt(day)  && split[0] == month) {
+          const split = d.toLocaleDateString("en-US").split("/");
+          if (split[2] == year && split[0] == parseInt(month)  && split[1] == parseInt(day)) {
             return true;
           }
           return false;
@@ -307,7 +320,7 @@
           checkIdentity();
         });
 
-        // Check email
+          // Check email
         $("#email").on("blur", function () {
           checkEmail();
         });
