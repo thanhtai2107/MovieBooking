@@ -85,6 +85,7 @@ public class EmployeeController {
      */
     @PostMapping("/add")
     public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
+
         accountRegisterValidate.validate(account, bindingResult);
         if (bindingResult.hasErrors()) {
             return "employee/add";
