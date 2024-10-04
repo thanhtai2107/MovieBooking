@@ -32,7 +32,7 @@ public class MemberController {
     private AccountRegisterValidate accountRegisterValidate;
 
     @GetMapping("/members")
-    public String memberManagement(@RequestParam(value = "searchInput", required = false, defaultValue = "") String searchInput
+    public String showMembers(@RequestParam(value = "searchInput", required = false, defaultValue = "") String searchInput
             , @RequestParam(required = false, defaultValue = "0") int page
             , @RequestParam(required = false, defaultValue = "10") int size, Model model) {
         String search = "";
@@ -74,12 +74,13 @@ public class MemberController {
     }
 
     @PostMapping("/edit")
-    public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model) throws IOException {
+    public String editMember(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, BindingResult bindingResult, Model model) throws IOException {
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
             return "edit-member";
         }
         accountService.updateAccount(account, image);
-        return "redirect:members";
+        model.addAttribute("success", "Update information successfully");
+        return "edit-member";
     }
 }

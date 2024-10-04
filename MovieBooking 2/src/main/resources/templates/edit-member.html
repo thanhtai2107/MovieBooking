@@ -51,12 +51,12 @@
   <body>
     <div class="container-fluid">
       <!-- Header -->
-      <div th:insert="~{component/UserHeader}"></div>
+      <div th:insert="~{component/EmployeeHeader}"></div>
 
       <!-- Content -->
       <div class="row">
         <div class="col-2">
-          <div th:insert="~{component/UserSideBar}"></div>
+          <div th:insert="~{component/EmployeeSideBar}"></div>
         </div>
         <div class="col-10" style="background-color: #eff0f3; min-height: 90vh">
           <div class="bg-white mt-5 p-3">
@@ -74,6 +74,9 @@
             <div>
               <form id="form-edit" action="" th:object="${account}" th:action="@{/member-management/edit}" enctype="multipart/form-data" method="post">
                 <input type="hidden" th:field="*{id}"/>
+                <div th:if="${success}">
+                  <div class="text-danger my-3" th:text="${success}"></div>
+                </div>
                 <div class="mb-3">
                   <label class="form-label">Account: <span class="text-danger">*</span></label>
                   <input
@@ -241,12 +244,14 @@
                     <i class="fa-solid fa-check"></i>
                     Save
                   </button>
-                  <button
+                  <button type="button"
                     class="btn text-white"
                     style="background-color: #347ab7"
                   >
+                    <a th:href="@{/member-management/members}" style="text-decoration: none;color: white">
                     <i class="fa-solid fa-xmark"></i>
                     Back
+                    </a>
                   </button>
                 </div>
               </form>
