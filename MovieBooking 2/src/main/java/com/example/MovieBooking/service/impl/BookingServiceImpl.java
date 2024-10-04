@@ -127,6 +127,7 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public List<Booking> findAll() {
         return bookingRepository.findAll();
     }
