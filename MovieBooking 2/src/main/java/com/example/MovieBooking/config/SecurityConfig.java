@@ -19,6 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * @author Hoang Thanh Tai
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {

@@ -92,4 +92,5 @@ public interface IMovieService {
      * @author Duong Le Phu An
      */
     public List<Movie> getMoviesByDate(LocalDate date);
+    List<Movie> searchMovie(String searchInput);
 }

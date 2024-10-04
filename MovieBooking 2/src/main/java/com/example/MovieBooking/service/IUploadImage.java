@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public interface IUploadImage {
     String uploadImage(MultipartFile file) throws IOException;
-
 }
 
 

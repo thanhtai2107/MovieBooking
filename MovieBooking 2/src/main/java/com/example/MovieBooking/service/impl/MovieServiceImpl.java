@@ -285,6 +285,17 @@ public class MovieServiceImpl implements IMovieService {
         }
         return movie;
     }
+
+    /**
+     * @author Le Thanh Tri
+     * @param searchInput
+     * @return movieList
+     */
+    @Override
+    public List<Movie> searchMovie(String searchInput) {
+        List<Movie> movieList = movieRepository.findMoviesCustom(searchInput);
+        return movieList;
+    }
   
     /**
      * Finds movies based on a custom search input.
@@ -308,3 +319,5 @@ public class MovieServiceImpl implements IMovieService {
         return movieRepository.findMoviesByDate(date);
     }
 }
+
+

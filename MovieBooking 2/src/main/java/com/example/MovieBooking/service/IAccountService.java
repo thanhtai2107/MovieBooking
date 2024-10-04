@@ -16,5 +16,4 @@ public interface IAccountService extends UserDetailsService {
     AccountDTO getMemberById(Long id);
     AccountDTO getMemberByIdentityCard(String identityCard);
     Account findUserByMemberId(Long memberId);
-    void saveAccount(Account account);
 }
