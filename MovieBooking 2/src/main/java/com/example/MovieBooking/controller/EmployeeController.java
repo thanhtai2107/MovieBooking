@@ -11,6 +11,7 @@ import com.example.MovieBooking.util.AccountRegisterValidate;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
-@RequestMapping("/employee")
+@RequestMapping("/employee-management")
 public class EmployeeController {
 
     @Autowired
@@ -39,18 +40,16 @@ public class EmployeeController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/list")
+    @GetMapping("/employees")
     public String showListEmployee(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "search", defaultValue = "") String username) {
 
         Page<Employee> list = employeeService.getAll(username, pageNo);
-//        List<Employee> employeeList = employeeService.getALl();
-//        System.out.println(employeeList);
+        System.out.println(list.toList().size());
         model.addAttribute("search", username);
-        model.addAttribute("list", list);
+        model.addAttribute("list", list.toList());
         model.addAttribute("totalPages", list.getTotalPages());
         model.addAttribute("currentPage", pageNo);
-        System.out.println(list.getTotalPages());
         return "employee/list";
     }
 
@@ -64,13 +63,25 @@ public class EmployeeController {
     }
 
     @PostMapping("/add")
+//    public ResponseEntity<?> addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
+//        try {
+//            employeeService.add(account);
+//            return ResponseEntity.ok().body("Employee added successfully"); // Trả về phản hồi JSON
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("Error adding employee");
+//        }
+//    }
     public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        if (account1 != null){
+            bindingResult.rejectValue("username", null,"Account already exists");
+        }
         accountRegisterValidate.validate(account, bindingResult);
         if (bindingResult.hasErrors()) {
             return "employee/add";
         }
         employeeService.add(account);
-        return "redirect:/employee/list";
+        return "redirect:/employee-management/employees";
     }
 
     @GetMapping("/edit")
@@ -91,27 +102,16 @@ public class EmployeeController {
                 .build();
         model.addAttribute("account", accountEdit);
         model.addAttribute("image", account.getImage());
-        return "edit-account";
+        System.out.println(account.getImage());
+        return "employee/edit";
     }
 
 
     @PostMapping("/edit")
     public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model, RedirectAttributes redirectAttributes) throws IOException {
-//        Account account1 = accountService.findUserById(account.getId());
-//        account1.setPassword(account.getPassword());
-//        account1.setFullname(account.getFullname());
-//        account1.setDateOfBirth(account.getDateOfBirth());
-//        account1.setGender(account.getGender());
-//        account1.setIdentityCard(account.getIdentityCard());
-//        account1.setPhoneNumber(account.getPhoneNumber());
-//        account1.setAddress(account.getAddress());
-//        account1.setEmail(account.getEmail());
-//        if (!image.isEmpty()) {
-//            account1.setImage(uploadImage.uploadImage(image));
-//        }
         redirectAttributes.addAttribute("msg", "Update Successful");
         accountService.updateAccount(account, image);
-        return "redirect:/employee/list";
+        return "redirect:/employee-management/employees";
     }
 
 
@@ -122,7 +122,7 @@ public class EmployeeController {
         account.setStatus(0);
         accountRepository.save(account);
 
-        return "redirect:/employee/list";
+        return "redirect:/employee-management/employees";
     }
 }
 

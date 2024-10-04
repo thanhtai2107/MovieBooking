@@ -8,20 +8,21 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
-//public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-//    @Override
-//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-//        String role = authentication.getAuthorities().toString().replace("[", "").replace("]", "");
-//        System.out.println("this is role" + role);
-//        if (role.equals("MEMBER")) {
-//            setDefaultTargetUrl("/index");
-//        }
-//        super.onAuthenticationSuccess(request, response, authentication);
-//    }
-//}
-
-
+/**
+ * @author Hoang Thanh Tai
+ */
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+
+    /**
+     * Specify which page to redirect to after login successfully
+     *
+     * @author Hoang Thanh Tai
+     * @param request
+     * @param response
+     * @param authentication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String role = authentication.getAuthorities().toString().replace("[", "").replace("]", "");

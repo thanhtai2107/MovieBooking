@@ -19,6 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * @author Hoang Thanh Tai
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -30,9 +33,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/register",
-                            "/login"
-                    ).permitAll();
+                    request.requestMatchers("/register", "/login","/home").permitAll();
+                    request.requestMatchers("/member-management/**","/showtimes", "/admin/**").hasAnyAuthority("ADMIN", "EMPLOYEE");
+                    request.requestMatchers("/admin/booking-list", "/admin/confirm-booking/","/cinemaRoom/**","employee-management/**").hasAuthority("ADMIN");
+                    request.requestMatchers("/booked-ticket", "/movie-show-time", "/view-history-score").hasAuthority("MEMBER");
                     request.anyRequest().authenticated();
                 }).formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler()).permitAll())
                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")));

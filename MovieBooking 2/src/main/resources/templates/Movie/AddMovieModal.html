@@ -10,7 +10,7 @@
                 <div class="text-center mb-3">
                     <img id="movieThumbnail" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="Movie Thumbnail" class="movie-thumbnail">
                 </div>
-                <form id="addMovieForm" th:action="@{/movies/add}" method="post" enctype="multipart/form-data">
+                <form id="addMovieForm" th:action="@{/movies/create}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="movieNameENG" class="form-label required-field">Movie name (ENG):</label>
                         <input type="text" class="form-control" id="movieNameENG" name="nameEnglish" required placeholder="Enter movie name in English" maxlength="50">
@@ -91,11 +91,14 @@
                     </div>
                     <div class="mb-3">
                         <label for="largeImage" class="form-label">Image:</label>
-                        <div class="input-group">
-                            <input type="file" class="form-control" id="largeImage" name="imageFile" accept="image/*" style="display: none;">
-                            <input type="text" class="form-control" id="fileName" readonly value="Không có tệp nào được chọn">
-                            <button class="btn btn-outline-secondary" type="button" id="chooseFileBtn">Chọn tệp</button>
+                        <div class="custom-file-input">
+                            <input type="file" class="file-input" id="largeImage" name="imageFile" accept="image/*">
+                            <div class="file-input-label">
+                                <span class="choose-file-btn">Chọn tệp</span>
+                                <span class="file-name" id="fileName">Không có tệp nào được chọn</span>
+                            </div>
                         </div>
+                        <div class="invalid-feedback">Please select a valid image file (JPEG, PNG, or GIF).</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -155,34 +158,33 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const fileInput = document.getElementById('largeImage');
         const fileName = document.getElementById('fileName');
-        const chooseFileBtn = document.getElementById('chooseFileBtn');
         const form = document.getElementById('addMovieForm');
         const saveButton = document.getElementById('saveNewMovie');
+        const movieThumbnail = document.getElementById('movieThumbnail');
 
-        chooseFileBtn.addEventListener('click', function() {
-            fileInput.click();
+        // Preview selected image
+        $('#largeImage').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#movieThumbnail').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+                $('#fileName').text(file.name);
+            } else {
+                $('#fileName').text('Không có tệp nào được chọn');
+                // Reset thumbnail to default image when no file is selected
+                $('#movieThumbnail').attr('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png');
+            }
         });
 
-        fileInput.addEventListener('change', function(event) {
-            if (event.target.files.length > 0) {
-                let simpleName = event.target.files[0].name.split('\\').pop().split('/').pop();
-                fileName.value = simpleName;
-                
-                // Preview image
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('movieThumbnail').src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            } else {
-                fileName.value = 'Không có tệp nào được chọn';
-            }
+        // Add image error handling
+        $('#movieThumbnail').on('error', function() {
+            $(this).attr('src', 'https://via.placeholder.com/300x450.png?text=No+Image');
         });
 
         function sanitizeInput(input) {
@@ -201,92 +203,100 @@
             let isValid = true;
 
             // Check required fields
-            form.querySelectorAll('input[required], textarea[required], select[required]').forEach(function(element) {
-                if (element.value.trim() === '') {
+            $('#addMovieForm input[required], #addMovieForm textarea[required], #addMovieForm select[required]').each(function() {
+                if ($(this).val().trim() === '') {
                     isValid = false;
-                    element.classList.add('is-invalid');
+                    $(this).addClass('is-invalid');
                 } else {
-                    element.classList.remove('is-invalid');
+                    $(this).removeClass('is-invalid');
                 }
             });
 
             // Validate movie name length (ENG and VN)
             ['#movieNameENG', '#movieNameVN'].forEach(function(selector) {
-                const element = document.querySelector(selector);
-                if (element.value.length > 50) {
+                if ($(selector).val().length > 50) {
                     isValid = false;
-                    element.classList.add('is-invalid');
-                    element.nextElementSibling.textContent = 'Movie name must not exceed 50 characters.';
+                    $(selector).addClass('is-invalid');
+                    $(selector).next('.invalid-feedback').text('Movie name must not exceed 50 characters.');
                 }
             });
 
             // Validate duration
-            const duration = document.getElementById('duration');
-            if (isNaN(duration.value) || duration.value < 1) {
+            const duration = $('#duration').val();
+            if (isNaN(duration) || duration < 1) {
                 isValid = false;
-                duration.classList.add('is-invalid');
-                duration.nextElementSibling.textContent = 'Duration must be a positive number.';
+                $('#duration').addClass('is-invalid');
+                $('#duration').next('.invalid-feedback').text('Duration must be a positive number.');
             }
 
             // Check if From date is not later than To date
-            const fromDate = new Date(document.getElementById('fromDate').value);
-            const toDate = new Date(document.getElementById('toDate').value);
+            const fromDate = new Date($('#fromDate').val());
+            const toDate = new Date($('#toDate').val());
             if (fromDate > toDate) {
                 isValid = false;
-                document.getElementById('fromDate').classList.add('is-invalid');
-                document.getElementById('toDate').classList.add('is-invalid');
-                document.getElementById('toDate').nextElementSibling.textContent = 'To date must be after From date.';
+                $('#fromDate').addClass('is-invalid');
+                $('#toDate').addClass('is-invalid');
+                $('#toDate').next('.invalid-feedback').text('To date must be after From date.');
+            } else {
+                $('#fromDate').removeClass('is-invalid');
+                $('#toDate').removeClass('is-invalid');
             }
 
             // Validate image file
-            const imageFile = fileInput.files[0];
+            const imageFile = $('#largeImage')[0].files[0];
             if (imageFile) {
                 const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
                 if (!validTypes.includes(imageFile.type)) {
                     isValid = false;
-                    fileInput.classList.add('is-invalid');
-                    fileName.nextElementSibling.textContent = 'Please select a valid image file (JPEG, PNG, or GIF).';
+                    $('#largeImage').addClass('is-invalid');
+                    $('#largeImage').next('.invalid-feedback').text('Please select a valid image file (JPEG, PNG, or GIF).');
+                } else {
+                    $('#largeImage').removeClass('is-invalid');
                 }
             }
 
             return isValid;
         }
 
+        function submitForm() {
+            const formData = new FormData(form);
+            
+            // Sanitize text inputs
+            formData.forEach((value, key) => {
+                if (typeof value === 'string') {
+                    formData.set(key, sanitizeInput(value));
+                }
+            });
+
+            saveButton.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                $('#addMovieModal').modal('hide');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding movie. Please try again.');
+            })
+            .finally(() => {
+                saveButton.disabled = false;
+            });
+        }
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (validateForm()) {
-                const formData = new FormData(form);
-                
-                // Sanitize text inputs
-                formData.forEach((value, key) => {
-                    if (typeof value === 'string') {
-                        formData.set(key, sanitizeInput(value));
-                    }
-                });
-
-                saveButton.disabled = true;
-
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    $('#addMovieModal').modal('hide');
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error adding movie. Please try again.');
-                })
-                .finally(() => {
-                    saveButton.disabled = false;
-                });
+                submitForm();
             }
         });
     });

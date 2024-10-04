@@ -38,6 +38,12 @@ public class AccountServiceImpl implements IAccountService {
     @Autowired
     private IUploadImage uploadImage;
 
+    /**
+     * Register new account
+     *
+     * @author Hoang Thanh Tai
+     * @param account information of user used for register account
+     */
     @Override
     public void register(AccountReq account) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -63,11 +69,26 @@ public class AccountServiceImpl implements IAccountService {
         memberService.saveMember(member);
     }
 
+    /**
+     * Find account information by username
+     *
+     * @author Hoang Thanh Tai
+     * @param username username of account
+     * @return information of an account
+     */
     @Override
     public Account findUserByUsername(String username) {
         return accountRepository.findByUsername(username).orElse(null);
     }
 
+    /**
+     * Find account information by username
+     *
+     * @author Hoang Thanh Tai
+     * @param username username of account
+     * @return user detail
+     * @throws UsernameNotFoundException if username not found in database
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByUsername(username);
@@ -83,11 +104,26 @@ public class AccountServiceImpl implements IAccountService {
             throw new UsernameNotFoundException("User not found");
     }
 
+    /**
+     * Find account information by ID
+     *
+     * @author Hoang Thanh Tai
+     * @param id the identity of account
+     * @return information of an account
+     */
     @Override
     public Account findUserById(Long id) {
         return accountRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Update account information
+     *
+     * @author Hoang Thanh Tai
+     * @param account information of account
+     * @param imageUrl file image received in multipart request
+     * @throws IOException if file does not exist
+     */
     @Override
     public void updateAccount(AccountReq account, MultipartFile imageUrl) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -130,13 +166,16 @@ public class AccountServiceImpl implements IAccountService {
         return accountDTO;
 
     }
+
+    /**
+     * Find account information by member's ID
+     *
+     * @author Hoang Thanh Tai
+     * @param memberId the ID of member
+     * @return information of member's account
+     */
     public Account findUserByMemberId(Long memberId) {
         return accountRepository.findAccountByMemberId(memberId);
-    }
-
-    @Override
-    public void saveAccount(Account account) {
-        accountRepository.save(account);
     }
 
     public Optional<Account> getAccountByUserName(String userName){

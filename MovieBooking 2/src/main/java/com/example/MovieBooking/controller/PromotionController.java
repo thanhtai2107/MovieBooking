@@ -17,55 +17,83 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
+/**
+ * author: Nguyễn Văn Tuấn_DN24_FRF_FJW_03
+ * Controller responsible for handling all promotion-related requests,
+ * such as listing, searching, adding, editing, and deleting promotions.
+ */
 @Controller
 public class PromotionController {
+
 	@Autowired
 	private PromotionServiceImpl promotionService;
 
 	@Autowired
 	private UploadImageImpl uploadImageService;
 
-
+	/**
+	 * Displays a paginated list of promotions.
+	 *
+	 * @param page  the current page to display, defaults to 0.
+	 * @param size  the number of items per page, defaults to 5.
+	 * @param model the Model object to pass data to the view.
+	 * @return the name of the view to render the list of promotions.
+	 */
 	@GetMapping("/listPromotion")
 	public String viewPromotions(
-			@RequestParam(defaultValue = "0") int page,  // current page
-			@RequestParam(defaultValue = "5") int size,  // size per page
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size,
 			Model model) {
 
 		Page<Promotion> promotionPage = promotionService.getPaginatedPromotions(page, size);
-		System.out.println(promotionPage.toList());
-		// Add paginated data and metadata to the model
 		model.addAttribute("listPromotions", promotionPage.toList());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("pageSize", size);
 		model.addAttribute("totalPages", promotionPage.getTotalPages());
 
-		return "listPromotion"; // refers to the HTML page "promotions.html"
+		return "listPromotion";
 	}
 
+	/**
+	 * Searches for promotions based on the given keyword and displays a paginated list of search results.
+	 *
+	 * @param keyword the search keyword to filter promotions.
+	 * @param page    the current page to display, defaults to 0.
+	 * @param size    the number of items per page, defaults to 5.
+	 * @param model   the Model object to pass data to the view.
+	 * @return the name of the view displaying the search results.
+	 */
 	@GetMapping("/listPromotion/search")
 	public String searchPromotion(@RequestParam("keyword") String keyword,
-								  @RequestParam(defaultValue = "0") int page,  // current page
-								  @RequestParam(defaultValue = "5") int size,  // size per page
+								  @RequestParam(defaultValue = "0") int page,
+								  @RequestParam(defaultValue = "5") int size,
 								  Model model) {
-		// Xử lý keyword để thay thế ngày tháng theo định dạng mới
-		if (keyword.matches("\\d{2}/\\d{2}/\\d{4}")) { // kiểm tra định dạng "dd/MM/yyyy"
-			keyword = keyword.replace("/", "-"); // thay thế "/" bằng "-"
-		} else if (keyword.matches("\\d{2}/\\d{2}")) { // kiểm tra định dạng "dd/MM"
+
+		// Handle date formats
+		if (keyword.matches("\\d{2}/\\d{2}/\\d{4}")) {
 			keyword = keyword.replace("/", "-");
-		} else if (keyword.matches("\\d{2}/\\d{4}")) { // kiểm tra định dạng "MM/yyyy"
+		} else if (keyword.matches("\\d{2}/\\d{2}")) {
+			keyword = keyword.replace("/", "-");
+		} else if (keyword.matches("\\d{2}/\\d{4}")) {
 			keyword = keyword.replace("/", "-");
 		}
-//		System.out.println(keyword);
+
 		Page<Promotion> searchResults = promotionService.searchPromotionsByKeyword(keyword, page, size);
 		model.addAttribute("listPromotions", searchResults.toList());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("pageSize", size);
 		model.addAttribute("totalPages", searchResults.getTotalPages());
 		model.addAttribute("keyword", keyword);
+
 		return "listPromotion";
 	}
 
+	/**
+	 * Displays the form for adding a new promotion.
+	 *
+	 * @param model the Model object to pass data to the view.
+	 * @return the name of the view containing the promotion form.
+	 */
 	@GetMapping("/addPromotion")
 	public String addPromotion(Model model) {
 		PromotionDTO promotionDTO = new PromotionDTO();
@@ -73,6 +101,16 @@ public class PromotionController {
 		return "addPromotion";
 	}
 
+	/**
+	 * Handles the submission of a new promotion form and saves the promotion to the database.
+	 *
+	 * @param promotionDTO       the DTO containing promotion data from the form.
+	 * @param bindingResult      the result of the form validation.
+	 * @param model              the Model object to pass data to the view.
+	 * @param redirectAttributes attributes for redirecting after form submission.
+	 * @return the view name to redirect to after a successful or unsuccessful form submission.
+	 * @throws IOException if an error occurs during image upload.
+	 */
 	@PostMapping("/addPromotion")
 	public String addPromotion(
 			@Valid @ModelAttribute("promotion") PromotionDTO promotionDTO,
@@ -85,7 +123,8 @@ public class PromotionController {
 			return "addPromotion";
 		}
 		String imageLink = uploadImageService.uploadImage(promotionDTO.getImage());
-		// Save the promotion (convert DTO to entity before saving)
+
+		// Convert DTO to entity and save
 		Promotion promotion = new Promotion();
 		promotion.setTitle(promotionDTO.getTitle());
 		promotion.setStartTime(promotionDTO.getStartTime());
@@ -94,10 +133,18 @@ public class PromotionController {
 		promotion.setDetail(promotionDTO.getDetail());
 		promotion.setImage(imageLink);
 		promotionService.savePromotion(promotion);
+
 		redirectAttributes.addFlashAttribute("message", "Successfully add.");
 		return "redirect:/listPromotion";
 	}
 
+	/**
+	 * Displays the form for editing an existing promotion.
+	 *
+	 * @param id    the ID of the promotion to be edited.
+	 * @param model the Model object to pass data to the view.
+	 * @return the name of the view containing the promotion edit form.
+	 */
 	@GetMapping("/editPromotion/{id}")
 	public String editPromotion(@PathVariable("id") Long id, Model model) {
 		Promotion promotion = promotionService.findById(id);
@@ -109,28 +156,36 @@ public class PromotionController {
 		promotionDTO.setEndTime(promotion.getEndTime());
 		promotionDTO.setDiscountLevel(promotion.getDiscountLevel());
 		promotionDTO.setImageLink(promotion.getImage());
-		System.out.println(promotion.getImage());
 		model.addAttribute("promotion", promotionDTO);
 		return "editPromotion";
 	}
 
+	/**
+	 * Handles the submission of the promotion edit form and updates the promotion in the database.
+	 *
+	 * @param promotionDTO       the DTO containing the updated promotion data.
+	 * @param file               the updated image file, if provided.
+	 * @param bindingResult      the result of the form validation.
+	 * @param model              the Model object to pass data to the view.
+	 * @param redirectAttributes attributes for redirecting after form submission.
+	 * @return the view name to redirect to after successfully updating the promotion.
+	 * @throws IOException if an error occurs during image upload.
+	 */
 	@PostMapping("/editPromotion")
 	public String updatePromotion(
 			@Valid @ModelAttribute("promotion") PromotionDTO promotionDTO,
 			@RequestParam("image") MultipartFile file,
 			BindingResult bindingResult,
 			Model model,
-            RedirectAttributes redirectAttributes
+			RedirectAttributes redirectAttributes
 	) throws IOException {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("promotion", promotionDTO);
 			model.addAttribute("promotionID", promotionDTO.getPromotionId());
-			System.out.println(promotionDTO.toString());
 			model.addAttribute("message", "Unsuccessfully update.");
 			return "editPromotion";
 		}
 
-		// Save the promotion (convert DTO to entity before saving)
 		Promotion promotion = new Promotion();
 		promotion.setPromotionId(promotionDTO.getPromotionId());
 		promotion.setTitle(promotionDTO.getTitle());
@@ -138,7 +193,7 @@ public class PromotionController {
 		promotion.setEndTime(promotionDTO.getEndTime());
 		promotion.setDiscountLevel(promotionDTO.getDiscountLevel());
 		promotion.setDetail(promotionDTO.getDetail());
-		if (!file.isEmpty()){
+		if (!file.isEmpty()) {
 			String imageLink = uploadImageService.uploadImage(file);
 			promotion.setImage(imageLink);
 		} else {
@@ -147,19 +202,25 @@ public class PromotionController {
 		promotionService.savePromotion(promotion);
 		redirectAttributes.addFlashAttribute("message", "Successfully update.");
 		return "redirect:/listPromotion";
-}
+	}
 
+	/**
+	 * Handles the deletion of a promotion by its ID.
+	 *
+	 * @param id                 the ID of the promotion to be deleted.
+	 * @param redirectAttributes attributes for redirecting after deletion.
+	 * @param model              the Model object to pass data to the view.
+	 * @return the view name to redirect to after successful deletion.
+	 */
 	@PostMapping("/deletePromotion/{id}")
 	public String deletePromotion(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
-        System.out.println(id);
 		try {
 			promotionService.deletePromotionById(id);
-            redirectAttributes.addFlashAttribute("message", "Successfully delete.");
+			redirectAttributes.addFlashAttribute("message", "Successfully delete.");
 			return "redirect:/listPromotion";
 		} catch (Exception e) {
-            model.addAttribute("message", "Fail to delete this promotion.");
+			model.addAttribute("message", "Fail to delete this promotion.");
 			return "listPromotion";
 		}
 	}
-
 }

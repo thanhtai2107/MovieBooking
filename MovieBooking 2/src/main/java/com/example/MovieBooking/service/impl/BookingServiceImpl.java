@@ -1,5 +1,4 @@
 package com.example.MovieBooking.service.impl;
-
 import com.example.MovieBooking.entity.Booking;
 import com.example.MovieBooking.entity.BookingSeat;
 import com.example.MovieBooking.entity.Seat;
@@ -9,9 +8,7 @@ import com.example.MovieBooking.service.IBookingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +28,24 @@ public class BookingServiceImpl implements IBookingService {
     @Autowired
     BookingRepository bookingRepository;
 
+    /**
+     * @author Nguyen Van Su
+     * @param page
+     * @param userName
+     * @return list booking
+     */
     public Page<Booking> getBookingByUserName(Pageable page,String userName) {
         Page<Booking> bookingPage =bookingRepository.findBookingByUserName(userName ,page);
         return bookingPage;
     }
 
+    /**
+     * @author Nguyen Van Su
+     * @param page
+     * @param username
+     * @param value
+     * @return list booking
+     */
     public Page<Booking> getBookingsByConditionWithUser(Pageable page , String username, String value) {
         boolean isMainQuery = true;
         try {
@@ -51,6 +61,12 @@ public class BookingServiceImpl implements IBookingService {
     }
 
 
+    /**
+     * @author Nguyen Van Su
+     * @param page
+     * @param value
+     * @return list booking
+     */
     public Page<Booking> getBookingsByConditionWithAdmin(Pageable page , String value) {
         boolean isMainQuery = true;
         try {
@@ -66,6 +82,11 @@ public class BookingServiceImpl implements IBookingService {
         }
     }
 
+    /**
+     * @author Nguyen Van Su
+     * @param pageableble
+     * @return list booking
+     */
     public Page<Booking> getBookings(Pageable pageableble) {
         Page<Booking> bookingPage =bookingRepository.findAllBookings(pageableble);
         return bookingPage;
@@ -127,18 +148,45 @@ public class BookingServiceImpl implements IBookingService {
     }
 
 
+    /**
+     * @author Nguyen Van Su
+     * @param id
+     * @return booking
+     */
     public Optional<Booking> getBookingById(Long id) {
         return bookingRepository.findById(id);
     }
 
+    /**
+     * @author Nguyen Van Su
+     * @param booking
+     * @return
+     */
     public Booking updateBooking(Booking booking){
         return bookingRepository.save(booking);
     }
-
+    
+    /**
+     * Get all bookings
+     *
+     * @author Le Thanh Tri
+     * @return list booking
+     */
+    @Override
     public List<Booking> findAll() {
         return bookingRepository.findAll();
     }
 
+    /**
+     * Get all and search booking information
+     *
+     * @author Le Thanh Tri
+     * @param id
+     * @param searchInput
+     * @param page
+     * @param size
+     * @return list booking with pagination
+     */
     @Override
     public Page<Booking> getBookingsPagination(Long id, String searchInput, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -150,10 +198,7 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.findWithString(id,searchInput,pageable);
     }
 
-//    @Override
-//    public Page<Booking> getBookingsPagination(String searchInput, int page, int size) {
-//        return null;
-//    }
+
 
     /**
      * Saves a new booking to the database.
@@ -167,18 +212,39 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.save(booking);
     }
 
+    /**
+     * Get all booking's added score by date
+     *
+     * @author Le Thanh Tri
+     * @param id
+     * @param fromDate
+     * @param toDate
+     * @param page
+     * @param size
+     * @return list booking added score by date with pagination
+     */
+    @Override
     public Page<Booking> getBookingsAddedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return bookingRepository.findAddedScoreByDate(id,fromDate,toDate,pageable);
     }
 
+    /**
+     * Get all booking's used score by date
+     *
+     * @author Le Thanh Tri
+     * @param id
+     * @param fromDate
+     * @param toDate
+     * @param page
+     * @param size
+     * @return list booking used score by date with pagination
+     */
     @Override
     public Page<Booking> getBookingsUsedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page,size);
         return bookingRepository.findUsedScoreByDate(id, fromDate,toDate,pageable);
     }
-
-
 
 }
 

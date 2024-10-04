@@ -6,7 +6,6 @@ import com.example.MovieBooking.entity.dto.BookingDTO;
 import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.service.impl.BankServiceImpl;
 import com.example.MovieBooking.service.impl.BookingServiceImpl;
-
 import com.example.MovieBooking.service.impl.MovieServiceImpl;
 import com.example.MovieBooking.service.impl.ScheduleServiceImpl;
 import com.example.MovieBooking.service.IShowDateService;
@@ -14,51 +13,27 @@ import com.example.MovieBooking.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import com.example.MovieBooking.service.IMovieService;
-import com.example.MovieBooking.service.IScheduleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.regex.Pattern;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.example.MovieBooking.entity.Movie;
 import com.example.MovieBooking.entity.MovieSchedule;
 import com.example.MovieBooking.entity.Schedule;
-import com.example.MovieBooking.service.IMovieService;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 
 /**
@@ -79,7 +54,7 @@ public class BookingController {
 
 
     @Autowired
-    BookingServiceImpl bookingService;
+    private BookingServiceImpl bookingService;
 
 
     @Autowired
@@ -94,15 +69,23 @@ public class BookingController {
     private final float percentagePoints = 0.1F;
     private static final String CARD_NUMBER_REGEX = "^[0-9]{16,19}$";
 
-
-    //find booked ticket - need to update find follow user ID
+    /**
+     * booked ticket and search with userId - pagination
+     * @author Le Thanh Tri
+     * @param page
+     * @param size
+     * @param searchInput
+     * @param account
+     * @param model
+     * @return "BookedTicketManagement"
+     */
     @GetMapping("/booked-ticket")
     public String bookedTicket(@RequestParam(value = "page", defaultValue = "0")int page
             ,@RequestParam(value = "size",defaultValue = "10")int size
             ,@RequestParam(value = "searchInput", defaultValue = "", required = false)String searchInput
             ,@AuthenticationPrincipal Account account
             ,Model model){
-//        List<Integer> entry = new ArrayList<>(10);
+
         String search = "";
         if(searchInput != null){
             search = searchInput;
@@ -120,7 +103,13 @@ public class BookingController {
         return "BookedTicketManagement";
     }
 
-
+    /**
+     * NGUYENVANSU
+     * @param model
+     * @param searchOptional
+     * @param pageOptional
+     * @return
+     */
     @GetMapping("/admin/booking-list")
     public String getBookingListPageByAdmin(Model model,
                                            @RequestParam(value="search") Optional<String> searchOptional
@@ -159,12 +148,8 @@ public class BookingController {
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage =  bookingService.getBookingsByConditionWithAdmin(pageable, searchOptional.get());
             }
-
             List<Booking> bookings = bookingPage.getContent();
             bookingDTOList =  bookingService.convertToBookingDTOList(bookings);
-
-
-
         }
         model.addAttribute("bookingList", bookingDTOList);
         model.addAttribute("search", search);
@@ -175,6 +160,15 @@ public class BookingController {
     }
 
 
+    /**
+     * NGUYENVANSU
+     * @param model
+     * @param searchOptial
+     * @param pageOptional
+     * @param request
+     * @param account
+     * @return
+     */
     @GetMapping("/member/booking-list")
     public String getBookingListPageByMember(Model model,
                                      @RequestParam(value="search") Optional<String> searchOptial
@@ -205,7 +199,6 @@ public class BookingController {
             }
 
             if (searchOptial.get().isEmpty()) {
-
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage = bookingService.getBookingByUserName(pageable, account.getUsername());
             } else {
@@ -216,9 +209,6 @@ public class BookingController {
 
             List<Booking> bookings = bookingPage.getContent();
             bookingDTOList =  bookingService.convertToBookingDTOList(bookings);
-
-
-
         }
         model.addAttribute("bookingList", bookingDTOList);
         model.addAttribute("search", search);
@@ -228,9 +218,15 @@ public class BookingController {
         return "bookinglistmember";
     }
 
+    /**
+     * NGUYENVANSU
+     * @param model
+     * @param id
+     * @param account
+     * @return
+     */
     @GetMapping("/member/confirm-booking/{id}")
     public String getConfirmBookingPageByMember(Model model, @PathVariable String id , @AuthenticationPrincipal Account account){
-
         try {
             Long.parseLong(id);
         }catch (Exception e) {
@@ -260,6 +256,18 @@ public class BookingController {
         }
     }
 
+    /**
+     * NGUYENVANSU
+     * @param model
+     * @param request
+     * @param redirectAttributes
+     * @param bookingIdOptional
+     * @param convertTicketOptional
+     * @param bankOptional
+     * @param cardNumberOptional
+     * @param account
+     * @return
+     */
     @PostMapping("/member/update-ticket")
     public String convertToTicketByMember(Model model, HttpServletRequest request,
                                           RedirectAttributes redirectAttributes,
@@ -310,9 +318,6 @@ public class BookingController {
                             //thanh toan = diem
                             //member.score - score
                             //set booking.addScore = 0
-
-                            System.out.println("score :" +score );
-                            System.out.println("use money  :" +money );
                             booking.setStatus(1);
                             memberServiceImpl.updateMember(member);
                             bookingService.updateBooking(booking);
@@ -343,10 +348,6 @@ public class BookingController {
                             if (!isValid) {
                                 redirectAttributes.addFlashAttribute("errorBank", "Card number is not valid");
                             } else {
-                                //set booking.addScore = sotien * 0.1
-                                //set book.useScore = 0
-                                //update lai tong so Score trong bang member.Score = select sum(addScore) from Booking b where b.accountId = ?id
-
                                 booking.setUseScore(0L);
                                 booking.setAddScore((long) (booking.getTotalMoney()*0.1));
                                 member.setScore(member.getScore() +  (long) (booking.getTotalMoney()*0.1));
@@ -367,7 +368,12 @@ public class BookingController {
         return "redirect:/member/confirm-booking/" +bookingId;
     }
 
-
+    /**
+     * NGUYENVANSU
+     * @param model
+     * @param id
+     * @return
+     */
     @GetMapping("/admin/confirm-booking/{id}")
     public String getConfirmBookingPageByAdmin(Model model, @PathVariable Optional<String> id){
         if (!id.isPresent()) {
@@ -396,16 +402,15 @@ public class BookingController {
 
     @GetMapping("/member/convert-to-ticket/{id}")
     public String getConvertToTicketPageByMember(Model model, @PathVariable Optional<String> id, @AuthenticationPrincipal Account account) {
-if(!id.isPresent()) {
-    return "redirect:/member/booking-list";
-}
+        if(!id.isPresent()) {
+            return "redirect:/member/booking-list";
+        }
 
-try {
-    Long.parseLong(id.get());
-} catch (Exception e) {
-    return "redirect:/member/booking-list";
-}
-
+        try {
+            Long.parseLong(id.get());
+        } catch (Exception e) {
+            return "redirect:/member/booking-list";
+        }
 
         Optional<Booking> bookingOptional = bookingService.getBookingById(Long.parseLong(id.get()));
         if (!bookingOptional.isPresent()) {
@@ -426,29 +431,28 @@ try {
 
                 return "converttoticketmember";
             }
-
-
         }
     }
-    
-//    @GetMapping("/booking-selling")
-//    public String bookingSelling(){
-//        return "TKS-showtimes";
-//    }
+
+    /**
+     * Get movie and render schedule time with movieID
+     * @author Le Thanh Tri
+     * @param date
+     * @param id // movieId
+     * @param model
+     * @return "ShowTimeWithId"
+     */
     @GetMapping("/movie-show-time")
     public String scheduleOfMovie(@RequestParam(value = "date", required = false)
-                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                    @RequestParam(value = "movieId", required = false)Long id,
-                                    Model model){
+                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) String date,
+                                  @RequestParam(value = "movieId", required = false)Long id,
+                                  Model model){
         List<Movie> movieList = new ArrayList<>();
-        if (date == null) {
-            date = LocalDate.now();
-        }
-        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(date,id);
-        System.out.println("shcedule" + scheduleList.size());
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date,dateFormatter);
+        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(localDate,id);
         Movie movie = movieService.getMovieById(id);
-//           List<Movie> movieList = new ArrayList<>();
-//           movieList.add(movie);
+
         List<MovieSchedule> movieSchedulesOfMovie = new ArrayList<>();
         for (Schedule schedule : scheduleList) {
             MovieSchedule movieSchedule = new MovieSchedule();
@@ -457,14 +461,10 @@ try {
         }
         movie.setMovieScheduleList(movieSchedulesOfMovie);
         movieList.add(movie);
-
-        System.out.println("schedule movie service" + movieSchedulesOfMovie.size());
-
-
+        //Current Hour for checking to disable schedule time in front end
         model.addAttribute("currentHour", LocalTime.now().toString());
-
         model.addAttribute("movieList", movieList);
-//           model.addAttribute("scheduleList", scheduleList);
+        //Keep the id for keep searching for the next day
         model.addAttribute("movieId",id);
         return "ShowTimeWithId";
     }
@@ -530,30 +530,27 @@ try {
         System.out.println("Show date: " + showDate.getShowDate());     // Trả về view để hiển thị
         return "TKS-showtimes";  // Hiển thị trang TKS-showtimes
     }
-//    @GetMapping("/history-score")
-//    public String historyScorePage(){
-//        return "HistoryScore";
-//    }
 
-//    @GetMapping("/view-history-score")
-//    public String renderHistoryScore(@RequestParam(value = "page", defaultValue = "0")int page
-//            ,@RequestParam(value = "size",defaultValue = "10")int size,
-//            Model model){
-//        List<Booking> bookingList = new ArrayList<>();
-//        model.addAttribute("bookingList", bookingList);
-//        model.addAttribute("totalPages", bookingList.size());
-//        model.addAttribute("currentPage", page);
-//        return "HistoryScore";
-//    }
-
+    /**
+     * Get History Added Score / Used Score with Pagination
+     * @author Le Thanh Tri
+     * @param fromDate
+     * @param toDate
+     * @param actionScore //action search
+     * @param page
+     * @param size
+     * @param account
+     * @param model
+     * @return "HistoryScore"
+     */
     @GetMapping("/view-history-score")
     public String historyScore(@RequestParam(value = "fromDate", required = false, defaultValue = "")String fromDate
-                                ,@RequestParam(value = "toDate", required = false, defaultValue = "")String toDate
-                                ,@RequestParam(value = "actionScore", required = false)String actionScore
-                                ,@RequestParam(value = "page", defaultValue = "0")int page
-                                ,@RequestParam(value = "size",defaultValue = "10")int size
-                                ,@AuthenticationPrincipal Account account
-                                ,Model model){
+            ,@RequestParam(value = "toDate", required = false, defaultValue = "")String toDate
+            ,@RequestParam(value = "actionScore", required = false)String actionScore
+            ,@RequestParam(value = "page", defaultValue = "0")int page
+            ,@RequestParam(value = "size",defaultValue = "10")int size
+            ,@AuthenticationPrincipal Account account
+            ,Model model){
         LocalDate validFrom = null;
         LocalDate validTo = null;
         Page<Booking> pageBookingList;
@@ -566,6 +563,7 @@ try {
 
         Account account1 = accountService.findUserByUsername(account.getUsername());
 
+        //action search ( addedScore / usedScore )
         if("addedScore".equals(actionScore)){
             pageBookingList = bookingService.getBookingsAddedScoreByDate(account1.getAccountId(),validFrom,validTo,page,size);
         } else {
@@ -581,6 +579,4 @@ try {
         model.addAttribute("size", size);
         return "HistoryScore";
     }
-
-
 }

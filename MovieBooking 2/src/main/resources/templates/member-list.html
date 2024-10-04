@@ -94,7 +94,7 @@
               <div class="d-flex gap-3 align-items-center">
                 <form th:href="@{/member-management/members}" class=" d-flex align-items-center">
                   <label for="searchInput" class="me-2 m-0">Search:</label>
-                  <input type="text" name="searchInput" id="searchInput" class="form-control w-75" placeholder="Search" th:value="${search}">
+                  <input type="text" name="searchInput" id="searchInput" class="form-control w-75" th:value="${search}">
                   <input type="hidden" name="size" th:value="${size}">
                   <input type="hidden" name="page" th:value="0">
                 </form>

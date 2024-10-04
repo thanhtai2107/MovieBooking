@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author Hoang Thanh Tai
+ */
 @Service
 @Primary
 public class UploadImageImpl implements IUploadImage {
@@ -19,7 +22,13 @@ public class UploadImageImpl implements IUploadImage {
     @Autowired
     private Cloudinary cloudinary;
 
-
+    /**
+     *
+     * @author Hoang Thanh Tai
+     * @param file file image received in multipart request
+     * @return url of file after upload to cloudinary
+     * @throws IOException if file does not exist
+     */
     @Override
     public String uploadImage(MultipartFile file) throws IOException {
         return cloudinary.uploader()
