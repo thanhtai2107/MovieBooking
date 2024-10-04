@@ -19,9 +19,10 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <style>
         /* css of sidebar */
-        .list-group-item a {
+        .list-group-item .ticket-booking {
             text-decoration: none;
             color: black;
+            font-weight: bold;
         }
 
         .list-group-item {
@@ -111,6 +112,26 @@
         td {
             vertical-align: middle;
         }
+
+
+        .table thead th {
+            border-bottom: none; /* Loại bỏ viền dưới */
+            /*border-bottom: 1px solid red;*/
+        }
+
+        .table thead tr {
+            /*border-bottom: none; !* Loại bỏ viền dưới *!*/
+            border-bottom: 1px solid #DEE2E6;
+        }
+
+        .table tbody tr:last-of-type {
+            /*border-bottom: none; !* Loại bỏ viền dưới *!*/
+            border-bottom: 1px solid transparent;
+        }
+
+        .current-page {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -197,25 +218,25 @@
                 <!-- Pagination -->
                 <nav th:if="${bookingList != null && !bookingList.isEmpty()}" aria-label="Page navigation example">
                     <ul class="pagination justify-content-end">
-                        <li class="page-item mx-1" th:switch="${currentPage}" style="margin-right: 2px;">
+                        <li class="page-item" th:switch="${currentPage}" style="margin-right: 2px;">
                             <a th:case="1" class="btn disabled" style="border: 1px solid #ECECEC; color: #7E7E7E;">Previous</a>
                             <a th:case="*" class="btn"
-                                    style="border: 1px solid #ECECEC; color: #7E7E7E;" th:href="@{/customer/booking-list(search=${search}, page=${currentPage}-1)}">Previous</a>
+                                    style="border: 1px solid #ECECEC; color: #7E7E7E;" th:href="@{/member/booking-list(search=${search}, page=${currentPage}-1)}">Previous</a>
                         </li>
 
-                            <li class="page-item mx-1" th:each="i : ${#numbers.sequence(1, totalPages)}" th:switch="${i}">
+                            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:switch="${i}">
                                 <a th:case="${currentPage}" class="btn success-booking" style="border-radius: 0px;"
-                                   th:href="@{/customer/booking-list(search=${search}, page=${i})}" th:text="${i}"></a>
+                                   th:href="@{/member/booking-list(search=${search}, page=${i})}" th:text="${i}"></a>
 
                                 <a th:case="*" class="btn btn-normal" style="border-radius: 0px;"
-                                   th:href="@{/customer/booking-list(search=${search}, page=${i})}" th:text="${i}"></a>
+                                   th:href="@{/member/booking-list(search=${search}, page=${i})}" th:text="${i}"></a>
 
                             </li>
-                        <li class="page-item mx-1" th:switch="${totalPages}">
+                        <li class="page-item" th:switch="${totalPages}">
                             <a th:case="${currentPage}" class="btn disabled" style="border: 1px solid #ECECEC; color: #7E7E7E;"
                             href="">Next</a>
                             <a th:case="*" class="btn" style="border: 1px solid #ECECEC; color: #7E7E7E;"
-                               th:href="@{/customer/booking-list(search=${search}, page=${currentPage}+1)}"
+                               th:href="@{/member/booking-list(search=${search}, page=${currentPage}+1)}"
                             >Next</a>
                         </li>
                     </ul>
