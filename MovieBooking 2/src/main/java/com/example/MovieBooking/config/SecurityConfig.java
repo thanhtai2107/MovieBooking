@@ -31,8 +31,12 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/register",
-                            "/login"
+                            "/login","/home"
                     ).permitAll();
+                    request.requestMatchers("/member-management/**","/showtimes", "/admin/**").hasAnyAuthority("ADMIN", "EMPLOYEE");
+                    request.requestMatchers("/admin/booking-list",
+                            "/admin/confirm-booking/"
+                            ,"/cinemaRoom/**").hasAuthority("ADMIN");
                     request.anyRequest().authenticated();
                 }).formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler()).permitAll())
                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")));
