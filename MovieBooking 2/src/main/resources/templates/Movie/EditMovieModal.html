@@ -1,26 +1,76 @@
+<!-- Add this style at the top of the file or in a separate CSS file -->
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+
+    .custom-file-input {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .file-input-label {
+        display: flex;
+        align-items: center;
+        padding: 6px 12px;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .choose-file-btn {
+        padding: 6px 12px;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+
+    .file-name {
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
 <!-- Edit Movie Modal -->
 <div class="modal fade" id="editMovieModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editMovieModalLabel">Edit Movie</h5>
+                <h5 class="modal-title w-100 text-center" id="editMovieModalLabel">
+                    Movie Detail : <span th:text="${movie.nameEnglish}"></span>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
                     <img id="movieThumbnail" th:src="${movie.largeImage}" alt="Movie Thumbnail" class="movie-thumbnail">
                 </div>
-                <form id="editMovieForm" th:object="${movie}" th:action="@{/movies/update/{id}(id=${movie.movieId})}" method="post">
+                <form id="editMovieForm" th:object="${movie}" th:action="@{/movies/update/{id}(id=${movie.movieId})}" method="post" enctype="multipart/form-data">
                     <input type="hidden" th:field="*{movieId}">
                     <div class="mb-3">
                         <label for="movieNameENG" class="form-label required-field">Movie name (ENG):</label>
-                        <input type="text" class="form-control" id="movieNameENG" th:field="*{nameEnglish}" required>
-                        <div class="invalid-feedback">Please enter the movie name in English.</div>
+                        <input type="text" class="form-control" id="movieNameENG" th:field="*{nameEnglish}" required maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in English (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="movieNameVN" class="form-label required-field">Movie name (VN):</label>
-                        <input type="text" class="form-control" id="movieNameVN" th:field="*{nameVN}" required>
-                        <div class="invalid-feedback">Please enter the movie name in Vietnamese.</div>
+                        <input type="text" class="form-control" id="movieNameVN" th:field="*{nameVN}" required maxlength="50">
+                        <div class="invalid-feedback">Please enter the movie name in Vietnamese (max 50 characters).</div>
                     </div>
                     <div class="mb-3">
                         <label for="fromDate" class="form-label required-field">From date:</label>
@@ -35,25 +85,30 @@
                     <div class="mb-3">
                         <label for="actor" class="form-label required-field">Actor:</label>
                         <input type="text" class="form-control" id="actor" th:field="*{actor}" required>
+                        <div class="invalid-feedback">Please enter the actor's name.</div>
                     </div>
                     <div class="mb-3">
                         <label for="productionCompany" class="form-label required-field">Movie Production Company:</label>
                         <input type="text" class="form-control" id="productionCompany" th:field="*{productionCompany}" required>
+                        <div class="invalid-feedback">Please enter the production company.</div>
                     </div>
                     <div class="mb-3">
                         <label for="director" class="form-label required-field">Director:</label>
                         <input type="text" class="form-control" id="director" th:field="*{director}" required>
+                        <div class="invalid-feedback">Please enter the director's name.</div>
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label required-field">Duration:</label>
-                        <input type="number" class="form-control" id="duration" th:field="*{duration}" required>
+                        <input type="number" class="form-control" id="duration" th:field="*{duration}" required min="1">
+                        <div class="invalid-feedback">Please enter a valid movie duration (minimum 1 minute).</div>
                     </div>
                     <div class="mb-3">
                         <label for="version" class="form-label required-field">Version:</label>
                         <input type="text" class="form-control" id="version" th:field="*{version}" required>
+                        <div class="invalid-feedback">Please enter the movie version.</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Movie Types:</label>
+                        <label class="form-label required-field">Movie Types:</label>
                         <div id="movieTypes">
                             <div th:each="type : ${allTypes}" class="form-check">
                                 <input type="checkbox" th:id="'type' + ${type.typeId}" th:value="${type.typeId}" name="movieTypes" class="form-check-input"
@@ -64,22 +119,23 @@
                         <div class="invalid-feedback">Please select at least one movie type.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="cinemaRoom" class="form-label">Cinema room:</label>
-                        <select id="cinemaRoom" name="cinemaRoom.cinemaRoomId" class="form-select">
-                            <option th:each="room : ${cinemaRooms}" 
-                                    th:value="${room.cinemaRoomId}" 
+                        <label for="cinemaRoom" class="form-label required-field">Cinema room:</label>
+                        <select id="cinemaRoom" name="cinemaRoom.cinemaRoomId" class="form-select" required>
+                            <option th:each="room : ${cinemaRooms}"
+                                    th:value="${room.cinemaRoomId}"
                                     th:text="${room.cinemaName}"
                                     th:selected="${movie.cinemaRoom != null and movie.cinemaRoom.cinemaRoomId == room.cinemaRoomId}">
                             </option>
                         </select>
+                        <div class="invalid-feedback">Please select a cinema room.</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Schedules:</label>
+                        <label class="form-label required-field">Schedules:</label>
                         <div id="schedules">
                             <div th:each="schedule : ${schedules}" class="form-check">
-                                <input type="checkbox" th:id="'schedule' + ${schedule.scheduleId}" 
-                                       th:value="${schedule.scheduleId}" 
-                                       name="schedules" 
+                                <input type="checkbox" th:id="'schedule' + ${schedule.scheduleId}"
+                                       th:value="${schedule.scheduleId}"
+                                       name="schedules"
                                        class="form-check-input"
                                        th:checked="${movie.movieScheduleList != null && movie.movieScheduleList.![schedule.scheduleId].contains(schedule.scheduleId)}">
                                 <label th:for="'schedule' + ${schedule.scheduleId}" th:text="${schedule.scheduleTime}" class="form-check-label"></label>
@@ -88,99 +144,174 @@
                         <div class="invalid-feedback">Please select at least one schedule.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="content" class="form-label">Content:</label>
-                        <textarea class="form-control" id="content" th:field="*{content}" rows="3"></textarea>
+                        <label for="content" class="form-label required-field">Content:</label>
+                        <textarea class="form-control" id="content" th:field="*{content}" rows="3" required></textarea>
+                        <div class="invalid-feedback">Please enter the movie content.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="largeImage" class="form-label">Image URL:</label>
-                        <input type="url" class="form-control" id="largeImage" th:field="*{largeImage}">
+                        <label for="largeImage" class="form-label">Image:</label>
+                        <div class="custom-file-input">
+                            <input type="file" class="file-input" id="largeImage" name="imageFile" accept="image/*">
+                            <div class="file-input-label">
+                                <span class="choose-file-btn">Chọn tệp</span>
+                                <span class="file-name" id="fileName">Không có tệp nào được chọn</span>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">Please select a valid image file (JPEG, PNG, or GIF).</div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="editMovieForm" class="btn btn-primary">Update</button>
+            <div class="modal-footer justify-content-start">
+                <button type="submit" form="editMovieForm" class="btn" style="background-color: #337AB7; color: white;">
+                    <i class="fas fa-check"></i> Save
+                </button>
+                <button type="button" class="btn" style="background-color: #337AB7; color: white;" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Back
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <script th:inline="javascript">
-$(document).ready(function() {
-    $('#editMovieForm').submit(function(e) {
-        e.preventDefault();
-        if (validateForm()) {
-            submitForm();
-        }
-    });
+    $(document).ready(function() {
+        $('#editMovieForm').submit(function(e) {
+            e.preventDefault();
+            if (validateForm()) {
+                submitForm();
+            }
+        });
 
-    function validateForm() {
-        let isValid = true;
-        
-        // Check required fields
-        $('#editMovieForm input[required], #editMovieForm textarea[required]').each(function() {
-            if ($(this).val().trim() === '') {
+        function sanitizeInput(input) {
+            return input.replace(/[&<>"']/g, function(match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            // Check required fields
+            $('#editMovieForm input[required], #editMovieForm textarea[required], #editMovieForm select[required]').each(function() {
+                if ($(this).val().trim() === '') {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // Validate movie name length (ENG and VN)
+            ['#movieNameENG', '#movieNameVN'].forEach(function(selector) {
+                if ($(selector).val().length > 50) {
+                    isValid = false;
+                    $(selector).addClass('is-invalid');
+                    $(selector).next('.invalid-feedback').text('Movie name must not exceed 50 characters.');
+                }
+            });
+
+            // Validate duration
+            const duration = $('#duration').val();
+            if (isNaN(duration) || duration < 1) {
                 isValid = false;
-                $(this).addClass('is-invalid');
+                $('#duration').addClass('is-invalid');
+                $('#duration').next('.invalid-feedback').text('Duration must be a positive number.');
+            }
+
+            // Check if From date is not later than To date
+            const fromDate = new Date($('#fromDate').val());
+            const toDate = new Date($('#toDate').val());
+            if (fromDate > toDate) {
+                isValid = false;
+                $('#fromDate').addClass('is-invalid');
+                $('#toDate').addClass('is-invalid');
+                $('#toDate').next('.invalid-feedback').text('To date must be after From date.');
             } else {
-                $(this).removeClass('is-invalid');
+                $('#fromDate').removeClass('is-invalid');
+                $('#toDate').removeClass('is-invalid');
+            }
+
+            // Validate image file
+            const imageFile = $('#largeImage')[0].files[0];
+            if (imageFile) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(imageFile.type)) {
+                    isValid = false;
+                    $('#largeImage').addClass('is-invalid');
+                    $('#largeImage').next('.invalid-feedback').text('Please select a valid image file (JPEG, PNG, or GIF).');
+                } else {
+                    $('#largeImage').removeClass('is-invalid');
+                }
+            }
+
+            return isValid;
+        }
+
+        function submitForm() {
+            var form = $('#editMovieForm')[0];
+            var formData = new FormData(form);
+
+            // Sanitize text inputs
+            formData.forEach((value, key) => {
+                if (typeof value === 'string') {
+                    formData.set(key, sanitizeInput(value));
+                }
+            });
+
+            $.ajax({
+                url: form.action,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#editMovieModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating movie:', xhr.responseText);
+                    alert('Error updating movie. Please try again.');
+                }
+            });
+        }
+
+        // Preview selected image
+        $('#largeImage').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#movieThumbnail').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
             }
         });
 
-        // Check if at least one movie type is selected
-        if ($('input[name="movieTypes"]:checked').length === 0) {
-            isValid = false;
-            $('#movieTypes').addClass('is-invalid');
-        } else {
-            $('#movieTypes').removeClass('is-invalid');
-        }
-
-        // Check if at least one schedule is selected
-        if ($('input[name="schedules"]:checked').length === 0) {
-            isValid = false;
-            $('#schedules').addClass('is-invalid');
-        } else {
-            $('#schedules').removeClass('is-invalid');
-        }
-
-        // Check if From date is not later than To date
-        const fromDate = new Date($('#fromDate').val());
-        const toDate = new Date($('#toDate').val());
-        if (fromDate > toDate) {
-            isValid = false;
-            $('#fromDate').addClass('is-invalid');
-            $('#toDate').addClass('is-invalid');
-        } else {
-            $('#fromDate').removeClass('is-invalid');
-            $('#toDate').removeClass('is-invalid');
-        }
-
-        return isValid;
-    }
-
-    function submitForm() {
-        var form = $('#editMovieForm');
-        var formData = new FormData(form[0]);
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                $('#editMovieModal').modal('hide');
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating movie:', xhr.responseText);
-                // Error handling is now done through form validation
-            }
+        // Add image error handling
+        $('#movieThumbnail').on('error', function() {
+            $(this).attr('src', 'https://via.placeholder.com/300x450.png?text=No+Image');
         });
-    }
-
-    // Add image error handling
-    $('#movieThumbnail').on('error', function() {
-        $(this).attr('src', 'https://via.placeholder.com/300x450.png?text=No+Image');
     });
-});
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('largeImage');
+        const fileName = document.getElementById('fileName');
+
+        fileInput.addEventListener('change', function(event) {
+            if (event.target.files.length > 0) {
+                let simpleName = event.target.files[0].name.split('\\').pop().split('/').pop();
+                fileName.textContent = simpleName;
+            } else {
+                fileName.textContent = 'Không có tệp nào được chọn';
+            }
+        });
+    });
 </script>

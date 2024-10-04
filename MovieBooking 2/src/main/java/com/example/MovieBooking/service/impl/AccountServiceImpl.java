@@ -1,5 +1,6 @@
 package com.example.MovieBooking.service.impl;
 
+import com.example.MovieBooking.dto.req.AccountDTO;
 import com.example.MovieBooking.entity.Account;
 import com.example.MovieBooking.dto.req.AccountReq;
 import com.example.MovieBooking.entity.Account;
@@ -106,6 +107,29 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
+    public AccountDTO getMemberById(Long id) {
+        Object[] object =  accountRepository.findByMemberId(id);
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setMemberId(Long.parseLong(String.valueOf(object[0])));
+        accountDTO.setFullname(object[2].toString());
+        accountDTO.setIdentityCard(object[1].toString());
+        accountDTO.setPhoneNumber(object[3].toString());
+        accountDTO.setScore(Integer.valueOf(object[4].toString()));
+        return accountDTO;
+    }
+
+    @Override
+    public AccountDTO getMemberByIdentityCard(String identityCard) {
+        Object[] object = accountRepository.findByIdentityCard(identityCard);
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setMemberId(Long.valueOf(object[0].toString()));
+        accountDTO.setFullname(object[2].toString());
+        accountDTO.setIdentityCard(object[1].toString());
+        accountDTO.setPhoneNumber(object[3].toString());
+        accountDTO.setScore(Integer.valueOf(object[4].toString()));
+        return accountDTO;
+
+    }
     public Account findUserByMemberId(Long memberId) {
         return accountRepository.findAccountByMemberId(memberId);
     }

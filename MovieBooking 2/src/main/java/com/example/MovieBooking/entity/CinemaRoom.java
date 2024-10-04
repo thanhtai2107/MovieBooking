@@ -24,6 +24,7 @@ public class CinemaRoom {
     @Column(name = "cinema_room_id")
     private Long cinemaRoomId;
 
+
     @NotBlank(message = "Cinema Room Name is required")
     @Column(name = "cinema_name")
     private String cinemaName;
@@ -36,6 +37,7 @@ public class CinemaRoom {
 
     @Column(name = "screen")
     private String screen;
+
 
     @OneToMany(mappedBy = "cinemaRoom")
     @JsonBackReference

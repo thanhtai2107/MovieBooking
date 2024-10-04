@@ -234,10 +234,14 @@ public class MovieServiceImpl implements IMovieService {
         return movieRepository.findMoviesByDate(date);
     }
 
+
+
+
 //    public Movie getMovieById(Long id) {
 ////        Long longId = Long.valueOf(id);
 //        return movieRepository.findById(id).get();
 //    }
+
 
 }
 

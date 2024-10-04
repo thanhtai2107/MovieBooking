@@ -120,6 +120,11 @@
         .rowSeat {
             justify-content: center;
         }
+
+        .btn{
+            background-color: #205081;
+            color: white;
+        }
     </style>
 </head>
 
@@ -176,8 +181,8 @@
 
                     <!-- Save and Back buttons -->
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-check"></i> Save</button>
-                        <a th:href="@{/cinemaRoom/listCinemaRoom}" class="btn btn-primary"><i class="fa-solid fa-xmark"></i> Back</a>
+                        <button type="submit" class="btn me-2"><i class="fa-solid fa-check"></i> Save</button>
+                        <a th:href="@{/cinemaRoom/listCinemaRoom}" class="btn"><i class="fa-solid fa-xmark"></i> Back</a>
                     </div>
                 </form>
             </div>

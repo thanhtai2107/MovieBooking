@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -94,12 +95,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             nativeQuery = true)
     Page<Booking> findBookingByIdCAndPhoneNumWithAdmin(String identityCard,  String phoneNumber, Pageable page);
 
-    @Query("from Booking b  where b.account.fullname like %?1% or b.movie.nameVN like %?1% or b.movie.nameEnglish like %?1%")
-    Page<Booking> find(String searchInput, Pageable pageable);
+    @Query("from Booking b  where b.account.accountId = :id and (b.movie.nameVN like %:searchInput% or b.movie.nameEnglish like %:searchInput%)")
+    Page<Booking> findWithString(@Param("id") Long id, @Param("searchInput") String searchInput, Pageable pageable);
+    @Query("from Booking b  where b.account.accountId = :id and (b.totalMoney = :searchInput)")
+    Page<Booking> findWithNumeric(@Param("id") Long id, @Param("searchInput") int searchInput, Pageable pageable);
 
     @Query("from Booking b where b.useScore = 0 and b.account.accountId = ?1 and b.bookingDate between ?2 and ?3 ")
     Page<Booking> findAddedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, Pageable pageable);
 
-    @Query("from Booking b where b.useScore != 0 and  b.account.accountId = ?1 and b.bookingDate between ?2 and ?3 ")
+    @Query("from Booking b where b.useScore != 0 and b.account.accountId = ?1 and b.bookingDate between ?2 and ?3 ")
     Page<Booking> findUsedScoreByDate(Long id, LocalDate fromDate, LocalDate toDate, Pageable pageable);
 }

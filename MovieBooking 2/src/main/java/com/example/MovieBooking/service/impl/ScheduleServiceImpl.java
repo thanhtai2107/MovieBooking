@@ -12,7 +12,7 @@ import java.util.List;
 public class ScheduleServiceImpl implements IScheduleService {
 
     @Autowired
-    private ScheduleRepository scheduleRepository;
+    ScheduleRepository scheduleRepository;
 
     @Override
     public Schedule saveSchedule(Schedule schedule) {
