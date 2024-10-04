@@ -98,7 +98,7 @@
                 <div th:unless="${movies.isEmpty()}" th:each="movie:${movies}" class="movie-card">
                     <img th:if="${movie.smallImage == null}" src="https://via.placeholder.com/150x220.png?text=POSTER+Updating" alt="Poster Updating">
                     <img th:unless="${movie.smallImage == null}" th:src="${movie.smallImage}" th:alt="${movie.nameVN}">
-                    <a  class="btn schedule-btn" th:href="@{/movie-show-time(movieId=${movie.movieId},date=${selectedDate})}">View schedule</a>
+                    <a  class="btn schedule-btn" th:href="@{/movie-show-time(movieId=${movie.movieId},date=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}">View schedule</a>
                 </div>
             </div>
         </div>

@@ -20,6 +20,18 @@
           integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <style>
 
+    .table thead th{
+      border-bottom: none;
+    }
+
+    .table thead tr{
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .table tbody tr:last-of-type{
+      border-bottom: 1px solid transparent;
+    }
+
     .sidebar {
       height: 100vh;
       background-color: #f8f9fa;
@@ -172,7 +184,7 @@
             <!-- Dynamic Page Numbers with limit of 3 before and after current page -->
             <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
                 th:if="${i >= 0 && i < totalPages}"
-                th:classappend="${i == currentPage} ? 'active'">
+                th:classappend="${i == currentPage} ? 'page-item active'">
               <a class="page-link" th:href="@{/booked-ticket(searchInput=${search},size=${size}, page=${i})}" th:text="${i + 1}"></a>
             </li>
 
