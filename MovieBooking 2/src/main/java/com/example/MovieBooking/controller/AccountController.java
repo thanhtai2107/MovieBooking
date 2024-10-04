@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
+/**
+ *
+ */
 @Controller
 public class AccountController{
 
@@ -43,7 +46,7 @@ public class AccountController{
     public String register(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model){
         Account account1 = accountService.findUserByUsername(account.getUsername());
         if (account1 != null){
-            bindingResult.rejectValue("username", "Account already exists");
+            bindingResult.rejectValue("username", null,"Account already exists");
         }
         accountRegisterValidate.validate(account, bindingResult);
         if(bindingResult.hasErrors()){
@@ -55,7 +58,6 @@ public class AccountController{
 
     @GetMapping("/login")
     public String login(){
-
         return "login";
     }
 
@@ -91,7 +93,9 @@ public class AccountController{
         }
         accountService.updateAccount(account, image);
         Account account1 = accountService.findUserByUsername(account.getUsername());
+        System.out.println(account1.getImage());
         session.setAttribute("account", account1);
+        model.addAttribute("image", account1.getImage());
         model.addAttribute("success", "Update information successfully");
         return "edit-account";
     }

@@ -271,7 +271,7 @@
         function isValidDate(year, month, day) {
             var d = new Date(year, month - 1, day);
             const split = d.toLocaleDateString().split("/");
-            if (split[2] == year && split[1] == parseInt(day)  && split[0] == month) {
+            if (split[2] == year && split[1] == month  && split[0] == parseInt(day)) {
                 return true;
             }
             return false;

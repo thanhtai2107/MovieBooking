@@ -80,6 +80,8 @@ public class MemberController {
             return "edit-member";
         }
         accountService.updateAccount(account, image);
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        model.addAttribute("image", account1.getImage());
         model.addAttribute("success", "Update information successfully");
         return "edit-member";
     }
