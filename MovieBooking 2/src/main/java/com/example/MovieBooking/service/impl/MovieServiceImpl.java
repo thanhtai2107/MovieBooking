@@ -11,17 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.MovieBooking.entity.Movie;
 import com.example.MovieBooking.repository.MovieRepository;
-import com.example.MovieBooking.service.IMovieService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the IMovieService interface.
+ *
+ * @author Duong Le Phu An
+ */
 @Service
 @Transactional
 public class MovieServiceImpl implements IMovieService {
@@ -46,17 +47,32 @@ public class MovieServiceImpl implements IMovieService {
 
     private static final Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     public Movie getMovieById(Long id) {
         return movieRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Movie not found"));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     @Transactional
     public Movie saveMovie(Movie movie, List<Long> typeIds, List<Long> scheduleIds) {
@@ -98,6 +114,11 @@ public class MovieServiceImpl implements IMovieService {
         return movieRepository.save(savedMovie);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     @Transactional
     public Movie updateMovie(Long id, Movie updatedMovie, List<Long> typeIds, List<Long> scheduleIds) {
@@ -118,6 +139,13 @@ public class MovieServiceImpl implements IMovieService {
         return savedMovie;
     }
 
+    /**
+     * Updates the basic fields of a movie.
+     *
+     * @param existingMovie The existing movie to update
+     * @param updatedMovie The movie with updated information
+     * @author Duong Le Phu An
+     */
     private void updateBasicFields(Movie existingMovie, Movie updatedMovie) {
         existingMovie.setNameVN(updatedMovie.getNameVN());
         existingMovie.setNameEnglish(updatedMovie.getNameEnglish());
@@ -132,6 +160,13 @@ public class MovieServiceImpl implements IMovieService {
         existingMovie.setVersion(updatedMovie.getVersion());
     }
 
+    /**
+     * Updates the types associated with a movie.
+     *
+     * @param movie The movie to update
+     * @param typeIds The list of type IDs to associate with the movie
+     * @author Duong Le Phu An
+     */
     private void updateTypes(Movie movie, List<Long> typeIds) {
         if (movie.getMovieTypeList() == null) {
             movie.setMovieTypeList(new ArrayList<>());
@@ -156,6 +191,13 @@ public class MovieServiceImpl implements IMovieService {
         }
     }
 
+    /**
+     * Updates the schedules associated with a movie.
+     *
+     * @param movie The movie to update
+     * @param scheduleIds The list of schedule IDs to associate with the movie
+     * @author Duong Le Phu An
+     */
     private void updateSchedules(Movie movie, List<Long> scheduleIds) {
         if (movie.getMovieScheduleList() == null) {
             movie.setMovieScheduleList(new ArrayList<>());
@@ -179,6 +221,11 @@ public class MovieServiceImpl implements IMovieService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     @Transactional
     public void deleteMovie(Long id) {
@@ -189,6 +236,11 @@ public class MovieServiceImpl implements IMovieService {
         logger.info("Movie deleted successfully");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     public List<Movie> searchMovies(String query) {
         String lowercaseQuery = query.toLowerCase();
@@ -207,12 +259,22 @@ public class MovieServiceImpl implements IMovieService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     @Transactional(readOnly = true)
     public Movie getMovieByIdWithSchedules(Long id) {
         return movieRepository.findByIdWithSchedules(id);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     @Transactional(readOnly = true)
     public Movie getMovieWithTypesAndSchedules(Long id) {
@@ -224,24 +286,25 @@ public class MovieServiceImpl implements IMovieService {
         return movie;
     }
   
+    /**
+     * Finds movies based on a custom search input.
+     *
+     * @param searchInput The search input
+     * @return List of movies matching the search input
+     * @author Duong Le Phu An
+     */
     public List<Movie> findMovieCustom(String searchInput) {
         List<Movie> movies = movieRepository.findMoviesCustom(searchInput);
         return movies;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Duong Le Phu An
+     */
     @Override
     public List<Movie> getMoviesByDate(LocalDate date) {
         return movieRepository.findMoviesByDate(date);
     }
-
-
-
-
-//    public Movie getMovieById(Long id) {
-////        Long longId = Long.valueOf(id);
-//        return movieRepository.findById(id).get();
-//    }
-
-
 }
-
