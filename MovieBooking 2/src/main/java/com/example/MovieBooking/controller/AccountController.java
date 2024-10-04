@@ -55,6 +55,7 @@ public class AccountController{
 
     @GetMapping("/login")
     public String login(){
+
         return "login";
     }
 
@@ -62,6 +63,7 @@ public class AccountController{
     public String edit(Model model, @AuthenticationPrincipal Account account){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Account account1 = accountService.findUserByUsername(account.getUsername());
+        System.out.println(account1.getUsername());
         AccountReq accountEdit = AccountReq.builder()
                 .id(account1.getAccountId())
                 .username(account1.getUsername())
@@ -77,6 +79,7 @@ public class AccountController{
         System.out.println(accountEdit.toString());
         model.addAttribute("account", accountEdit);
         model.addAttribute("image", account1.getImage());
+//        session.setAttribute("accountSession", account1.getUsername());
         return "edit-account";
     }
 
@@ -89,6 +92,7 @@ public class AccountController{
         accountService.updateAccount(account, image);
         Account account1 = accountService.findUserByUsername(account.getUsername());
         session.setAttribute("account", account1);
-        return "redirect:/edit";
+        model.addAttribute("success", "Update information successfully");
+        return "edit-account";
     }
 }

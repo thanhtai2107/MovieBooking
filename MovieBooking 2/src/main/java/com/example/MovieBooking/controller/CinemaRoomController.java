@@ -81,7 +81,9 @@ public class CinemaRoomController {
     }
 
     @GetMapping("/seatDetail")
-    public String seatDetailPage(@RequestParam("cinemaRoomId") Long cinemaRoomId, Model model) {
+    public String seatDetailPage(
+            @RequestParam("cinemaRoomId") Long cinemaRoomId, 
+            Model model) {
         CinemaRoom cinemaRoom = cinemaRoomService.getCinemaRoomById(cinemaRoomId);
         List<Seat> listSeat = seatService.listSeatByCinemaRoomId(cinemaRoomId);
         // Tạo danh sách để chứa các hàng ghế

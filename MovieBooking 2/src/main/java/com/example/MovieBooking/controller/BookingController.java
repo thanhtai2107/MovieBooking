@@ -1,25 +1,30 @@
 package com.example.MovieBooking.controller;
 
 
-import com.example.MovieBooking.entity.Account;
-import com.example.MovieBooking.entity.Bank;
-import com.example.MovieBooking.entity.Booking;
-import com.example.MovieBooking.entity.Member;
+import com.example.MovieBooking.entity.*;
 import com.example.MovieBooking.entity.dto.BookingDTO;
+import com.example.MovieBooking.service.IAccountService;
 import com.example.MovieBooking.service.impl.BankServiceImpl;
 import com.example.MovieBooking.service.impl.BookingServiceImpl;
 
 import com.example.MovieBooking.service.impl.MovieServiceImpl;
 import com.example.MovieBooking.service.impl.ScheduleServiceImpl;
+import com.example.MovieBooking.service.IShowDateService;
+import com.example.MovieBooking.service.impl.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import com.example.MovieBooking.service.IMovieService;
+import com.example.MovieBooking.service.IScheduleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import com.example.MovieBooking.service.impl.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,40 +33,48 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.regex.Pattern;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.MovieBooking.entity.Movie;
 import com.example.MovieBooking.entity.MovieSchedule;
 import com.example.MovieBooking.entity.Schedule;
-import com.example.MovieBooking.repository.MovieRepository;
-import com.example.MovieBooking.repository.ScheduleRepository;
 import com.example.MovieBooking.service.IMovieService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Controller
 public class BookingController {
     @Autowired
     private MovieServiceImpl movieService;
-
+    
+    @Autowired
+    private IShowDateService showDateService;
+    
     @Autowired
     private ScheduleServiceImpl scheduleService;
 
+
     @Autowired
     BookingServiceImpl bookingService;
+
 
     @Autowired
     private MemberServiceImpl memberServiceImpl;
@@ -69,23 +82,29 @@ public class BookingController {
     @Autowired
     private BankServiceImpl bankServiceImpl;
 
+    @Autowired
+    private IAccountService accountService;
     private final int pageSize = 3;
     private final float percentagePoints = 0.1F;
     private static final String CARD_NUMBER_REGEX = "^[0-9]{16,19}$";
 
-    //find booked ticket - need to update find follow user ID
 
+    //find booked ticket - need to update find follow user ID
     @GetMapping("/booked-ticket")
     public String bookedTicket(@RequestParam(value = "page", defaultValue = "0")int page
             ,@RequestParam(value = "size",defaultValue = "10")int size
             ,@RequestParam(value = "searchInput", defaultValue = "", required = false)String searchInput
+            ,@AuthenticationPrincipal Account account
             ,Model model){
 //        List<Integer> entry = new ArrayList<>(10);
         String search = "";
         if(searchInput != null){
             search = searchInput;
         }
-        Page<Booking> listBooking = bookingService.getBookingsPagination(search, page, size);
+
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+
+        Page<Booking> listBooking = bookingService.getBookingsPagination(account1.getAccountId(),search, page, size);
         System.out.println(listBooking.toList().size());
         model.addAttribute("listBooking", listBooking);
         model.addAttribute("totalPages", listBooking.getTotalPages());
@@ -94,6 +113,7 @@ public class BookingController {
         model.addAttribute("search", search);
         return "BookedTicketManagement";
     }
+
 
     @GetMapping("/admin/booking-list")
     public String getBookingListPageByAdmin(Model model,
@@ -203,7 +223,7 @@ public class BookingController {
     }
 
     @GetMapping("/member/confirm-booking/{id}")
-    public String getConfirmBookingPageByMember(Model model, @PathVariable String id ,@AuthenticationPrincipal Account account){
+    public String getConfirmBookingPageByMember(Model model, @PathVariable String id , @AuthenticationPrincipal Account account){
 
         try {
             Long.parseLong(id);
@@ -404,75 +424,95 @@ try {
 
         }
     }
-
+    
 //    @GetMapping("/booking-selling")
 //    public String bookingSelling(){
 //        return "TKS-showtimes";
 //    }
+    @GetMapping("/movie-show-time")
+    public String scheduleOfMovie(@RequestParam(value = "date", required = false)
+                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                    @RequestParam(value = "movieId", required = false)Long id,
+                                    Model model){
+        List<Movie> movieList = new ArrayList<>();
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(date,id);
+        System.out.println("shcedule" + scheduleList.size());
+        Movie movie = movieService.getMovieById(id);
+//           List<Movie> movieList = new ArrayList<>();
+//           movieList.add(movie);
+        List<MovieSchedule> movieSchedulesOfMovie = new ArrayList<>();
+        for (Schedule schedule : scheduleList) {
+            MovieSchedule movieSchedule = new MovieSchedule();
+            movieSchedule.setSchedule(schedule);
+            movieSchedulesOfMovie.add(movieSchedule);
+        }
+        movie.setMovieScheduleList(movieSchedulesOfMovie);
+        movieList.add(movie);
 
-    @GetMapping("/movies")
+        System.out.println("schedule movie service" + movieSchedulesOfMovie.size());
+
+
+        model.addAttribute("currentHour", LocalTime.now().toString());
+
+        model.addAttribute("movieList", movieList);
+//           model.addAttribute("scheduleList", scheduleList);
+        model.addAttribute("movieId",id);
+        return "ShowTimeWithId";
+    }
+
+    @GetMapping("/showtimes")
     public String getMoviesByDay(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(value = "movieId", required = false)Long id,
             Model model) {
-        System.out.println(date);
-        System.out.println(id);
+
         // Nếu không có ngày được chọn, sử dụng ngày hiện tại
         if (date == null) {
             date = LocalDate.now();
         }
-        List<Movie> movieList = new ArrayList<>();
-        if(id!= null){
-           List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(date,id);
-            System.out.println("shcedule" + scheduleList.size());
-           Movie movie = movieService.getMovieById(id);
-//           List<Movie> movieList = new ArrayList<>();
-//           movieList.add(movie);
-           List<MovieSchedule> movieSchedulesOfMovie = new ArrayList<>();
-           for (Schedule schedule : scheduleList) {
+
+        // Lấy danh sách phim theo ngày
+        List<Movie> movieList = movieService.getMoviesByDate(date);
+
+        ShowDate showDate = showDateService.findShowDateByDate(date);
+
+        // Kiểm tra nếu showDate là null
+        if (showDate == null) {
+            model.addAttribute("showDate", null); // Gán giá trị null cho showDate trong model
+            return "TKS-showtimes"; // Trả về trang hiển thị thông báo
+        }
+
+        for (Movie movie : movieList) {
+            String schedules = "schedules" + movie.getMovieId();
+            // Lay schedule theo phim theo ngay
+            List<Schedule> movieScheduleList = scheduleService.getAllSchedulesByMovieId(date, movie.getMovieId());
+            List<MovieSchedule> movieScheduleList1 = new ArrayList<>();
+            for (Schedule schedule : movieScheduleList) {
                 MovieSchedule movieSchedule = new MovieSchedule();
                 movieSchedule.setSchedule(schedule);
-                movieSchedulesOfMovie.add(movieSchedule);
-
-           }
-           movie.setMovieScheduleList(movieSchedulesOfMovie);
-           movieList.add(movie);
-
-            System.out.println("schedule movie service" + movieSchedulesOfMovie.size());
-           model.addAttribute("movieList", movieList);
-//           model.addAttribute("scheduleList", scheduleList);
-           model.addAttribute("movieId",id);
-        } else {
-            // Lấy danh sách phim theo ngày
-            movieList = movieService.getMoviesByDate(date);
-            for (Movie movie : movieList) {
-                String schedules = "schedules" + movie.getMovieId();
-                // Lay schedule theo phim theo ngay
-                //TriLT updated
-                List<Schedule> movieScheduleList = scheduleService.getAllSchedulesByDateAndId(date, movie.getMovieId());
-                List<MovieSchedule> movieScheduleList1 = new ArrayList<>();
-                for (Schedule schedule : movieScheduleList) {
-                    MovieSchedule movieSchedule = new MovieSchedule();
-                    movieSchedule.setSchedule(schedule);
-                    movieScheduleList1.add(movieSchedule);
-                }
-                movie.setMovieScheduleList(movieScheduleList1);
+                movieScheduleList1.add(movieSchedule);
             }
+            movie.setMovieScheduleList(movieScheduleList1);
         }
+
+
+
         // lay danh sach lich chieu phim
 //        List<Schedule> scheduleList = scheduleService.getAllSchedulesByMovieID()
 
         // Truyền dữ liệu vào model để gửi tới view
         model.addAttribute("selectedDate", date);     // Ngày đã chọn
         model.addAttribute("movieList", movieList);   // Danh sách phim theo ngày
+        model.addAttribute("showDate", showDate);
 //        model.addAttribute("movieScheduleList", movieScheduleList); // Danh sach lich chieu theo phim theo ngay
 
         // Debug thông tin ngày và danh sách phim (nếu cần)
-//        System.out.println("Selected date: " + date);
-//        System.out.println("Movie list: " + movieList);
-
-        // Trả về view để hiển thị
+        System.out.println("Selected date: " + date);
+        System.out.println("Movie list: " + movieList);
+        System.out.println("Show date: " + showDate.getShowDate());     // Trả về view để hiển thị
         return "TKS-showtimes";  // Hiển thị trang TKS-showtimes
     }
 //    @GetMapping("/history-score")
@@ -496,21 +536,25 @@ try {
                                 ,@RequestParam(value = "toDate", required = false, defaultValue = "")String toDate
                                 ,@RequestParam(value = "actionScore", required = false)String actionScore
                                 ,@RequestParam(value = "page", defaultValue = "0")int page
-                                ,@RequestParam(value = "size",defaultValue = "1")int size
+                                ,@RequestParam(value = "size",defaultValue = "10")int size
+                                ,@AuthenticationPrincipal Account account
                                 ,Model model){
         LocalDate validFrom = null;
         LocalDate validTo = null;
         Page<Booking> pageBookingList;
         List<Booking> bookingList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         if(!fromDate.isEmpty() && !toDate.isEmpty()){
-            validFrom = LocalDate.parse(fromDate);
-            validTo = LocalDate.parse(toDate);
+            validFrom = LocalDate.parse(fromDate,formatter);
+            validTo = LocalDate.parse(toDate,formatter);
         }
 
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+
         if("addedScore".equals(actionScore)){
-            pageBookingList = bookingService.getBookingsAddedScoreByDate(1l,validFrom,validTo,page,size);
+            pageBookingList = bookingService.getBookingsAddedScoreByDate(account1.getAccountId(),validFrom,validTo,page,size);
         } else {
-            pageBookingList = bookingService.getBookingsUsedScoreByDate(1l,validFrom,validTo,page,size);
+            pageBookingList = bookingService.getBookingsUsedScoreByDate(account1.getAccountId(),validFrom,validTo,page,size);
         }
         bookingList = pageBookingList.toList();
         model.addAttribute("bookingList", bookingList);

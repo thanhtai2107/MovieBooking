@@ -1,32 +1,32 @@
 package com.example.MovieBooking.service.impl;
 
 import com.cloudinary.Cloudinary;
-import com.example.MovieBooking.config.CloudinaryConfig;
 import com.example.MovieBooking.service.IUploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-@Primary
-public class UploadImageImpl implements IUploadImage {
+public class UploadImageWrapper implements IUploadImage {
 
     @Autowired
     private Cloudinary cloudinary;
 
-
     @Override
     public String uploadImage(MultipartFile file) throws IOException {
-        return cloudinary.uploader()
-                .upload(file.getBytes(), Map.of("public_id", UUID.randomUUID().toString()))
-                .get("url")
-                .toString();
+        Map<String, Object> params = new HashMap<>();
+        params.put("public_id", UUID.randomUUID().toString());
+
+        try {
+            Map result = cloudinary.uploader().upload(file.getBytes(), params);
+            return (String) result.get("url");
+        } catch (IOException e) {
+            throw new IOException("Failed to upload image", e);
+        }
     }
 }
-
-

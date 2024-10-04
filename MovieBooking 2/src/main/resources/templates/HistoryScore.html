@@ -59,7 +59,7 @@
             background-color: #dee2e6;
         }
         form input{
-            margin-top: 10px;
+            margin-top: 0px;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -95,17 +95,23 @@
                 <div class="row d-flex mb-3">
 
                     <div class="col-6 search-form">
-                        <form th:action="@{/view-history-score}" method="get" class="gap-2">
+                        <form th:action="@{/view-history-score}" method="get" id="form-date" class="gap-2">
                             <div class="form-group row">
                                 <label for="" class="col-sm-3 col-form-label">From date: <span class="text-danger">*</span></label>
                                 <div class="col-sm-9">
-                                    <input type="text" th:value="${fromDate}" class="form-control"  name="fromDate" placeholder="">
+                                    <input type="text" th:value="${fromDate}"
+                                           class="form-control fromDate"  name="fromDate"
+                                           placeholder="">
+                                    <small id="fromDate-err"></small>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row mt-2">
                                 <label for="" class="col-sm-3 col-form-label">To date: <span class="text-danger">*</span></label>
                                 <div class="col-sm-9">
-                                    <input type="text" th:value="${toDate}" class="form-control" name="toDate" placeholder="">
+                                    <input type="text" th:value="${toDate}"
+                                           class="form-control toDate" name="toDate"
+                                           placeholder="">
+                                    <small id="toDate-err"></small>
                                 </div>
                             </div>
                             <fieldset class="form-group">
@@ -199,6 +205,170 @@
         </div>
     </div>
 </div>
+<!--    <script>-->
+<!--        $(document).ready(function (){-->
+<!--            let fromDateErr = false;-->
+<!--            let toDateErr = false;-->
+
+<!--            function isValidDate(year, month, day) {-->
+<!--                var d = new Date(year, month - 1, day);-->
+<!--                const split = d.toLocaleDateString().split("/");-->
+<!--                if (split[2] == year && split[1] == month  && split[0] == parseInt(day)) {-->
+<!--                    return true;-->
+<!--                }-->
+<!--                return false;-->
+<!--            }-->
+<!--            // Function checkFromDate-->
+<!--            function checkFromDate() {-->
+<!--                const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;-->
+<!--                let fromDate = $(".fromDate").val();-->
+<!--                // console.log(dob);-->
+<!--                let splitFromDate = fromDate.split("/");-->
+<!--                if (fromDate.length == "") {-->
+<!--                    $("#fromDate-err").show();-->
+<!--                    $("#fromDate-err").text("From date is required");-->
+<!--                    fromDateErr = false;-->
+<!--                } else if (!regex.test(fromDate)) {-->
+<!--                    $("#fromDate-err").show();-->
+<!--                    $("#fromDate-err").text("From date format is incorrect dd/MM/yyyy");-->
+<!--                    fromDateErr = false;-->
+<!--                } else if (new Date(splitFromDate[1] + "-" + splitFromDate[0] + "-" + splitFromDate[2]) >= new Date()-->
+<!--                ) {-->
+<!--                    $("#fromDate-err").show();-->
+<!--                    $("#fromDate-err").text("From date must be less than current date");-->
+<!--                } else if (!isValidDate(splitFromDate[2], parseInt(splitFromDate[1]), splitFromDate[0])-->
+<!--                ) {-->
+<!--                    $("#fromDate-err").show();-->
+<!--                    $("#fromDate-err").text("From date is incorrect");-->
+<!--                } else {-->
+<!--                    $("#fromDate-err").hide();-->
+<!--                    fromDateErr = true;-->
+<!--                }-->
+<!--            }-->
+
+<!--            // Function checkToDate-->
+<!--            function checkToDate() {-->
+<!--                const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;-->
+<!--                let toDate = $(".toDate").val();-->
+<!--                // console.log(dob);-->
+<!--                let splitToDate = toDate.split("/");-->
+<!--                if (toDate.length == "") {-->
+<!--                    $("#toDate-err").show();-->
+<!--                    $("#toDate-err").text("From date is required");-->
+<!--                    toDateErr = false;-->
+<!--                } else if (!regex.test(toDate)) {-->
+<!--                    $("#toDate-err").show();-->
+<!--                    $("#toDate-err").text("To date format is incorrect dd/MM/yyyy");-->
+<!--                    toDateErr = false;-->
+<!--                } else if (new Date(splitToDate[1] + "-" + splitToDate[0] + "-" + splitToDate[2]) >= new Date()-->
+<!--                ) {-->
+<!--                    $("#toDate-err").show();-->
+<!--                    $("#toDate-err").text("To date must be less than current date");-->
+<!--                } else if (!isValidDate(splitToDate[2], parseInt(splitToDate[1]), splitToDate[0])-->
+<!--                ) {-->
+<!--                    $("#toDate-err").show();-->
+<!--                    $("#toDate-err").text("To date is incorrect");-->
+<!--                } else {-->
+<!--                    $("#toDate-err").hide();-->
+<!--                    toDateErr = true;-->
+<!--                }-->
+<!--            }-->
+<!--            $(".fromDate").on("blur",function (){-->
+<!--                checkFromDate();-->
+<!--            })-->
+<!--            $(".toDate").on("blur",function (){-->
+<!--                checkToDate();-->
+<!--            })-->
+<!--        })-->
+<!--    </script>-->
+<script>
+    $(document).ready(function () {
+        let fromDateErr = false;
+        let toDateErr = false;
+
+        function isValidDate(year, month, day) {
+            var d = new Date(year, month - 1, day);
+            const split = d.toLocaleDateString().split("/");
+            if (split[2] == year && split[1] == month && split[0] == parseInt(day)) {
+                return true;
+            }
+            return false;
+        }
+
+        // Function checkFromDate
+        function checkFromDate() {
+            const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;
+            let fromDate = $('input[name="fromDate"]').val();
+            let splitFromDate = fromDate.split("/");
+            if (fromDate.length === "") {
+                $("#fromDate-err").show().text("From date is required").addClass("text-danger");
+                fromDateErr = false;
+            } else if (!regex.test(fromDate)) {
+                $("#fromDate-err").show().text("From date format is incorrect. Use dd/MM/yyyy").addClass("text-danger");
+                fromDateErr = false;
+            } else if (new Date(splitFromDate[1] + "-" + splitFromDate[0] + "-" + splitFromDate[2]) >= new Date()) {
+                $("#fromDate-err").show().text("From date must be less than current date").addClass("text-danger");
+                fromDateErr = false;
+            } else if (!isValidDate(splitFromDate[2], parseInt(splitFromDate[1]), splitFromDate[0])) {
+                $("#fromDate-err").show().text("From date is incorrect").addClass("text-danger");
+                fromDateErr = false;
+            } else {
+                $("#fromDate-err").hide();
+                fromDateErr = true;
+            }
+        }
+
+        // Function checkToDate
+        function checkToDate() {
+            const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/((19|20)\d\d)/;
+            let toDate = $('input[name="toDate"]').val();
+            let splitToDate = toDate.split("/");
+            if (toDate.length === "") {
+                $("#toDate-err").show().text("To date is required").addClass("text-danger");
+                toDateErr = false;
+            } else if (!regex.test(toDate)) {
+                $("#toDate-err").show().text("To date format is incorrect. Use dd/MM/yyyy").addClass("text-danger");
+                toDateErr = false;
+            } else if (new Date(splitToDate[1] + "-" + splitToDate[0] + "-" + splitToDate[2]) >= new Date()) {
+                $("#toDate-err").show().text("To date must be less than current date").addClass("text-danger");
+                toDateErr = false;
+            } else if (!isValidDate(splitToDate[2], parseInt(splitToDate[1]), splitToDate[0])) {
+                $("#toDate-err").show().text("To date is incorrect").addClass("text-danger");
+                toDateErr = false;
+            } else {
+                $("#toDate-err").hide();
+                toDateErr = true;
+            }
+        }
+
+        // Event listeners for blur events
+        $('input[name="fromDate"]').on("blur", function () {
+            checkFromDate();
+        });
+
+        $('input[name="toDate"]').on("blur", function () {
+            checkToDate();
+        });
+        $("#form-date").on("submit",function (e){
+            checkFromDate();
+            checkToDate();
+            // Compare the dates (you should convert them to a comparable format, e.g., Date objects)
+            var fromDate = new Date($('input[name="fromDate"]').val());
+            var toDate = new Date($('input[name="toDate"]').val());
+
+            // Prevent form submission if 'toDate' is earlier than 'fromDate'
+            if (toDate < fromDate) {
+                $("#toDate-err").show().text("To date have to ealier than from date").addClass("text-danger");
+                e.preventDefault();
+                // alert('The "To Date" cannot be earlier than the "From Date".');
+            }
+            if(!fromDateErr || !toDateErr){
+                e.preventDefault()();
+            }
+        })
+    });
+
+</script>
 
 </body>
 

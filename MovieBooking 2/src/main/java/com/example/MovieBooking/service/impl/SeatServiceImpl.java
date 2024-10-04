@@ -40,4 +40,9 @@ public class SeatServiceImpl implements ISeatService {
         }
     }
 
+    @Override
+    public List<Seat> getSeatSByIds(List<Long> selectedSeatIds) {
+        return seatRepository.findBySeatIdIn(selectedSeatIds);
+    }
+
 }
