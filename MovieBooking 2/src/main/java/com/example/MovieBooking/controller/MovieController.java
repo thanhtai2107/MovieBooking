@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +26,20 @@ public class MovieController {
     private final ICinemaRoomService cinemaRoomService;
     private final IScheduleService scheduleService;
     private final ITypeService typeService;
+    private final IUploadImage uploadImageService;
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
     @Autowired
     public MovieController(IMovieService movieService, 
                            ICinemaRoomService cinemaRoomService, 
                            IScheduleService scheduleService,
-                           ITypeService typeService) {
+                           ITypeService typeService,
+                           IUploadImage uploadImageService) {
         this.movieService = movieService;
         this.cinemaRoomService = cinemaRoomService;
         this.scheduleService = scheduleService;
         this.typeService = typeService;
+        this.uploadImageService = uploadImageService;
     }
 
     @GetMapping
@@ -78,13 +82,26 @@ public class MovieController {
     public ResponseEntity<?> createMovie(@Valid @ModelAttribute Movie movie,
                               BindingResult bindingResult,
                               @RequestParam(required = false) List<Long> movieTypes,
-                              @RequestParam(required = false) List<Long> schedules) {
+                              @RequestParam(required = false) List<Long> schedules,
+                              @RequestParam("imageFile") MultipartFile imageFile) {
         logger.info("Received request to create movie: {}", movie.getNameEnglish());
+        logger.info("Image file received: name={}, size={}, contentType={}", 
+                    imageFile.getOriginalFilename(), 
+                    imageFile.getSize(), 
+                    imageFile.getContentType());
+        
         if (bindingResult.hasErrors() || !isValidMovie(movie, movieTypes, schedules)) {
             logger.warn("Invalid movie data received");
             return ResponseEntity.badRequest().body(getErrorMessages(bindingResult, movie, movieTypes, schedules));
         }
         try {
+            if (!imageFile.isEmpty()) {
+                String imageUrl = uploadImageService.uploadImage(imageFile);
+                logger.info("Image uploaded successfully. URL: {}", imageUrl);
+                movie.setLargeImage(imageUrl);
+            } else {
+                logger.warn("No image file received or file is empty");
+            }
             Movie createdMovie = movieService.saveMovie(movie, movieTypes, schedules);
             logger.info("Movie created successfully: {}", createdMovie.getMovieId());
             return ResponseEntity.ok(createdMovie);
@@ -99,12 +116,17 @@ public class MovieController {
     public ResponseEntity<?> updateMovie(@PathVariable Long id, @Valid @ModelAttribute Movie movie,
                           BindingResult bindingResult,
                           @RequestParam(required = false) List<Long> movieTypes,
-                          @RequestParam(required = false) List<Long> schedules) {
+                          @RequestParam(required = false) List<Long> schedules,
+                          @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
         if (bindingResult.hasErrors() || !isValidMovie(movie, movieTypes, schedules)) {
             return ResponseEntity.badRequest().body(getErrorMessages(bindingResult, movie, movieTypes, schedules));
         }
         
         try {
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageUrl = uploadImageService.uploadImage(imageFile);
+                movie.setLargeImage(imageUrl);
+            }
             Movie updatedMovie = movieService.updateMovie(id, movie, movieTypes, schedules);
             return ResponseEntity.ok(updatedMovie);
         } catch (Exception e) {

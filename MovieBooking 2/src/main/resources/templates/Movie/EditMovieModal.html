@@ -154,7 +154,7 @@
                             <input type="file" class="file-input" id="largeImage" name="imageFile" accept="image/*">
                             <div class="file-input-label">
                                 <span class="choose-file-btn">Chọn tệp</span>
-                                <span class="file-name" id="fileName">Không có tệp nào được chọn</span>
+                                <span class="file-name" id="fileName" th:text="${movie.largeImage != null ? movie.largeImage.substring(movie.largeImage.lastIndexOf('/') + 1) : 'Không có tệp nào được chọn'}"></span>
                             </div>
                         </div>
                         <div class="invalid-feedback">Please select a valid image file (JPEG, PNG, or GIF).</div>
@@ -264,6 +264,11 @@
                 }
             });
 
+            // Only include the image file if a new one was selected
+            if ($('#largeImage')[0].files.length === 0) {
+                formData.delete('imageFile');
+            }
+
             $.ajax({
                 url: form.action,
                 type: 'POST',
@@ -290,6 +295,11 @@
                     $('#movieThumbnail').attr('src', e.target.result);
                 }
                 reader.readAsDataURL(file);
+                $('#fileName').text(file.name);
+            } else {
+                $('#fileName').text('Không có tệp nào được chọn');
+                // Reset thumbnail to original image when no file is selected
+                $('#movieThumbnail').attr('src', /*[[${movie.largeImage}]]*/ '');
             }
         });
 
