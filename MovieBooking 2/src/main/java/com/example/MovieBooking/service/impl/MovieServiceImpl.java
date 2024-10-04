@@ -223,25 +223,22 @@ public class MovieServiceImpl implements IMovieService {
         }
         return movie;
     }
-  
-    public List<Movie> findMovieCustom(String searchInput) {
-        List<Movie> movies = movieRepository.findMoviesCustom(searchInput);
-        return movies;
+
+    /**
+     * @author Le Thanh Tri
+     * @param searchInput
+     * @return movieList
+     */
+    @Override
+    public List<Movie> searchMovie(String searchInput) {
+        List<Movie> movieList = movieRepository.findMoviesCustom(searchInput);
+        return movieList;
     }
 
     @Override
     public List<Movie> getMoviesByDate(LocalDate date) {
         return movieRepository.findMoviesByDate(date);
     }
-
-
-
-
-//    public Movie getMovieById(Long id) {
-////        Long longId = Long.valueOf(id);
-//        return movieRepository.findById(id).get();
-//    }
-
 
 }
 

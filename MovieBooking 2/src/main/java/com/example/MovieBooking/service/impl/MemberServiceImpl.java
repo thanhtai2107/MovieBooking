@@ -43,6 +43,13 @@ public class MemberServiceImpl implements IMemberService {
         return memberRepository.save(member);
 
     }
+
+    /**
+     * Save member into database
+     *
+     * @author Hoang Thanh Tai
+     * @param member information of member
+     */
     @Override
     public void saveMember(Member member) {
         memberRepository.save(member);
@@ -51,7 +58,6 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public AccountDTO getMember(Long id) {
         Member member =  memberRepository.findById(id).orElse(null);
-        
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setMemberId(member.getMemberId());
         accountDTO.setFullname(member.getAccount().getFullname());
@@ -80,6 +86,15 @@ public class MemberServiceImpl implements IMemberService {
         return memberRepository.findAll();
     }
 
+    /**
+     * Get total page use for pagination
+     *
+     *
+     * @param search key word to search member's information
+     * @param page current page - used for pagination
+     * @param size number of records per page - used for pagination
+     * @return total page
+     */
     public int getTotalPage(String search, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         return memberRepository.getAllMembers(search,pageable).getTotalPages();
@@ -90,6 +105,15 @@ public class MemberServiceImpl implements IMemberService {
         return memberRepository.findById(id).orElseThrow(null);
     }
 
+    /**
+     * Show all and search member's information
+     *
+     * @author Hoang Thanh Tai
+     * @param search key word to search member's information
+     * @param page current page - used for pagination
+     * @param size number of records per page - used for pagination
+     * @return list of member's information
+     */
     @Override
     public List<MemberDTO> getAllMembers(String search, int page, int size) {
         Pageable pageable = PageRequest.of(page,size);

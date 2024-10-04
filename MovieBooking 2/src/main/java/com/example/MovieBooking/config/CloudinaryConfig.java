@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Hoang Thanh Tai
+ */
 @Configuration
 public class CloudinaryConfig {
     private final String CLOUD_NAME = "dxlwkyxxb";

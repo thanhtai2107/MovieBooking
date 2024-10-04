@@ -17,4 +17,5 @@ public interface IMovieService {
     Movie getMovieByIdWithSchedules(Long id);
     Movie getMovieWithTypesAndSchedules(Long id);
     public List<Movie> getMoviesByDate(LocalDate date);
+    List<Movie> searchMovie(String searchInput);
 }

@@ -42,6 +42,12 @@ public class ScheduleServiceImpl implements IScheduleService {
         return scheduleRepository.findSchedulesMovie(movieId);
     }
 
+    /**
+     * @author Le Thanh Tri
+     * @param localDate
+     * @param movieId
+     * @return list schedule by date and movie id
+     */
     public List<Schedule> getAllSchedulesByDateAndMovieIdCustom(LocalDate localDate, Long movieId) {
         return scheduleRepository.findScheduleTimesByDateAndMovieId(localDate,movieId);
     }
