@@ -99,6 +99,7 @@ public class MovieController {
                 String imageUrl = uploadImageService.uploadImage(imageFile);
                 logger.info("Image uploaded successfully. URL: {}", imageUrl);
                 movie.setLargeImage(imageUrl);
+                movie.setSmallImage(imageUrl); // Set the same URL for smallImage
             } else {
                 logger.warn("No image file received or file is empty");
             }
@@ -126,6 +127,7 @@ public class MovieController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageUrl = uploadImageService.uploadImage(imageFile);
                 movie.setLargeImage(imageUrl);
+                movie.setSmallImage(imageUrl); // Set the same URL for smallImage
             }
             Movie updatedMovie = movieService.updateMovie(id, movie, movieTypes, schedules);
             return ResponseEntity.ok(updatedMovie);
