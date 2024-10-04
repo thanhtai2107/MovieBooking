@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * Controller class for handling movie-related operations.
+ *
+ * @author Duong Le Phu An
+ */
 @Controller
 @RequestMapping("/movies")
 public class MovieController {
@@ -29,6 +34,11 @@ public class MovieController {
     private final IUploadImage uploadImageService;
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
+    /**
+     * Constructor for MovieController.
+     *
+     * @author Duong Le Phu An
+     */
     @Autowired
     public MovieController(IMovieService movieService, 
                            ICinemaRoomService cinemaRoomService, 
@@ -42,6 +52,13 @@ public class MovieController {
         this.uploadImageService = uploadImageService;
     }
 
+    /**
+     * Retrieves all movies and displays them in the MovieManager view.
+     *
+     * @param model the Model object to add attributes
+     * @return the name of the view to render
+     * @author Duong Le Phu An
+     */
     @GetMapping
     public String getAllMovies(Model model) {
         List<Movie> movies = movieService.getAllMovies();
@@ -49,6 +66,13 @@ public class MovieController {
         return "Movie/MovieManager";
     }
 
+    /**
+     * Displays the modal for adding a new movie.
+     *
+     * @param model the Model object to add attributes
+     * @return the name of the view to render
+     * @author Duong Le Phu An
+     */
     @GetMapping("/modal/add")
     public String getAddMovieModal(Model model) {
         model.addAttribute("movie", new Movie());
@@ -58,6 +82,14 @@ public class MovieController {
         return "Movie/AddMovieModal";
     }
 
+    /**
+     * Displays the modal for editing an existing movie.
+     *
+     * @param id the ID of the movie to edit
+     * @param model the Model object to add attributes
+     * @return the name of the view to render
+     * @author Duong Le Phu An
+     */
     @GetMapping("/modal/edit/{id}")
     public String getEditConfirmationModal(@PathVariable Long id, Model model) {
         Movie movie = movieService.getMovieWithTypesAndSchedules(id);
@@ -71,12 +103,31 @@ public class MovieController {
         return "Movie/EditMovieModal";
     }
 
+    /**
+     * Displays the modal for confirming movie deletion.
+     *
+     * @param id the ID of the movie to delete
+     * @param model the Model object to add attributes
+     * @return the name of the view to render
+     * @author Duong Le Phu An
+     */
     @GetMapping("/modal/delete/{id}")
     public String getDeleteConfirmationModal(@PathVariable Long id, Model model) {
         model.addAttribute("movieId", id);
         return "Movie/DeleteConfirmationModal";
     }
 
+    /**
+     * Creates a new movie.
+     *
+     * @param movie the Movie object to create
+     * @param bindingResult the BindingResult object for validation errors
+     * @param movieTypes the list of movie type IDs
+     * @param schedules the list of schedule IDs
+     * @param imageFile the image file for the movie
+     * @return ResponseEntity with the created movie or error messages
+     * @author Duong Le Phu An
+     */
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<?> createMovie(@Valid @ModelAttribute Movie movie,
@@ -112,6 +163,18 @@ public class MovieController {
         }
     }
 
+    /**
+     * Updates an existing movie.
+     *
+     * @param id the ID of the movie to update
+     * @param movie the updated Movie object
+     * @param bindingResult the BindingResult object for validation errors
+     * @param movieTypes the list of movie type IDs
+     * @param schedules the list of schedule IDs
+     * @param imageFile the new image file for the movie (optional)
+     * @return ResponseEntity with the updated movie or error messages
+     * @author Duong Le Phu An
+     */
     @PostMapping("/update/{id}")
     @ResponseBody
     public ResponseEntity<?> updateMovie(@PathVariable Long id, @Valid @ModelAttribute Movie movie,
@@ -137,6 +200,14 @@ public class MovieController {
         }
     }
 
+    /**
+     * Deletes a movie.
+     *
+     * @param id the ID of the movie to delete
+     * @param redirectAttributes the RedirectAttributes object for flash messages
+     * @return the redirect URL
+     * @author Duong Le Phu An
+     */
     @PostMapping("/delete/{id}")
     public String deleteMovie(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -149,6 +220,14 @@ public class MovieController {
         return "redirect:/movies";
     }
 
+    /**
+     * Searches for movies based on a query.
+     *
+     * @param query the search query
+     * @param model the Model object to add attributes
+     * @return the name of the view to render
+     * @author Duong Le Phu An
+     */
     @GetMapping("/search")
     public String searchMovies(@RequestParam(required = false) String query, Model model) {
         List<Movie> movies;
@@ -162,6 +241,15 @@ public class MovieController {
         return "Movie/MovieManager";
     }
 
+    /**
+     * Validates a movie object.
+     *
+     * @param movie the Movie object to validate
+     * @param movieTypes the list of movie type IDs
+     * @param schedules the list of schedule IDs
+     * @return true if the movie is valid, false otherwise
+     * @author Duong Le Phu An
+     */
     private boolean isValidMovie(Movie movie, List<Long> movieTypes, List<Long> schedules) {
         return movie.getFromDate() != null && movie.getToDate() != null &&
                !movie.getFromDate().isAfter(movie.getToDate()) &&
@@ -169,6 +257,16 @@ public class MovieController {
                schedules != null && !schedules.isEmpty();
     }
 
+    /**
+     * Generates error messages for invalid movie data.
+     *
+     * @param bindingResult the BindingResult object containing validation errors
+     * @param movie the Movie object being validated
+     * @param movieTypes the list of movie type IDs
+     * @param schedules the list of schedule IDs
+     * @return a string containing all error messages
+     * @author Duong Le Phu An
+     */
     private String getErrorMessages(BindingResult bindingResult, Movie movie, List<Long> movieTypes, List<Long> schedules) {
         List<String> errors = new ArrayList<>();
         
@@ -193,4 +291,3 @@ public class MovieController {
         return "Error creating movie: " + String.join(", ", errors);
     }
 }
-
