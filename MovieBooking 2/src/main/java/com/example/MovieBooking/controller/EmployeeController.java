@@ -45,14 +45,11 @@ public class EmployeeController {
                                    @RequestParam(name = "search", defaultValue = "") String username) {
 
         Page<Employee> list = employeeService.getAll(username, pageNo);
-//        List<Employee> employeeList = employeeService.getALl();
-//        System.out.println(employeeList);
+        System.out.println(list.toList().size());
         model.addAttribute("search", username);
         model.addAttribute("list", list.toList());
-        System.out.println(list.toList().size());
         model.addAttribute("totalPages", list.getTotalPages());
         model.addAttribute("currentPage", pageNo);
-        System.out.println(list.getTotalPages());
         return "employee/list";
     }
 
