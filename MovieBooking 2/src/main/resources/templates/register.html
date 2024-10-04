@@ -73,6 +73,7 @@
                     placeholder="Account"
                     aria-describedby="helpId"
                     th:field="*{username}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
             <small id="account-err"></small>
@@ -86,6 +87,7 @@
                     placeholder="Password"
                     aria-describedby="helpId"
                     th:field="*{password}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class=""></small>
             <small id="password-err" class=""></small>
@@ -100,6 +102,7 @@
                     placeholder="Confirm password"
                     aria-describedby="helpId"
                     th:field="*{confirmPassword}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class=""></small>
             <small id="confirm-password-err" class=""></small>
@@ -113,6 +116,7 @@
                     placeholder="Fullname"
                     aria-describedby="helpId"
                     th:field="*{fullname}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class=""></small>
             <small id="fullname-err" class=""></small>
@@ -127,6 +131,7 @@
                     placeholder="Date of birth"
                     aria-describedby="helpId"
                     th:field="*{dateOfBirth}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class=""></small>
             <small id="dob-err" class=""></small>
@@ -142,7 +147,7 @@
                     value="Nam"
             />
             <label for="male">Nam</label>
-            <input type="radio" id="female" name="gender" value="Nữ" th:field="*{gender}"/>
+            <input class="ms-2" type="radio" id="female" name="gender" value="Nu" th:field="*{gender}"/>
             <label for="female">Nữ</label>
           </div>
 
@@ -155,6 +160,7 @@
                     placeholder="Identity card"
                     aria-describedby="helpId"
                     th:field="*{identityCard}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('identityCard')}" th:errors="*{identityCard}" class=""></small>
             <small id="identity-err" class=""></small>
@@ -168,6 +174,7 @@
                     placeholder="Email"
                     aria-describedby="helpId"
                     th:field="*{email}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" ></small>
             <small id="email-err" class=""></small>
@@ -181,6 +188,7 @@
                     placeholder="Address"
                     aria-describedby="helpId"
                     th:field="*{address}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('address')}" th:errors="*{address}" ></small>
             <small id="address-err" class=""></small>
@@ -194,6 +202,7 @@
                     placeholder="Phone number"
                     aria-describedby="helpId"
                     th:field="*{phoneNumber}"
+                    style="height: 45px"
             />
             <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></small>
             <small id="phone-err" class=""></small>
@@ -201,15 +210,15 @@
 
           <button type="submit"
                   class="btn text-white w-100"
-                  style="background-color: #347ab7"
+                  style="background-color: #347ab7;height: 45px;font-size: 17px"
           >
             Register
           </button>
         </form>
 
         <div class="mt-3 d-flex justify-content-center">
-          <span>Have an account yet?</span>
-          <a th:href="@{/login}" class="text-dark ms-2">Login</a>
+          <span>Have an account already?</span>
+          <a th:href="@{/login}" class="text-dark ms-2" style="text-decoration: none; border-bottom: 1px solid">Login</a>
         </div>
       </div>
     </div>
@@ -230,8 +239,8 @@
 
     function isValidDate(year, month, day) {
       var d = new Date(year, month - 1, day);
-      const split = d.toLocaleDateString().split("/");
-      if (split[2] == year && split[1] == month  && split[0] == parseInt(day)) {
+      const split = d.toLocaleDateString("en-US").split("/");
+      if (split[2] == year && split[0] == month  && split[1] == parseInt(day)) {
         return true;
       }
       return false;

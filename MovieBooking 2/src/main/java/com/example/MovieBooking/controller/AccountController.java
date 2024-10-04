@@ -92,6 +92,7 @@ public class AccountController{
         accountService.updateAccount(account, image);
         Account account1 = accountService.findUserByUsername(account.getUsername());
         session.setAttribute("account", account1);
-        return "redirect:/edit";
+        model.addAttribute("success", "Update information successfully");
+        return "edit-account";
     }
 }
