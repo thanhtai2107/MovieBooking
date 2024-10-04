@@ -198,12 +198,12 @@ public class BookingController {
                 // TODO: handle exception
             }
 
-            if (searchOptial.get().equals("")) {
+            if (searchOptial.get().isEmpty()) {
 
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage = bookingService.getBookingByUserName(pageable, account.getUsername());
             } else {
-                search = searchOptial.get();
+                search = (String) searchOptial.get();
                 Pageable pageable = PageRequest.of(page -1 , pageSize);
                 bookingPage =  bookingService.getBookingsByConditionWithUser(pageable, account.getUsername(), searchOptial.get());
             }
@@ -431,14 +431,17 @@ try {
 //    }
     @GetMapping("/movie-show-time")
     public String scheduleOfMovie(@RequestParam(value = "date", required = false)
-                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) String date,
                                     @RequestParam(value = "movieId", required = false)Long id,
                                     Model model){
         List<Movie> movieList = new ArrayList<>();
-        if (date == null) {
-            date = LocalDate.now();
-        }
-        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(date,id);
+//        if (date == null) {
+//            date = LocalDate.now();
+//        }
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, dateTimeFormatter);
+
+        List<Schedule> scheduleList = scheduleService.getAllSchedulesByDateAndMovieIdCustom(localDate,id);
         System.out.println("shcedule" + scheduleList.size());
         Movie movie = movieService.getMovieById(id);
 //           List<Movie> movieList = new ArrayList<>();

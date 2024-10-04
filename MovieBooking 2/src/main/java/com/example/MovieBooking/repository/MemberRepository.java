@@ -25,7 +25,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m.score from Member m where m.account.accountId = ?1")
     Integer getToTalScore(Long id);
 
-    @Query("SELECT m.memberId, a.fullname, a.identityCard, a.email, a.phoneNumber, a.address, a.image FROM Member m JOIN Account a ON m.account.accountId = a.accountId where a.fullname like %:search% OR a.email like %:search% OR a.identityCard like %:search% OR a.phoneNumber like %:search% ")
+    @Query("SELECT m.memberId, a.fullname, a.identityCard, a.email, a.phoneNumber, a.address, a.image FROM Member m JOIN Account a ON m.account.accountId = a.accountId where a.fullname like %:search% OR a.email like %:search% OR a.identityCard like %:search% OR a.phoneNumber like %:search% OR a.address like %:search%")
     Page<Object[]> getAllMembers(@Param("search") String search, Pageable pageable);
 
 }

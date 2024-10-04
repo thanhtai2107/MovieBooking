@@ -35,7 +35,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Times New Roman', Times, serif;
     }
 
     body {
@@ -298,8 +297,9 @@
                     <i id="left" class="fa-solid  fas fa-angle-left"></i>
                     <ul class="carousel">
                         <li class="card" th:each="movie : ${listMovie}">
-                            <div class="img"><img th:src="${movie.smallImage}" alt=""
-                                                  draggable="false">
+                            <div  class="img">
+                                    <img th:src="${movie.smallImage}" alt=""
+                                         draggable="false">
                             </div>
                             <div class="content d-flex flex-column align-items-center justify-content-center">
                                 <h2 style="color: black; font-weight:bold;" th:text="${movie.nameVN}"></h2>

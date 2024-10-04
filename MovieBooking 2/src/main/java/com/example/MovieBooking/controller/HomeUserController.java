@@ -35,13 +35,16 @@ public class HomeUserController {
     public String listAllHomeUser(Model model, HttpSession session, @AuthenticationPrincipal Account account) {
         List<Movie> listMovie = movieService.getAllMovies();
         List<Promotion> listPromotion = promotionService.getAllPromotions();
-        Account account1 = accountService.findUserByUsername(account.getUsername());
-        Integer score = memberService.getTotalScore(account1.getAccountId());
+        if (account != null) {
+            Account account1 = accountService.findUserByUsername(account.getUsername());
+            Integer score = memberService.getTotalScore(account1.getAccountId());
+            session.setAttribute("account", account1);
+            session.setAttribute("score", score);
+        }
+
         model.addAttribute("listMovie", listMovie);
         model.addAttribute("listPromotion", listPromotion);
         session.setAttribute("movieList", listMovie);
-        session.setAttribute("account", account1);
-        session.setAttribute("score", score);
         return "homepageUser";
     }
 

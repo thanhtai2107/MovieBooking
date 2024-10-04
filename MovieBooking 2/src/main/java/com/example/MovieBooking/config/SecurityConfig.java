@@ -30,9 +30,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/register",
-                            "/login"
-                    ).permitAll();
+                    request.requestMatchers("/register", "/login","/home").permitAll();
+                    request.requestMatchers("/member-management/**","/showtimes", "/admin/**").hasAnyAuthority("ADMIN", "EMPLOYEE");
+                    request.requestMatchers("/admin/booking-list", "/admin/confirm-booking/","/cinemaRoom/**","employee-management/**").hasAuthority("ADMIN");
+                    request.requestMatchers("/booked-ticket", "/movie-show-time", "/view-history-score").hasAuthority("MEMBER");
                     request.anyRequest().authenticated();
                 }).formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler()).permitAll())
                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")));

@@ -87,7 +87,7 @@ public class EmployeeController {
     public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
         Account account1 = accountService.findUserByUsername(account.getUsername());
         if (account1 != null){
-            bindingResult.rejectValue("username", "Account already exists");
+            bindingResult.rejectValue("username", null,"Account already exists");
         }
         accountRegisterValidate.validate(account, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -140,7 +140,7 @@ public class EmployeeController {
     public String edit(@Valid @ModelAttribute("account") AccountReq account, @RequestParam(value = "image", required = false) MultipartFile image, Model model, RedirectAttributes redirectAttributes) throws IOException {
         redirectAttributes.addAttribute("msg", "Update Successful");
         accountService.updateAccount(account, image);
-        return "redirect:/employee/list";
+        return "redirect:/employee-management/employees";
     }
 
     /**
