@@ -85,7 +85,10 @@ public class EmployeeController {
      */
     @PostMapping("/add")
     public String addEmployee(@Valid @ModelAttribute("account") AccountReq account, BindingResult bindingResult, Model model) {
-
+        Account account1 = accountService.findUserByUsername(account.getUsername());
+        if (account1 != null){
+            bindingResult.rejectValue("username", "Account already exists");
+        }
         accountRegisterValidate.validate(account, bindingResult);
         if (bindingResult.hasErrors()) {
             return "employee/add";
