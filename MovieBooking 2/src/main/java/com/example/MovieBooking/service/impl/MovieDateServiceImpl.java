@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service implementation for managing movie dates.
+ *
+ * @author Duong Le Phu An
+ */
 @Service
 public class MovieDateServiceImpl implements IMovieDateService {
 
