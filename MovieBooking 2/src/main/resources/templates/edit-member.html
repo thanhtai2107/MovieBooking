@@ -31,6 +31,13 @@
     ></script>
   </head>
   <style>
+    .form-check-input:checked {
+      background-color: lightgrey;
+      border: 1px solid lightgray;
+    }
+    .form-check-input:checked[type=radio] {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='2' fill='%23666666'/%3E%3C/svg%3E");
+    }
     .list-group-item a {
       text-decoration: none;
       color: black;
@@ -157,13 +164,13 @@
                           type="radio"
                           id="male"
                           name="gender"
-                          class="text-dark"
+                          class="text-dark form-check-input"
                           th:checked="${account.gender.equals('Nam')}"
                           th:field="*{gender}"
                           value="Nam"
                   />
                   <label for="male">Nam</label>
-                  <input class="ms-2" type="radio" id="female" name="gender" value="Nu" th:checked="${account.gender.equals('Nu')}" th:field="*{gender}"/>
+                  <input class="ms-2 form-check-input" type="radio" id="female" name="gender" value="Nu" th:checked="${account.gender.equals('Nu')}" th:field="*{gender}"/>
                   <label for="female">Nữ</label>
                   </div>
                 </div>
