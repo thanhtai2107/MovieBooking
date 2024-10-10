@@ -185,6 +185,7 @@
                           placeholder="Identity card"
                           aria-describedby="helpId"
                           th:field="*{identityCard}"
+                          readonly
                   />
                   <small th:if="${#fields.hasErrors('identityCard')}" th:errors="*{identityCard}" class=""></small>
                   <small id="identity-err" class=""></small>
