@@ -187,6 +187,7 @@
                           aria-describedby="helpId"
                           th:field="*{identityCard}"
                           style="height: 45px"
+                          readonly
                   />
                   <small th:if="${#fields.hasErrors('identityCard')}" th:errors="*{identityCard}" class=""></small>
                   <small id="identity-err" class=""></small>

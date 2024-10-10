@@ -151,7 +151,7 @@
 
                 <!-- Page Numbers -->
                 <li th:each="i : ${#numbers.sequence(0, totalPages -1 )}"
-                    th:classappend="${i == currentPage} ? 'active'">
+                    th:classappend="${i == currentPage} ? 'page-item active'">
                   <a class="page-link" th:href="@{/member-management/members(searchInput=${search},size=${size}, page=${i})}" th:text="${i+1}"></a>
                 </li>
 
