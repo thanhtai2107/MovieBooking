@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service implementation for managing movie types.
+ *
+ * @author Duong Le Phu An
+ */
 @Service
 public class MovieTypeServiceImpl implements IMovieTypeService {
 

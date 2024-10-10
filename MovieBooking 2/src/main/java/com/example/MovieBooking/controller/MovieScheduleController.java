@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller class for handling movie schedule-related operations.
+ *
+ * @author Duong Le Phu An
+ */
 @Controller
 @RequestMapping("/movieSchedules")
 public class MovieScheduleController {

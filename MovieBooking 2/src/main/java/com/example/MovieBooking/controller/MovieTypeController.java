@@ -8,6 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+/**
+ * Controller class for handling movie type-related operations.
+ *
+ * @author Duong Le Phu An
+ */
 @Controller
 @RequestMapping("/movieTypes")
 public class MovieTypeController {
